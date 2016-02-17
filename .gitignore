@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*.so
+MANIFEST
+/doc/
+/build/
+/dist/
+*.egg
+/.eggs/
+/src/py_IoticAgent.egg-info/
