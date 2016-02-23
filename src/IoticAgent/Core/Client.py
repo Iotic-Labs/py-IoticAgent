@@ -463,7 +463,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 req.exception = shutdown
                 req._set()
                 self.__clear_references(req, remove_request=False)
-            logger.info('%d unfinished requests discarded')
+            logger.info('%d unfinished requests discarded', len(self.__requests))
             self.__requests.clear()
         #
         self.__network_retry_thread = None

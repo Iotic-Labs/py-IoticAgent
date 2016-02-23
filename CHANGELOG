@@ -1,2 +1,7 @@
+UNRELEASED
+- Package documentation updates
+- Core message decoder now properly handles PROGRESS type (logging)
+- Fixed missing logging parameter in Core client
+
 v0.2.6
 - First (public) release

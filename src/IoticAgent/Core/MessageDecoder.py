@@ -57,10 +57,18 @@ M_TYPES = {
     Const.E_RENAMED: 'RENAMED',
     Const.E_REASSIGNED: 'REASSIGNED'}
 
-M_TYPES_PROGRESS = {
-    Const.E_PROGRESS_CODE_ACCEPTED: 'ACCEPTED',
-    Const.E_PROGRESS_CODE_REMOTEDELAY: 'REMOTEDELAY',
-    Const.E_PROGRESS_CODE_UPDATE: 'UPDATE'}
+M_SUB_TYPES = {
+    Const.E_FAILED: {Const.E_FAILED_CODE_NOTALLOWED: 'NOTALLOWED',
+                     Const.E_FAILED_CODE_UNKNOWN: 'UNKNOWN',
+                     Const.E_FAILED_CODE_MALFORMED: 'MALFORMED',
+                     Const.E_FAILED_CODE_DUPLICATE: 'DUPLICATE',
+                     Const.E_FAILED_CODE_INTERNALERROR: 'INTERNALERROR',
+                     Const.E_FAILED_CODE_LOWSEQNUM: 'LOWSEQNUM',
+                     Const.E_FAILED_CODE_ACCESSDENIED: 'ACCESSDENIED'},
+    Const.E_PROGRESS: {Const.E_PROGRESS_CODE_ACCEPTED: 'ACCEPTED',
+                       Const.E_PROGRESS_CODE_REMOTEDELAY: 'REMOTEDELAY',
+                       Const.E_PROGRESS_CODE_UPDATE: 'UPDATE'}
+}
 
 M_TYPES_FAILED = {
     Const.E_FAILED_CODE_NOTALLOWED: 'NOTALLOWED',
@@ -106,11 +114,10 @@ def decode_rcvd_msg(pref, message, seqnum, pretty=False):
     out.append("%s%s{%sSEQNUM: %d," % (pref, newline, start, seqnum))
     out.append("%sCLIENTREF: %s," % (start, message[Const.M_CLIENTREF]))
     out.append("%sTYPE: %s," % (start, M_TYPES[message[Const.M_TYPE]]))
-    if message[Const.M_TYPE] in (Const.E_FAILED, Const.E_PROGRESS):
-        out.append("%sPAYLOAD: {CODE: %s, MESSAGE: %s}" % (
-            start,
-            M_TYPES_FAILED[message[Const.M_PAYLOAD][Const.P_CODE]],
-            message[Const.M_PAYLOAD][Const.P_MESSAGE]))
+    if message[Const.M_TYPE] in M_SUB_TYPES:
+        out.append("%sPAYLOAD: {CODE: %s, MESSAGE: %s}" %
+                   (start, M_SUB_TYPES[message[Const.M_TYPE]][message[Const.M_PAYLOAD][Const.P_CODE]],
+                    message[Const.M_PAYLOAD][Const.P_MESSAGE]))
     else:
         payload = None
         if message[Const.M_PAYLOAD] is not None:

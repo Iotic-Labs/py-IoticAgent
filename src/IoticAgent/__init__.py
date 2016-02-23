@@ -18,39 +18,32 @@ The `IoticAgent` module is the route from your code to Iotic Space.  There's a
 simple API built around concepts similar to those used in social networking for
 humans.  For example you can `follow` someone else's feed and `share` your own.
 
-This brief guid is a quick way to get started coding.  It does not attempt to be
-an exhaustive introduction to all the code
+This brief guide is a quick way to get started coding.  It does not attempt to be
+an exhaustive introduction to all the code. Follow the links on the left to see detail
 
 Getting Started - Installation
 ------------------------------
-Make sure you have all the necessary agent code and the dependencies.  This will
-eventually be acheived using pip install, but until that day you should have
+Make sure you have all the necessary agent code and the dependencies.  This
+can be achieved either by using `pip3 install` or by getting the code from `github`.
 
-1. The agent code
+1. `py-IoticAgent` Is available either from `pypi` here [py-IoticAgent on pypi](https://pypi.python.org/pypi/py-IoticAgent)
+or from `github` here [py-IoticAgent on github](https://github.com/Iotic-Labs/py-IoticAgent)
 
-2. `py-ubjson` for marshalling the messages and payload
+1. [optional] `py-lz4framed` compression for messages.  Zlib compression is used by default if lz4 is not present.
+[py-lz4framed on pypi](https://pypi.python.org/pypi/py-lz4framed)
 
-3. [optional] `py-lz4framed` compression for messages.  Zlib compression is used by default if lz4 is not present.
+1. [optional] `rdflib` - You can install RDFLib yourself if you want to take advantage of advanced metadata
+features. [Rdflib on pypi](https://pypi.python.org/pypi/rdflib)
 
-4. [optional] `rdflib` - You can install RDFLib yourself if you want to take advantage of advanced metadata
-features. https://pypi.python.org/pypi/rdflib
+Getting Started - Environment - Note on PYTHONPATH
+------------------------------------------------
+Depending on how you did your install, you will need to be careful that PYTHONPATH is set to
+where you've installed the IoticAgent and any dependencies.
 
-
-Getting Started - Environment
------------------------------
-The source code is in new_agent/src.  To set up the
-right paths for Python2 or Python3, use the env2.sh or env3.sh
-shell scripts respectively.
-
-    #!bash
-    $ cd linux
-    $ source env3.sh
-
-Or, on Windows:
-
-    #!bash
-    > cd win
-    > iotic_cmd.bat
+- If you used pypi and *didn't* specify a directory to install it, then you don't need to do anything
+- If you cloned github or used pypi with the `-t` option, then you'll need to tell python where to look for the
+modules you've installed.
+Look at the instruction on github [here](https://github.com/Iotic-Labs/py-IoticAgent#using-repository)
 
 Coding - Minimum script
 -----------------------
