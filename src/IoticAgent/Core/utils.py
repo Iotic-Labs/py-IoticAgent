@@ -14,6 +14,18 @@
 """Utility functions
 """
 
+from .compat import raise_from
+
 
 def version_string_to_tuple(version):
     return tuple(int(part) if part.isdigit() else part for part in version.split('.'))
+
+
+def validate_nonnegative_int(obj, name):
+    try:
+        obj = int(obj)
+        if obj < 0:
+            raise ValueError('%s negative' % name)
+    except (ValueError, TypeError) as ex:
+        raise_from(ValueError('%s invalid' % name), ex)
+    return obj

@@ -108,7 +108,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `offset` (optional) (integer) Default 0. Return Point details starting at this offset
         """
-        return self.__list(R_FEED, pid=pid, limit=limit, offset=offset)
+        return self.__list(R_FEED, pid=pid, limit=limit, offset=offset)['feeds']
 
     def list_controls(self, pid=None, limit=500, offset=0):
         """List `all` the controls on this Thing.
@@ -128,7 +128,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `offset` (optional) (integer) Default 0. Return Point details starting at this offset
         """
-        return self.__list(R_CONTROL, pid=pid, limit=limit, offset=offset)
+        return self.__list(R_CONTROL, pid=pid, limit=limit, offset=offset)['controls']
 
     def set_public(self, public=True):
         """Sets your Thing to be public to all.  If `public=True`.
@@ -192,8 +192,8 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         self.__client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
-        """Create tags for a Thing in the language you specify.  Tags are single strings containing
-        no spaces
+        """Create tags for a Thing in the language you specify. Tags can only contain alphanumeric (unicode) characters
+        and the underscore. Tags will be stored lower-cased.
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -216,8 +216,8 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         self.__client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
-        """Delete tags for a Thing in the language you specify.  Tags are single strings containing
-        no spaces
+        """Delete tags for a Thing in the language you specify. Case will be ignored and any tags matching lower-cased
+        will be deleted.
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -247,12 +247,12 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             #!python
             {
                 "en": [
-                    "myTag1",
-                    "myTag2"
+                    "mytag1",
+                    "mytag2"
                 ],
                 "de": [
-                    "einName",
-                    "nocheinName"
+                    "ein_name",
+                    "nochein_name"
                 ]
             }
 
@@ -668,10 +668,12 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             {
                 "<Subscription GUID 1>": {
                     "id": "<Control GUID>",
+                    "entityId":  "<Control's Thing GUID>",
                     "type": 3  # R_CONTROL from IoticAgent.Core.Const
                 },
                 "<Subscription GUID 2>": {
                     "id": "<Feed GUID>",
+                    "entityId":  "<Feed's Thing GUID>",
                     "type": 2  # R_FEED from IoticAgent.Core.Const
             }
 

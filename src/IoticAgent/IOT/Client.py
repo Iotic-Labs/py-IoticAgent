@@ -41,7 +41,7 @@ from .RemoteControl import RemoteControl
 class Client(object):  # pylint: disable=too-many-public-methods
 
     # Core version targeted by IOT client
-    __core_version = '0.2.0'
+    __core_version = '0.3.0'
 
     def __init__(self, config=None, db=None):
         """
@@ -81,7 +81,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
                                         seqnum=self.__config.get('agent', 'seqnum'),
                                         sslca=self.__config.get('agent', 'sslca'),
                                         network_retry_timeout=self.__config.get('core', 'network_retry_timeout'),
-                                        auto_encode_decode=self.__config.get('core', 'auto_encode_decode'))
+                                        auto_encode_decode=self.__config.get('core', 'auto_encode_decode'),
+                                        send_queue_size=self.__config.get('core', 'queue_size'),
+                                        throttle_conf=self.__config.get('core', 'throttle'))
         except ValueError as ex:
             raise_from(ValueError('Configuration error'), ex)
 
@@ -173,7 +175,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     def stop(self):
         """Close the connection to Iotic Space.  `stop()` is called by `__exit()__` allowing the python `with`
-        syntax to be used.  See [start()](./Client.m.html#IoticAgent.IOT.Client.Client.start)
+        syntax to be used.  See [start()](#IoticAgent.IOT.Client.Client.start)
         """
         if self.__client.is_alive():
             self.__client.stop()
@@ -310,7 +312,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Returns last data for feedid and mime (as tuple), or tuple of (None, None) if not found
 
         Raises KeyError - if there is no data to get.  Probably because you haven't received any and haven't
-        called [simulate_feeddata()](./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata)
+        called [simulate_feeddata()](#IoticAgent.IOT.Client.Client.simulate_feeddata)
          with the data= and mime= parameters set
 
         Raises RuntimeError - if the key-value store "database" is disabled
@@ -417,7 +419,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
         evt.wait()
         self._except_if_failed(evt)
-        return evt.payload
+        return evt.payload['entities']
 
     def get_thing(self, lid):
         """Get the details of a newly created Thing. This only applies to asynchronous creation of Things and the
@@ -485,10 +487,10 @@ class Client(object):  # pylint: disable=too-many-public-methods
         logger.info("delete_thing_async(lid=\"%s\")", lid)
         return self._request_entity_delete(lid)
 
-    def search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, reduced=False):
-        """Search the Iotic Space for public Things
-        with metadata matching the search parameters:
-        text, (lang, location, unit, limit, offset)=optional
+    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False):
+        """Search the Iotic Space for public Things with metadata matching the search parameters:
+        text, (lang, location, unit, limit, offset)=optional. Note that only things which have at least one
+        point defined can be found.
 
         Returns dict of results as below (first with reduced=False, second with reduced=True)- OR -
 
@@ -500,21 +502,15 @@ class Client(object):  # pylint: disable=too-many-public-methods
                     "matches": 3.500,
                     "lat": "52.4539",
                     "label": "Weather Station #2",
-                    "tags": {
-                    },
                     "points": {
                         "a300cc90147f4e2990195639de0af201": {
                             "matches": 3.000,
                             "label": "Feed 201",
-                            "tags": {
-                            },
                             "type": "Feed"
                         },
                         "a300cc90147f4e2990195639de0af202": {
                             "matches": 1.500,
                             "label": "Feed 202",
-                            "tags": {
-                            },
                             "type": "Feed"
                         }
                     }
@@ -524,21 +520,15 @@ class Client(object):  # pylint: disable=too-many-public-methods
                     "matches": 2.000,
                     "lat": "52.244384",
                     "label": "Weather Station #1",
-                    "tags": {
-                    },
                     "points": {
                         "fb1a4a4dbb2642ab9f836892da93f101": {
                             "matches": 1.000,
                             "label": "My weather feed",
-                            "tags": {
-                            },
                             "type": "Feed"
                         },
-                        "fb1a4a4dbb2642ab9f836892da93c101": {
+                        "fb1a4a4dbb2642ab9f836892da93c102": {
                             "matches": 1.000,
-                            "label": null,
-                            "tags": {
-                            },
+                            "label": None,
                             "type": "Control"
                         }
                     }
@@ -547,8 +537,14 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
             # reduced=True returns dict similar to below
             {
-                "fb1a4a4dbb2642ab9f836892da93f101": "Feed",
-                "fb1a4a4dbb2642ab9f836892da93c101": "Control"
+                "2b2d8b068e404861b19f9e060877e002": {
+                    "a300cc90147f4e2990195639de0af201": "Feed",
+                    "a300cc90147f4e2990195639de0af202": "Feed"
+                },
+                "76a3b24b02d34f20b675257624b0e001": {
+                    "fb1a4a4dbb2642ab9f836892da93f101": "Feed",
+                    "fb1a4a4dbb2642ab9f836892da93f102": "Control"
+                }
             }
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
@@ -557,8 +553,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `text` (required) (string) The text to search for.  Label and description will be searched
-        for both Thing and Point and each word will be used as a tag search too
+        `text` (required) (string) The text to search for. Label and description will be searched
+        for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive.
 
         `lang` (optional) (string) Default None. The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
         Language is used to limit search to only labels and descriptions in that language. You will only get labels `in
@@ -578,87 +574,76 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
-        evt = self._request_search(text, lang, location, unit, limit, offset, reduced)
+        evt = self._request_search(text, lang, location, unit, limit, offset, 'reduced' if reduced else 'full')
         evt.wait()
 
         self._except_if_failed(evt)
-        return evt.payload
+        return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0):
+        """Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`"""
         return self.search(text, lang, location, unit, limit, offset, reduced=True)
+
+    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0):
+        """See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only
+        result set comprised only of things which have a location set, e.g.:
+
+            #!python
+            {
+                # Keyed by thing id
+                '2b2d8b068e404861b19f9e060877e002':
+                    # location (g, lat & long), label (l, optional)
+                    {'g': (52.4539, -1.74803), 'l': 'Weather Station #2'},
+                '76a3b24b02d34f20b675257624b0e001':
+                    {'g': (52.244384, 0.716356), 'l': None},
+                '76a3b24b02d34f20b675257624b0e004':
+                    {'g': (52.245384, 0.717356), 'l': 'Gasometer'},
+                '76a3b24b02d34f20b675257624b0e005':
+                    {'g': (52.245384, 0.717356), 'l': 'Zepellin'}
+            }
+
+
+        """
+        logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
+                    text, lang, location, unit, limit, offset)
+        evt = self._request_search(text, lang, location, unit, limit, offset, 'located')
+        evt.wait()
+
+        self._except_if_failed(evt)
+        return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     # used by describe()
     __guid_resources = (Thing, Point, RemoteFeed, RemoteControl)
 
-    def describe(self, guid_or_thing):
+    def describe(self, guid_or_thing, lang=None):
         """Describe returns the public description of a Thing
 
-        Returns the description dict (see below) if Thing or Point is public, otherwise `None`
+        Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`
 
             #!python
             {
-                "result": {
-                    "type": "Entity",
-                    "meta": {
-                            "long": 0.716356,
-                            "lat": 52.244384,
-                            "labels": [
-                                {
-                                    "label": "Weather Station #1",
-                                    "lang": "en"
-                                },
-                                {
-                                    "label": "Station du temps#1",
-                                    "lang": "fr"
-                                }
-                            ],
-                            "points": [
-                                {
-                                    "type": "Control",
-                                    "labels": [
-                                        {
-                                            "label": "Control 101",
-                                            "lang": "en"
-                                        }
-                                    ],
-                                    "guid": "fb1a4a4dbb2642ab9f836892da93c101"
-                                },
-                                {
-                                    "type": "Feed",
-                                    "labels": [
-                                        {
-                                            "label": "My weather feed",
-                                            "lang": "en"
-                                        },
-                                        {
-                                            "label": "Mon temps feed",
-                                            "lang": "fr"
-                                        }
-                                    ],
-                                    "guid": "fb1a4a4dbb2642ab9f836892da93f101"
-                                }
-                            ],
-                            "comments": [
-                                {
-                                    "comment": "A lovely weather station...",
-                                    "lang": "en"
-                                },
-                                {
-                                    "comment": "La plus belle station meteo...",
-                                    "lang": "fr"
-                                }
-                            ],
-                            "tags": {
-                                "en": [
-                                    "blue",
-                                    "garden"
-                                ],
-                                "fr": [
-                                    "ouest"
-                                ]
-                            }
+                "type": "Entity",
+                "meta": {
+                    "long": 0.716356,
+                    "lat": 52.244384,
+                    "label": "Weather Station #1",
+                    "points": [
+                        {
+                            "type": "Control",
+                            "label": "Control 101",
+                            "guid": "fb1a4a4dbb2642ab9f836892da93c101"
+                        },
+                        {
+                            "type": "Feed",
+                            "label": "My weather feed",
+                            "guid": "fb1a4a4dbb2642ab9f836892da93f101"
                         }
-                    }
+                    ],
+                    "comment": "A lovely weather station...",
+                    "tags": [
+                        "blue",
+                        "garden"
+                    ]
                 }
             }
 
@@ -673,6 +658,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
         format.
         If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
         you the description of that object.
+
+        `lang` (optional) (string) Default None. The two-character ISO 639-1 language code for which labels, comments
+        and tags will be returned. This does not affect Values (i.e. when describing a Point).
         """
         if isinstance(guid_or_thing, self.__guid_resources):
             guid = guid_or_thing.guid
@@ -682,11 +670,11 @@ class Client(object):  # pylint: disable=too-many-public-methods
             raise ValueError("describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance")
         logger.info('describe() [guid="%s"]', guid)
 
-        evt = self._request_describe(guid)
+        evt = self._request_describe(guid, lang)
         evt.wait()
 
         self._except_if_failed(evt)
-        return evt.payload
+        return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     def __cb_created(self, msg, duplicated=False):
         # Only consider solicitied creation events since there is no cache. This also applies to things reassigned to
@@ -786,7 +774,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         return self.__client.request_point_list_detailed(foc, lid, pid)
 
     def _request_entity_list(self, limit=0, offset=500):
-        return self.__client.request_entity_list_all(limit=limit, offset=offset)
+        return self.__client.request_entity_list(limit=limit, offset=offset)
 
     def _request_entity_list_all(self, limit=0, offset=500):
         return self.__client.request_entity_list_all(limit=limit, offset=offset)
@@ -878,8 +866,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
     def _request_sub_list(self, lid, limit, offset):
         return self.__client.request_sub_list(lid, limit, offset)
 
-    def _request_search(self, text, lang, location, unit, limit, offset, reduced):
-        return self.__client.request_search(text, lang, location, unit, limit, offset, reduced)
+    def _request_search(self, text, lang, location, unit, limit, offset, type_='full'):
+        return self.__client.request_search(text, lang, location, unit, limit, offset, type_)
 
-    def _request_describe(self, guid):
-        return self.__client.request_describe(guid)
+    def _request_describe(self, guid, lang):
+        return self.__client.request_describe(guid, lang)

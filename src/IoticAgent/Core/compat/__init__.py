@@ -26,7 +26,7 @@ PY3 = (version_info[0] == 3)
 
 # PY3K
 if PY3:  # noqa (complexity)
-    from queue import Queue, Empty  # noqa (unused import)
+    from queue import Queue, Empty, Full  # noqa (unused import)
     from threading import Lock, RLock, Event  # noqa (unsed import)
     from urllib.parse import urlparse
 
@@ -59,7 +59,7 @@ if PY3:  # noqa (complexity)
 
 # PY2k
 else:
-    from Queue import Queue, Empty  # noqa (unused import)
+    from Queue import Queue, Empty, Full  # noqa (unused import)
     from urlparse import urlparse  # noqa (unsed import)
 
     from .thread_utils import (InterruptableLock as Lock, InterruptableRLock as RLock,  # noqa (unsed import)

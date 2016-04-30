@@ -28,12 +28,14 @@ VALIDATION_META_FMT = {'n3', 'xml', 'turtle'}
 VALIDATION_META_LANGUAGE = 2
 VALIDATION_META_LABEL = 64
 VALIDATION_META_COMMENT = 256
-VALIDATION_META_TAG = 16
+VALIDATION_META_TAG_MIN = 3
+VALIDATION_META_TAG_MAX = 16
 VALIDATION_META_VALUE_UNIT = 128
 VALIDATION_META_VALUE_UNIT_MIN_URLBITS = 3
 VALIDATION_META_SEARCH_TEXT = 128
 VALIDATION_MAX_ENCODED_LENGTH = int(round(1024 * 64 * 0.98))  # (64k is current hard AMQP message limit)
 VALIDATION_FOC_TYPES = frozenset((Const.R_FEED, Const.R_CONTROL))
+VALIDATION_SEARCH_TYPES = frozenset(('full', 'reduced', 'located'))
 # http://www.w3.org/TR/xmlschema-2/#built-in-datatypes
 VALIDATION_META_VALUE_TYPES = frozenset(("string", "boolean", "decimal", "float", "double", "duration", "dateTime",
                                          "time", "date", "gYearMonth", "gYear", "gMonthDay", "gDay", "gMonth",
@@ -47,7 +49,10 @@ VALIDATION_META_VALUE_TYPES = frozenset(("string", "boolean", "decimal", "float"
 _PATTERN_ASCII = re_compile(r'^(?%s)\S+$' % 'a' if PY3 else '')
 _PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'^(?u)\s.*|.*\s$')
 _PATTERN_WHITESPACE = re_compile(r'^(?u).*\s.*$')
-_PATTERN_WORD = re_compile(r'(?u)\S+')  # For e.g. splitting search text into individual words
+_PATTERN_LANGUAGE = re_compile(r'^(?%si)[a-z]{2}$' % 'a' if PY3 else '')
+_PATTERN_WORD = re_compile(r'^(?u)\w+$')
+# For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters
+_PATTERN_WORDS = re_compile(r'(?u)(?<!\S)\w+(?!\S)')
 # for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)
 _PATTERN_URL_PART = re_compile(r'^(?u)\S{3}\S*$')
 
@@ -60,19 +65,30 @@ class Validation(object):
     def check_convert_string(obj, name=None,
                              no_leading_trailing_whitespace=True,
                              no_whitespace=False,
+                             no_newline=True,
+                             whole_word=False,
                              min_len=1,
                              max_len=0):
         """Ensures the provided object can be interpreted as a unicode string, optionally with
            additional restrictions imposed. By default this means a non-zero length string
            which does not begin or end in whitespace."""
+        if not name:
+            name = 'Argument'
         obj = ensure_unicode(obj, name=name)
         if no_whitespace:
             if _PATTERN_WHITESPACE.match(obj):
-                raise ValueError('%s cannot contain whitespace' % name if name else 'Argument')
+                raise ValueError('%s cannot contain whitespace' % name)
         elif no_leading_trailing_whitespace and _PATTERN_LEAD_TRAIL_WHITESPACE.match(obj):
-            raise ValueError('%s contains leading/trailing whitespace' % name if name else 'Argument')
+            raise ValueError('%s contains leading/trailing whitespace' % name)
         if (min_len and len(obj) < min_len) or (max_len and len(obj) > max_len):
-            raise ValueError('%s too short/long (%d/%d)' % (name if name else 'Argument', min_len, max_len))
+            raise ValueError('%s too short/long (%d/%d)' % (name, min_len, max_len))
+        if whole_word:
+            if not _PATTERN_WORD.match(obj):
+                raise ValueError('%s can only contain alphanumeric (unicode) characters, numbers and the underscore'
+                                 % name)
+        # whole words cannot contain newline so additional check not required
+        elif no_newline and '\n' in obj:
+            raise ValueError('%s cannot contain line breaks' % name)
         return obj
 
     @classmethod
@@ -125,7 +141,8 @@ class Validation(object):
 
     @classmethod
     def __tag_check_convert(cls, tag):
-        return cls.check_convert_string(tag, 'tag', no_whitespace=True, max_len=VALIDATION_META_TAG)
+        return cls.check_convert_string(tag, 'tags', no_whitespace=True, whole_word=True,
+                                        min_len=VALIDATION_META_TAG_MIN, max_len=VALIDATION_META_TAG_MAX)
 
     @staticmethod
     def bool_check_convert(bname, barg):  # pylint: disable=unused-argument
@@ -139,8 +156,10 @@ class Validation(object):
                 return None
             else:
                 lang = default
-        return cls.check_convert_string(lang, 'lang', no_whitespace=True, min_len=VALIDATION_META_LANGUAGE,
-                                        max_len=VALIDATION_META_LANGUAGE)
+        lang = ensure_unicode(lang, name='lang')
+        if not _PATTERN_LANGUAGE.match(lang):
+            raise ValueError('Language should only contain a-z characters')
+        return lang
 
     @classmethod
     def mime_check_convert(cls, mime, allow_none=False):
@@ -170,7 +189,7 @@ class Validation(object):
         if comment is None and allow_none:
             return None
         else:
-            return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT)
+            return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT, no_newline=False)
 
     description_check_convert = comment_check_convert
 
@@ -249,13 +268,22 @@ class Validation(object):
 
         return payload
 
+    @staticmethod
+    def search_type_check_convert(type_):
+        type_ = ensure_ascii(type_, name='type_')
+        if type_ not in VALIDATION_SEARCH_TYPES:
+            raise ValueError('Search type must be one of: %s' % VALIDATION_SEARCH_TYPES)
+        return type_
+
     @classmethod
     def __search_text_check_convert(cls, text):
+        """Converts and keeps only words in text deemed to be valid"""
         text = cls.check_convert_string(text, name='text', no_leading_trailing_whitespace=False)
         if len(text) > VALIDATION_META_SEARCH_TEXT:
             raise ValueError("Search text can contain at most %d characters" % VALIDATION_META_SEARCH_TEXT)
-        if not _PATTERN_WORD.findall(text):
-            raise ValueError('Search text must contain at least one non-whitespace term')
+        text = ' '.join(_PATTERN_WORDS.findall(text))
+        if not text:
+            raise ValueError('Search text must contain at least one non-whitespace term (word)')
         return text
 
     @staticmethod

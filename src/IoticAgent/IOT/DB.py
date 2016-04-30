@@ -47,9 +47,6 @@ class DB(object):
         if self.__fn is None:
             f = os.path.splitext(os.path.basename(argv[0]))[0] + '.db'
             cwd = os.getcwd()
-            # todo: prefer script path or current path ??
-            # print(os.path.realpath(sys.argv[0]))
-            # todo: if os.path.exists(os.path.join(cwd, main.__file__)):
             return os.path.join(cwd, f)
         return self.__fn
 

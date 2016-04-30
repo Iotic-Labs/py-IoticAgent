@@ -99,7 +99,7 @@ class Point(object):
         self.__client._except_if_failed(evt)
         self.__pid = new_pid
 
-    def list(self, limit=500, offset=0):
+    def list(self, limit=50, offset=0):
         """List `all` the values on this Point.
 
         Returns QAPI list function payload
@@ -119,7 +119,7 @@ class Point(object):
         evt.wait()
 
         self.__client._except_if_failed(evt)
-        return evt.payload
+        return evt.payload['values']
 
     def list_followers(self):
         """list followers for this Point This includes remote follows and remote attaches
@@ -128,11 +128,8 @@ class Point(object):
 
             #!python
             {
-                "id": "<GUID of your Point>",
-                "subs": {
-                    "<Subscription GUID 1>": "<GUID of follower1>",
-                    "<Subscription GUID 2>": "<GUID of follower2>"
-                }
+                "<Subscription GUID 1>": "<GUID of follower1>",
+                "<Subscription GUID 2>": "<GUID of follower2>"
             }
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
@@ -149,7 +146,7 @@ class Point(object):
         evt.wait()
 
         self.__client._except_if_failed(evt)
-        return evt.payload
+        return evt.payload['subs']
 
     def share(self, data, mime=None):
         """Share some data from this Point
@@ -245,8 +242,8 @@ class Point(object):
         self.__client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
-        """Create tags for a Point in the language you specify.  Tags are single strings containing
-        no spaces
+        """Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
+        and the underscore. Tags will be stored lower-cased.
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -269,8 +266,8 @@ class Point(object):
         self.__client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
-        """Delete tags for a Point in the language you specify.  Tags are single strings containing
-        no spaces
+        """Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
+        will be deleted.
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -300,12 +297,12 @@ class Point(object):
             #!python
             {
                 "en": [
-                    "myTag1",
-                    "myTag2"
+                    "mytag1",
+                    "mytag2"
                 ],
                 "de": [
-                    "einName",
-                    "nocheinName"
+                    "ein_name",
+                    "nochein_name"
                 ]
             }
 
@@ -394,24 +391,3 @@ class Point(object):
         evt = self.__client._request_point_value_delete(self.__lid, self.__pid, self.__foc, label, lang)
         evt.wait()
         self.__client._except_if_failed(evt)
-
-    def list_value(self, limit=50, offset=0):
-        """List `all` the values on this Point.
-
-        Returns QAPI list function payload.
-
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
-
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-         `limit` (optional) (integer) Default 500.  Return this many value details
-
-        `offset` (optional) (integer) Default 0.  Return value details starting at this offset
-        """
-        evt = self.__client._request_point_value_list(self.__lid, self.__pid, self.__foc, limit=limit, offset=offset)
-        evt.wait()
-
-        self.__client._except_if_failed(evt)
-        return evt.payload

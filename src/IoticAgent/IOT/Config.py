@@ -73,6 +73,18 @@ class Config(object):
             auto_encode_decode = # 1 (default). If a dict is shared it can be
                                  # automatically encoded and decoded.
                                  # Disable with = 0.
+
+            queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending
+                         # request queue before blocking. Set to zero for unlimited. Whether queue
+                         # fills up depends on latency & throughput of network & container as well as
+                         # throttling setting.
+
+            throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of
+                       # REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                       # requests being sent over the last 60 seconds and no more than 600 requests over the
+                       # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                       # the client without requiring application code to introduce artificial delays. Note:
+                       # The limits should be set a bit lower than the hard limits imposed by container.
         """
         self.__fname = None
         self.__config = {}
@@ -89,7 +101,9 @@ class Config(object):
             },
             'core': {
                 'network_retry_timeout': '300',
-                'auto_encode_decode': '1'
+                'auto_encode_decode': '1',
+                'queue_size': 128,
+                'throttle': '1080/60,2700/300'
             },
             'logging': {
                 'amqp': 'warning',

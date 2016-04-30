@@ -61,7 +61,7 @@ class ThreadSafeDict(dict):
         self.__lock.release()
 
 
-# This stupid test function could be moved to unit tests but it's not that interesting.
+# This test function could be moved to unit tests but it's not that interesting.
 # pylint: disable=redefined-outer-name,invalid-name
 def tester(i, d):
     x = 0  # pylint: disable=invalid-name
@@ -72,7 +72,7 @@ def tester(i, d):
             d[i] += 1
             x = d[i]
     with d:
-        print("tester %i done" % i, d)
+        logger.info("tester %i done: %s", i, d)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -87,4 +87,4 @@ if __name__ == '__main__':
         s.append(t)
     for t in s:
         t.join()
-    print('time:', perf_counter() - start)
+    logger.info('time: %s', perf_counter() - start)

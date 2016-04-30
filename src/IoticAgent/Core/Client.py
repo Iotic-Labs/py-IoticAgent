@@ -24,7 +24,6 @@ from collections import OrderedDict
 import string
 import random
 from threading import Thread
-from time import sleep
 from struct import Struct
 import logging
 
@@ -38,11 +37,12 @@ from .ThreadSafeDict import ThreadSafeDict
 from .Validation import Validation, VALIDATION_MAX_ENCODED_LENGTH
 from .Compressors import COMPRESSORS, OversizeException
 from .PreparedMessage import PreparedMessage
-from .compat import (PY3, py_version_check, ssl_version_check, monotonic, Queue, Empty, u, int_types, unicode_type,
-                     raise_from, Lock, Event)
+from .compat import (PY3, py_version_check, ssl_version_check, monotonic, Queue, Empty, Full, u, int_types,
+                     unicode_type, raise_from, Lock, Event)
 from .ThreadPool import ThreadPool
 from .Mime import valid_mimetype, expand_idx_mimetype
-from .utils import version_string_to_tuple
+from .RateLimiter import RateLimiter
+from .utils import version_string_to_tuple, validate_nonnegative_int
 from .Const import (C_CREATE, C_UPDATE, C_DELETE, C_LIST, E_COMPLETE, E_FAILED, E_PROGRESS, E_FAILED_CODE_LOWSEQNUM,
                     E_CREATED, E_DUPLICATED, E_DELETED, E_FEEDDATA, E_CONTROLREQ, E_SUBSCRIBED, E_RENAMED, E_REASSIGNED,
                     R_PING, R_ENTITY, R_FEED, R_CONTROL, R_SUB, R_ENTITY_META, R_FEED_META, R_CONTROL_META,
@@ -56,6 +56,9 @@ ssl_version_check()
 
 logger = logging.getLogger(__name__)
 DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+
+# characters to use to generate random request id prefix
+_REQ_PREFIX_CHARS = string.ascii_uppercase + string.digits + string.ascii_lowercase
 
 _SEQ_WRAP_SIZE = 2**63 - 1  # sequence numbers wrap when larger than this
 _SEQ_MAX_AHEAD = 1024  # how far head to allow sequence numbers (form container) before warning
@@ -107,10 +110,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '0.6.0'
+    __qapi_version = '0.7.0'
 
-    def __init__(self, host, vhost, epId, passwd, token, prefix='', seqnum=1, lang=None,
-                 sslca=None, lowseq_resend=True, network_retry_timeout=300, auto_encode_decode=True):
+    def __init__(self, host, vhost, epId, passwd, token, prefix='', seqnum=1,  # pylint: disable=too-many-locals
+                 lang=None, sslca=None, lowseq_resend=True, network_retry_timeout=300, auto_encode_decode=True,
+                 send_queue_size=128, throttle_conf=''):
         """
         `host` amqp broker "host:port"
         `vhost` amqp broker virtual host
@@ -126,6 +130,15 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         `network_retry_timeout` (default 300s) If 0 no retry/timeout else seconds.
         `auto_encode_decode` (default True) Automatically encode/decode text (utf8) and dictionaries (ubjson) when
                              sending/receiving point data. When sending, only applies if mime type not specified.
+        `send_queue_size` (default 128) Maximum number of unsent requets to keep in interval queue. The queue can reach
+                                        its size limit when using asynchronous requests AND either `throttle_conf` is
+                                        used or if the the client has not been connected to the container for a while
+                                        (due to network problems). Set to zero for no limit.
+        `throttle_conf' (default '') Automatic request (outgoing) throttling, specified as comma-separate list of
+                                     REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                                     requests being sent over the last 60 seconds and no more than 600 requests over the
+                                     last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                                     the client without requiring application code to introduce artificial delays.
         """
         logger.debug("__init__ config host='%s', vhost='%s', epId='%s', passwd='%s', token='%s', prefix='%s'"
                      " , seqnum='%s', sslca='%s' network_retry_timeout=%s",
@@ -139,12 +152,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         except Exception as ex:  # pylint: disable=broad-except
             raise_from(ValueError('token invalid'), ex)
         #
-        try:
-            self.__seqnum = int(seqnum)
-            if self.__seqnum < 0:
-                raise ValueError('seqnum negative')
-        except Exception as ex:  # pylint: disable=broad-except
-            raise_from(ValueError('seqnum invalid'), ex)
+        self.__seqnum = validate_nonnegative_int(seqnum, 'seqnum')
         #
         for param in ('host', 'vhost', 'passwd'):
             Validation.check_convert_string(locals().get(param))
@@ -157,7 +165,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         #
         self.__amqplink = AmqpLink(host, vhost, prefix, self.__epId, passwd, self.__dispatch_msg, self.__dispatch_ka, sslca=sslca)
         # seq (from container - initial value used to surpress warning on first message from container)
-        self.__conn_seqnum = -1
+        self.__cnt_seqnum = -1
         # __auto_resend
         self.__lowseq_resend = bool(lowseq_resend)
         self.__lowseq_resend_stash = ThreadSafeDict()
@@ -166,13 +174,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         self.__end.set()
         # network_retry
         self.__network_retry_thread = None
-        try:
-            self.__network_retry_timeout = int(network_retry_timeout)
-            if self.__network_retry_timeout < 0:
-                raise ValueError('network_retry_timeout negative')
-        except Exception as ex:  # pylint: disable=broad-except
-            raise_from(ValueError('network_retry_timeout invalid'), ex)
+        self.__network_retry_timeout = validate_nonnegative_int(network_retry_timeout, 'network_retry_timeout')
+        self.__network_retry_queue_size = validate_nonnegative_int(send_queue_size, 'send_queue_size')
         self.__network_retry_queue = None
+        self.__network_retry_throttlers = self.__create_throttlers(throttle_conf, self.__end)
         # __requests stores all incoming messages {'requestId': event}
         self.__requests = ThreadSafeDict()
         #
@@ -197,6 +202,20 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         #
         # Store container params from request_ping response
         self.__container_params = None
+
+    @staticmethod
+    def __create_throttlers(conf, end_event):
+        conf = Validation.check_convert_string(conf, name='throttle_conf', no_whitespace=True, min_len=0, max_len=128)
+        throttlers = []
+        try:
+            for part in conf.split(','):
+                if part:
+                    iterations, interval = part.split('/')
+                    # use end_event so that throttling does not delay shutdown
+                    throttlers.append(RateLimiter(int(interval), int(iterations), wait_cmd=end_event.wait))
+        except (ValueError, TypeError) as ex:
+            raise_from(ValueError('throttle_conf invalid'), ex)
+        return throttlers
 
     @property
     def epId(self):
@@ -226,12 +245,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         :param requestId
         :return RequestEvent
         """
-        ret = False
         with self.__requests:
             if requestId not in self.__requests:
-                ret = True
                 self.__requests[requestId] = RequestEvent(requestId)
-        return ret
+                return True
+        return False
 
     def register_callback_created(self, func):
         """Register a callback function to receive QAPI Unsolicited (resource) CREATED. The
@@ -389,7 +407,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         try:
             self.__threadpool.start()
             self.__crud_threadpool.start()
-            self.__network_retry_queue = Queue()
+            self.__network_retry_queue = Queue(self.__network_retry_queue_size)
             self.__network_retry_thread = Thread(target=self.__network_retry, name='network')
             self.__network_retry_thread.start()
             try:
@@ -463,7 +481,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 req.exception = shutdown
                 req._set()
                 self.__clear_references(req, remove_request=False)
-            logger.info('%d unfinished requests discarded', len(self.__requests))
+            if self.__requests:
+                logger.warning('%d unfinished request(s) discarded', len(self.__requests))
             self.__requests.clear()
         #
         self.__network_retry_thread = None
@@ -510,7 +529,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
         return: RequestEvent object or None for failed to publish
         """
-        if self.__end.is_set():
+        end = self.__end
+        if end.is_set():
             raise RuntimeError('Request made whilst client not running')
 
         rng = None
@@ -525,8 +545,23 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             self.__requests[requestId] = ret = RequestEvent(requestId, is_crud=is_crud)
         #
         inner_msg = self.__make_innermsg(resource, rtype, requestId, action, payload, rng)
-        self.__network_retry_queue.put(PreparedMessage(inner_msg, requestId))
+        if not self.__retry_enqueue(PreparedMessage(inner_msg, requestId)):
+            raise LinkShutdownException('Client stopped')
         return ret
+
+    # don't block shutdown on full send queue. returns True if did enqueue, False if shutting down
+    def __retry_enqueue(self, msg):
+        end_wait = self.__end.wait
+        queue_put_nowait = self.__network_retry_queue.put_nowait
+        while True:
+            # don't block shutdown on full send queue
+            try:
+                queue_put_nowait(msg)
+            except Full:
+                if end_wait(.2):
+                    return False
+            else:
+                return True
 
     def request_ping(self):
         logger.debug("request_ping")
@@ -872,23 +907,24 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         lid = Validation.lid_check_convert(lid)
         return self._request(R_SUB, C_LIST, (lid,), offset=offset, limit=limit)
 
-    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, reduced=False):
-        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s reduced=%s",
-                     text, lang, location, unit, limit, offset, reduced)
-        action = ("reduced",) if Validation.bool_check_convert('reduced', reduced) else None
+    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_='full'):
+        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s",
+                     text, lang, location, unit, limit, offset, type_)
+        action = (Validation.search_type_check_convert(type_),)
         return self._request(R_SEARCH, C_UPDATE, action,
                              Validation.search_check_convert(text, lang, location, unit,
                                                              default_lang=self.__default_lang),
                              offset=offset, limit=limit)
 
-    def request_describe(self, guid):
-        logger.debug("request_describe guid=%s", guid)
+    def request_describe(self, guid, lang=None):
+        logger.debug("request_describe guid=%s lang=%s", guid, lang)
         guid = Validation.guid_check_convert(guid)
-        return self._request(R_DESCRIBE, C_LIST, (guid,))
+        lang = Validation.lang_check_convert(lang, default=self.__default_lang)
+        return self._request(R_DESCRIBE, C_LIST, (guid, lang))
 
     @classmethod
-    def __rnd_string(cls, l):  # pylint: disable=invalid-name
-        return ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(l))
+    def __rnd_string(cls, length):
+        return ''.join(random.choice(_REQ_PREFIX_CHARS) for _ in range(length))
 
     def __new_request_id(self):
         """requestId follows form "pre num" where pre is some random ascii prefix EG 6 chars long
@@ -958,6 +994,15 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             if set_and_forget:
                 req._set()
 
+    def __request_clear_except(self, requestId):
+        """Clear exception from request if set, ignoring non-existant requests"""
+        with self.__requests:
+            try:
+                self.__requests[requestId].exception = None
+            except KeyError:
+                # request might have had a response already have been removed by receiving thread
+                pass
+
     def __publish(self, qmsg):
         """Returns True unless sending failed (at which point an exception will have been set in the request)"""
         with self.__seqnum_lock:
@@ -996,7 +1041,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         #
         return True
 
-    def __network_retry(self):  # noqa (complexity)
+    def __network_retry(self):  # noqa (complexity)  pylint: disable=too-many-branches
         queue_get = self.__network_retry_queue.get
         queue_task_done = self.__network_retry_queue.task_done
         retry_timeout = self.__network_retry_timeout
@@ -1010,34 +1055,48 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                     qmsg = queue_get(timeout=0.2)
                 except Empty:
                     continue
+                requestId = qmsg.requestId
             else:
                 # wait before retrying previously failed request
                 if retry_timeout:
-                    sleep(0.5)
+                    if self.__end.wait(0.5):
+                        # shutting down
+                        break
 
             if retry_timeout and qmsg.time < (monotonic() - retry_timeout):
-                logger.warning("requestId '%s' timeout after %i", qmsg.requestId, retry_timeout)
+                logger.warning("requestId '%s' timeout after %i", requestId, retry_timeout)
                 # note: previously set exception is preserved
-                self.__request_except(qmsg.requestId, None)
+                self.__request_except(requestId, None)
             else:
+                if self.__send_throttle():
+                    # shutting down
+                    break
                 try:
                     published = self.__publish(qmsg)
                 except LinkException as exc:
-                    logger.debug("FAILED TO SEND requestId '%s'", qmsg.requestId)
+                    logger.debug("FAILED TO SEND requestId '%s'", requestId)
                     if retry_timeout:
-                        self.__request_except(qmsg.requestId, exc, set_and_forget=False)
+                        self.__request_except(requestId, exc, set_and_forget=False)
                         # request will be retried (assuming timeout is not reached after delay)
                         continue
                     else:
-                        self.__request_except(qmsg.requestId, exc)
+                        self.__request_except(requestId, exc)
                 else:
                     # if not published, an exception will have been set on the request already
                     if published:
-                        logger.debug("Sent requestId '%s'", qmsg.requestId)
-                        with self.__requests:
-                            self.__requests[qmsg.requestId].exception = None
+                        logger.debug("Sent requestId '%s'", requestId)
+                        self.__request_clear_except(requestId)
+
             queue_task_done()
             qmsg = None
+
+    def __send_throttle(self):
+        """Returns True if end event was set during throttling-wait"""
+        for throttler in self.__network_retry_throttlers:
+            if throttler.throttle():
+                # end event was set
+                return True
+        return False
 
     def __fire_callback(self, type_, *args, **kwargs):
         """Returns True if at least one callback was called"""
@@ -1100,10 +1159,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             return
 
         # currently only warn although maybe this should be an error
-        if self.__conn_seqnum != -1 and not self.__valid_seqnum(body[W_SEQ], self.__conn_seqnum):
+        if self.__cnt_seqnum != -1 and not self.__valid_seqnum(body[W_SEQ], self.__cnt_seqnum):
             logger.warning('Unexpected seqnum from container: %d (last seen: %d)', body[W_SEQ],
-                           self.__conn_seqnum)
-        self.__conn_seqnum = body[W_SEQ]
+                           self.__cnt_seqnum)
+        self.__cnt_seqnum = body[W_SEQ]
 
         # Check message hash
         if not self.__check_hash(body):
@@ -1262,7 +1321,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 except KeyError:
                     pass
                 else:
-                    self.__network_retry_queue.put(PreparedMessage(inner_msg, msg[M_CLIENTREF]))
+                    # return value indicating shutdown not useful here since this is run in receiver thread
+                    self.__retry_enqueue(PreparedMessage(inner_msg, msg[M_CLIENTREF]))
                     return True
         elif self.__lowseq_resend:
             # since a request might receive multiple responses, don't assume to exist

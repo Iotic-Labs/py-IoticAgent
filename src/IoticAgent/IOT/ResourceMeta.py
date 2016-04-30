@@ -174,8 +174,8 @@ class ResourceMeta(object):
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
-        return self._remove_properties_by_language(RDFS.label,
-                                                   Validation.lang_check_convert(lang, default=self._default_lang))
+        self._remove_properties_by_language(RDFS.label,
+                                            Validation.lang_check_convert(lang, default=self._default_lang))
 
     def set_description(self, description, lang=None):
         """Sets the `description` metadata property on your Thing/Point.  Only one description is allowed per language, so any
@@ -213,5 +213,5 @@ class ResourceMeta(object):
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
-        return self._remove_properties_by_language(RDFS.comment,
-                                                   Validation.lang_check_convert(lang, default=self._default_lang))
+        self._remove_properties_by_language(RDFS.comment,
+                                            Validation.lang_check_convert(lang, default=self._default_lang))
