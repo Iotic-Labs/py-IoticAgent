@@ -14,6 +14,8 @@
 
 # pylint: disable=import-error,wrong-import-order
 
+from __future__ import print_function
+
 # Allow for environments without setuptools
 try:
     from setuptools import setup, find_packages
