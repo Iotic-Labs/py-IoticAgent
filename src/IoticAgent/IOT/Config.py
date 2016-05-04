@@ -103,7 +103,7 @@ class Config(object):
                 'network_retry_timeout': '300',
                 'auto_encode_decode': '1',
                 'queue_size': 128,
-                'throttle': '1080/60,2700/300'
+                'throttle': '540/30,1890/300'
             },
             'logging': {
                 'amqp': 'warning',
