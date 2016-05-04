@@ -1,4 +1,4 @@
-UNRELEASED
+v0.3.0
 - Updated for QAPI v0.7.0 support
 - Removed unnecessary returns from ResourceMeta
 - IOT.Client.describe() now has optional language parameter - results only
