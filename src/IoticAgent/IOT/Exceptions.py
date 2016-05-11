@@ -22,6 +22,12 @@ class IOTException(Exception):
     pass
 
 
+class IOTSyncTimeout(IOTException):
+    """Synchronous request timeout (see IOT.sync_request_timeout configuration option). Raised when a request does not
+    complete within the timeout."""
+    pass
+
+
 class IOTUnknown(IOTException):
     """A request failed because of Unkown resource (EG Thing not found)"""
     pass

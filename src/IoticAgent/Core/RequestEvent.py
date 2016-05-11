@@ -17,15 +17,16 @@ from __future__ import unicode_literals
 from .compat import Event
 
 
-class RequestEvent(object):
+class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
 
     """Request event object. Uses threading.Event (factory function).
     https://docs.python.org/3/library/threading.html#event-objects
     """
 
-    __slots__ = ('_RequestEvent__event', 'id_', 'success', 'payload', 'is_crud', 'exception', '_messages')
+    __slots__ = ('_RequestEvent__event', 'id_', 'success', 'payload', 'is_crud', 'exception', '_send_time',
+                 '_inner_msg_out', '_messages')
 
-    def __init__(self, id_=None, is_crud=False):
+    def __init__(self, id_, inner_msg_out=None, is_crud=False):
         self.__event = Event()  # pylint: disable=assigning-non-slot
         #
         # request id used to communicate with the QAPI
@@ -43,8 +44,20 @@ class RequestEvent(object):
         # If an exception occurred, this is instance
         self.exception = None
         #
+        # Time at which request was sent by transport. (Can change if transport failure triggers retry due to no
+        # response having been received for a certain amount of time.)
+        self._send_time = None
+        #
+        # Raw outgoing message (without wrapper), as sent via QAPI
+        self._inner_msg_out = inner_msg_out
+        #
         # Raw messages from the QAPI
         self._messages = []
+
+    def _sent_without_response(self, send_time_before):
+        """Used internally to determine whether the request has not received any response from the container and was
+           send before the given time. Unsent requests are not considered."""
+        return not self._messages and self._send_time and self._send_time < send_time_before
 
     def is_set(self):
         """Returns True if the request has finished or False if it is still pending.

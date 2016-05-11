@@ -39,22 +39,27 @@ DATETIME = 'dateTime'
 Represents a specific instant of time. It has the form YYYY-MM-DDThh:mm:ss followed by an optional time-zone suffix.
 
 `YYYY` is the year, `MM` is the month number, `DD` is the day number,
-`hh` the hour in 24-hour format, `mm` the minute, and `ss` the second (a decimal and fraction are allowed for the seconds part).
+`hh` the hour in 24-hour format, `mm` the minute, and `ss` the second (a decimal and fraction are allowed for the
+seconds part).
 
 The optional zone suffix is either `"Z"` for Universal Coordinated Time (UTC), or a time offset of the form
 `"[+|-]hh:mm"`, giving the difference between UTC and local time in hours and minutes.
 
-Example: "2004-10-31T21:40:35.5-07:00" is a time on Halloween 2004 in Mountain Standard time. The equivalent UTC would be "2004-11-01T04:40:35.5Z".
+Example: "2004-10-31T21:40:35.5-07:00" is a time on Halloween 2004 in Mountain Standard time. The equivalent UTC would
+be "2004-11-01T04:40:35.5Z".
 '''
 DECIMAL = 'decimal'
-'''Any base-10 fixed-point number. There must be at least one digit to the left of the decimal point, and a leading "+" or "-" sign is allowed.
+'''Any base-10 fixed-point number. There must be at least one digit to the left of the decimal point, and a leading "+"
+or "-" sign is allowed.
 Examples: "42", "-3.14159", "+0.004".
 '''
 DOUBLE = 'double'
-'''A 64-bit floating-point decimal number as specified in the IEEE 754-1985 standard. The external form is the same as the float datatype.'''
+'''A 64-bit floating-point decimal number as specified in the IEEE 754-1985 standard. The external form is the same as
+the float datatype.'''
 DURATION = 'duration'
 '''
-Represents a duration of time, as a composite of years, months, days, hours, minutes, and seconds. The syntax of a duration value has these parts:
+Represents a duration of time, as a composite of years, months, days, hours, minutes, and seconds. The syntax of a
+duration value has these parts:
 
 If the duration is negative, it starts with "-".
 
@@ -72,7 +77,8 @@ If there is an hours part, it is next, followed by capital "H".
 
 If there is a minutes part, it is next, followed by capital "M".
 
-If there is a seconds part, it is next, followed by capital "S". You can use a decimal point and fraction to specify part of a second.
+If there is a seconds part, it is next, followed by capital "S". You can use a decimal point and fraction to specify
+part of a second.
 
 Missing parts are assumed to be zero. Examples: "P1347Y" is a duration of 1347 Gregorian years;
 "P1Y2MT2H5.6S" is a duration of one year, two months, two hours, and 5.6 seconds.
@@ -89,11 +95,11 @@ Example: "6.0235e-23".
 ID = 'ID'
 '''A unique identifier as in the ID attribute type from the XML standard.  Derived from the NCName datatype. '''
 INT = 'int'
-''' Represents a 32-bit signed integer in the range [-2,147,483,648, 2,147,483,647]. Derived from the long datatype. '''
+'''Represents a 32-bit signed integer in the range [-2,147,483,648, 2,147,483,647]. Derived from the long datatype.'''
 INTEGER = 'integer'
-'''Represents a signed integer. Values may begin with an optional "+" or "-" sign. Derived from the decimal datatype. '''
+'''Represents a signed integer. Values may begin with an optional "+" or "-" sign. Derived from the decimal datatype.'''
 LANGUAGE = 'language'
-''' One of the standardized language codes defined in RFC 1766. Example: "fj" for Fijian. Derived from the token type.
+'''One of the standardized language codes defined in RFC 1766. Example: "fj" for Fijian. Derived from the token type.
 RFC 1766 : http://www.ietf.org/rfc/rfc1766.txt
 '''
 LONG = 'long'

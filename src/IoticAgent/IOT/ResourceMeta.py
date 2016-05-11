@@ -146,7 +146,7 @@ class ResourceMeta(object):
 
         `label` (mandatory) (string) the new text of the label
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -170,7 +170,7 @@ class ResourceMeta(object):
 
         Raises `ValueError` containing an error message if the parameters fail validation
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to identify your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to identify your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -178,14 +178,14 @@ class ResourceMeta(object):
                                             Validation.lang_check_convert(lang, default=self._default_lang))
 
     def set_description(self, description, lang=None):
-        """Sets the `description` metadata property on your Thing/Point.  Only one description is allowed per language, so any
-        other descriptions in this language are removed before adding this one
+        """Sets the `description` metadata property on your Thing/Point.  Only one description is allowed per language,
+        so any other descriptions in this language are removed before adding this one
 
         Raises `ValueError` containing an error message if the parameters fail validation
 
         `description` (mandatory) (string) the new text of the description
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -197,8 +197,8 @@ class ResourceMeta(object):
         self._graph.add((subj, RDFS.comment, Literal(description, lang)))
 
     def get_descriptions(self):
-        """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per language, so
-        you'll get a list of descriptions in the `N3` syntax, e.g. `["fish tank"@en, "aquarium"@fr]`
+        """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
+        language, so you'll get a list of descriptions in the `N3` syntax, e.g. `["fish tank"@en, "aquarium"@fr]`
 
         Returns list of descriptions in N3 format or empty list if none.
         """
@@ -209,7 +209,7 @@ class ResourceMeta(object):
 
         Raises `ValueError` containing an error message if the parameters fail validation
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """

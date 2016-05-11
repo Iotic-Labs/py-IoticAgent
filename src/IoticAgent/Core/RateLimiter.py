@@ -28,10 +28,12 @@ class RateLimiter(object):
 
     def __init__(self, interval, iterations, wait_cmd=None):
         """
-        interval - (int) time period in seconds to which max_iterations applies
-        max_iterations - (int) absolute maximum number of iterations to allow in given interval
-        wait_cmd - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
-                   automatically interruptable wait.
+        `interval` - (int) time period in seconds to which max_iterations applies
+
+        `max_iterations` - (int) absolute maximum number of iterations to allow in given interval
+
+        `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
+                     automatically interruptable wait.
         """
         if not all(isinstance(param, int_types) and param > 0 for param in (interval, iterations)):
             raise ValueError('Parameters must be positive integers')

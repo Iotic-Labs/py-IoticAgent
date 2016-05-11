@@ -86,7 +86,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             evt = self.__client._request_point_list(foc, self.__lid, limit=limit, offset=offset)
         else:
             evt = self.__client._request_point_list_detailed(foc, self.__lid, pid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         return evt.payload
 
@@ -102,11 +102,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `pid` (optional) (string) Default `None`. Local id of the feed for which you want the detailed listing.
+        `pid` (optional) (string) Local id of the feed for which you want the detailed listing.
 
-        `limit` (optional) (integer) Default 500. Return this many Point details
+        `limit` (optional) (integer) Return this many Point details
 
-        `offset` (optional) (integer) Default 0. Return Point details starting at this offset
+        `offset` (optional) (integer) Return Point details starting at this offset
         """
         return self.__list(R_FEED, pid=pid, limit=limit, offset=offset)['feeds']
 
@@ -122,11 +122,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `pid` (optional) (string) Default `None`. Local id of the control for which you want the detailed listing.
+        `pid` (optional) (string) Local id of the control for which you want the detailed listing.
 
-        `limit` (optional) (integer) Default 500. Return this many Point details
+        `limit` (optional) (integer) Return this many Point details
 
-        `offset` (optional) (integer) Default 0. Return Point details starting at this offset
+        `offset` (optional) (integer) Return Point details starting at this offset
         """
         return self.__list(R_CONTROL, pid=pid, limit=limit, offset=offset)['controls']
 
@@ -142,12 +142,12 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `public` (optional) (boolean) default `True`.  Whether (or not) to allow your Thing's metadata
+        `public` (optional) (boolean) Whether (or not) to allow your Thing's metadata
         to be searched by anybody
         """
         logger.info("set_public(public=%s) [lid=%s]", public, self.__lid)
         evt = self.__client._request_entity_meta_setpublic(self.__lid, public)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def rename(self, new_lid):
@@ -166,7 +166,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         """
         logger.info("rename(new_lid=\"%s\") [lid=%s]", new_lid, self.__lid)
         evt = self.__client._request_entity_rename(self.__lid, new_lid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         self.__lid = new_lid
         self.__client._notify_thing_lid_change(self.__lid, new_lid)
@@ -188,7 +188,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         """
         logger.info("reassign(new_epid=\"%s\") [lid=%s]", new_epid, self.__lid)
         evt = self.__client._request_entity_reassign(self.__lid, new_epid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
@@ -204,7 +204,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `tags` (mandatory) (list) - the list of tags you want to add to your Thing, e.g.
         `["garden", "soil"]`
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -212,7 +212,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             tags = [tags]
 
         evt = self.__client._request_entity_tag_create(self.__lid, tags, lang, delete=False)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
@@ -228,7 +228,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `tags` (mandatory) (list) - the list of tags you want to delete from your Thing, e.g.
         `["garden", "soil"]`
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -236,7 +236,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             tags = [tags]
 
         evt = self.__client._request_entity_tag_delete(self.__lid, tags, lang)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def list_tag(self, limit=500, offset=0):
@@ -264,12 +264,12 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `limit` (optional) (integer) Default 500.  Return at most this many tags
+        `limit` (optional) (integer) Return at most this many tags
 
-        `offset` (optional) (integer) Default 0.  Return tags starting at this offset
+        `offset` (optional) (integer) Return tags starting at this offset
         """
         evt = self.__client._request_entity_tag_list(self.__lid, limit=limit, offset=offset)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['tags']
@@ -300,11 +300,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `fmt` (optional) (string) Default "n3". The format of RDF you want returned.
+        `fmt` (optional) (string) The format of RDF you want returned.
         Valid formats are: "xml", "n3", "turtle"
         """
         evt = self.__client._request_entity_meta_get(self.__lid, fmt=fmt)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['meta']
@@ -321,11 +321,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `fmt` (optional) (string) Default "n3". The format of RDF you have sent.
+        `fmt` (optional) (string) The format of RDF you have sent.
         Valid formats are: "xml", "n3", "turtle"
         """
         evt = self.__client._request_entity_meta_set(self.__lid, rdf, fmt=fmt)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def get_feed(self, pid):
@@ -368,7 +368,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
     def __create_point(self, foc, pid, control_cb=None):
         evt = self.__client._request_point_create(foc, self.__lid, pid, control_cb=control_cb)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         store = self.__new_feeds if foc == R_FEED else self.__new_controls
         try:
@@ -438,7 +438,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
     def __delete_point(self, foc, pid):
         evt = self.__client._request_point_delete(foc, self.__lid, pid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def __delete_point_async(self, foc, pid):
@@ -557,7 +557,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
     def __sub(self, foc, gpid, callback=None):
         logger.info("__sub(foc=%s, gpid=\"%s\", callback=%s) [lid=%s]", foc_to_str(foc), gpid, callback, self.__lid)
         evt = self.__sub_make_request(foc, gpid, callback)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         try:
             return self.__get_sub(foc, gpid)
@@ -625,7 +625,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if isinstance(subid, (RemoteFeed, RemoteControl)):
             subid = subid.subid
         evt = self.__client._request_sub_delete(subid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def unfollow(self, subid):
@@ -687,7 +687,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         [list_followers](./Point.m.html#IoticAgent.IOT.Point.Point.list_followers)
         """
         evt = self.__client._request_sub_list(self.__lid, limit=limit, offset=offset)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['subs']
@@ -699,7 +699,8 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             with store:
                 store[payload[P_LID]] = Point(self.__client, payload[P_RESOURCE], payload[P_ENTITY_LID], payload[P_LID],
                                               payload[P_ID])
-            logger.debug('Added %s: %s (for %s)', foc_to_str(payload[P_RESOURCE]), payload[P_LID], payload[P_ENTITY_LID])
+            logger.debug('Added %s: %s (for %s)', foc_to_str(payload[P_RESOURCE]), payload[P_LID],
+                         payload[P_ENTITY_LID])
 
         elif payload[P_RESOURCE] == R_SUB:
             # local

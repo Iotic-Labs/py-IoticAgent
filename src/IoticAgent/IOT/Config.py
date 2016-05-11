@@ -43,7 +43,6 @@ class Config(object):
             host =   # ip:port of the AMQP broker
             vhost =  # virtualhost name
             prefix = # username (agent id) prefix for login
-            seqnum = # last sequence number
             sslca =  # SSL CA file for non-public (dns) broker connections
             lang =   # The two-character ISO 639-1 language code to use by
                      # default for your agent.  Uses container default
@@ -57,6 +56,10 @@ class Config(object):
                             # controlreq values (0=disable, 1=enable).
                             # Defaults to disable
 
+            sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
+                                   # option should have a higher value set than core.network_retry_timeout.
+
+
         `[logging] =` Logging preferences
 
             amqp and rdflib are both set to Warning to prevent verbose/boring output
@@ -69,6 +72,8 @@ class Config(object):
                                     # IOT functions that make requests without
                                     # internet access will block until success
                                     # or retry_timeout
+
+            socket_timeout = # 10 (default) Underlying socket connection/operation timeout
 
             auto_encode_decode = # 1 (default). If a dict is shared it can be
                                  # automatically encoded and decoded.
@@ -93,15 +98,16 @@ class Config(object):
         self.__defaults = {
             'agent': {
                 'vhost': 'container1',
-                'prefix': '',
-                'seqnum': '1',
+                'prefix': ''
             },
             'iot': {
-                'db_last_value': '0'
+                'db_last_value': 0,
+                'sync_request_timeout': 330
             },
             'core': {
-                'network_retry_timeout': '300',
-                'auto_encode_decode': '1',
+                'network_retry_timeout': 300,
+                'socket_timeout': 10,
+                'auto_encode_decode': 1,
                 'queue_size': 128,
                 'throttle': '540/30,1890/300'
             },

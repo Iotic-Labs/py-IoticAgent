@@ -60,3 +60,8 @@ def foc_to_str(foc):
 
 def version_string_to_tuple(version):
     return tuple(int(part) if part.isdigit() else part for part in version.split('.'))
+
+
+def bool_from(obj):
+    """Returns True if string representation of obj is not 0 or False (case-insensitive)"""
+    return str(obj).lower() not in ('0', 'false')

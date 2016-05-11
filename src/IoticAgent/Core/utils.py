@@ -21,11 +21,13 @@ def version_string_to_tuple(version):
     return tuple(int(part) if part.isdigit() else part for part in version.split('.'))
 
 
-def validate_nonnegative_int(obj, name):
+def validate_nonnegative_int(obj, name, allow_zero=False):
     try:
         obj = int(obj)
         if obj < 0:
             raise ValueError('%s negative' % name)
+        if (not allow_zero) and obj == 0:
+            raise ValueError('%s zero' % name)
     except (ValueError, TypeError) as ex:
         raise_from(ValueError('%s invalid' % name), ex)
     return obj

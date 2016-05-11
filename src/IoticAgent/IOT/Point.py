@@ -95,7 +95,7 @@ class Point(object):
         """
         logger.info("rename(new_pid=\"%s\") [lid=%s, pid=%s]", new_pid, self.__lid, self.__pid)
         evt = self.__client._request_point_rename(self.__foc, self.__lid, self.__pid, new_pid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         self.__pid = new_pid
 
@@ -110,13 +110,13 @@ class Point(object):
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `limit` (optional) (integer) Default 500.  Return this many value details
+        `limit` (optional) (integer) Return this many value details
 
-        `offset` (optional) (integer) Default 0.  Return value details starting at this offset
+        `offset` (optional) (integer) Return value details starting at this offset
         """
         logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", self.__lid, self.__pid, limit, offset)
         evt = self.__client._request_point_value_list(self.__lid, self.__pid, self.__foc, limit=limit, offset=offset)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['values']
@@ -138,12 +138,12 @@ class Point(object):
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-         `limit` (optional) (integer) Default 500.  Return this many value details
+         `limit` (optional) (integer) Return this many value details
 
-        `offset` (optional) (integer) Default 0.  Return value details starting at this offset
+        `offset` (optional) (integer) Return value details starting at this offset
         """
         evt = self.__client._request_point_list_detailed(self.__foc, self.__lid, self.__pid)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['subs']
@@ -159,10 +159,10 @@ class Point(object):
 
         `data` (mandatory) (as applicable) The data you want to share
 
-        `mime` (optional) (string) Default `None`.  The mime type of the data you're sharing.  There are some
-        Iotic Labs-defined default values.
+        `mime` (optional) (string) The mime type of the data you're sharing.  There are some
+        Iotic Labs-defined default values:
 
-        `"idx/1"` - The default.  Corresponds to "application/ubjson" - the recommended way to send mixed data.
+        `"idx/1"` - Corresponds to "application/ubjson" - the recommended way to send mixed data.
         Share a python dictionary as the data and the agent will to the encoding and decoding for you.
 
             #!python
@@ -186,7 +186,7 @@ class Point(object):
         """
         logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.__lid, self.__pid)
         evt = self.__client._request_point_share(self.__lid, self.__pid, data, mime)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def share_async(self, data, mime=None):
@@ -225,11 +225,11 @@ class Point(object):
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `fmt` (optional) (string) Default "n3". The format of RDF you want returned.
+        `fmt` (optional) (string) The format of RDF you want returned.
         Valid formats are: "xml", "n3", "turtle"
         """
         evt = self.__client._request_point_meta_get(self.__foc, self.__lid, self.__pid, fmt=fmt)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['meta']
@@ -238,7 +238,7 @@ class Point(object):
         """Set the metadata for this Point in rdf fmt
         """
         evt = self.__client._request_point_meta_set(self.__foc, self.__lid, self.__pid, rdf, fmt=fmt)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
@@ -262,7 +262,7 @@ class Point(object):
             tags = [tags]
 
         evt = self.__client._request_point_tag_create(self.__foc, self.__lid, self.__pid, tags, lang, delete=False)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
@@ -278,7 +278,7 @@ class Point(object):
         `tags` (mandatory) (list) - the list of tags you want to delete from your Point, e.g.
         ["garden", "soil"]
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
@@ -286,7 +286,7 @@ class Point(object):
             tags = [tags]
 
         evt = self.__client._request_point_tag_delete(self.__foc, self.__lid, self.__pid, tags, lang)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def list_tag(self, limit=50, offset=0):
@@ -314,12 +314,12 @@ class Point(object):
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `limit` (optional) (integer) Default 500.  Return at most this many tags
+        `limit` (optional) (integer) Return at most this many tags
 
-        `offset` (optional) (integer) Default 0.  Return tags starting at this offset
+        `offset` (optional) (integer) Return tags starting at this offset
         """
         evt = self.__client._request_point_tag_list(self.__foc, self.__lid, self.__pid, limit=limit, offset=offset)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
 
         self.__client._except_if_failed(evt)
         return evt.payload['tags']
@@ -339,7 +339,7 @@ class Point(object):
         `label` (mandatory) (string) the label for this value e.g. "Temperature".  The label must be unique for this
         Point.  E.g. You can't have two data values called "Volts" but you can have "volts1" and "volts2".
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
 
@@ -348,9 +348,9 @@ class Point(object):
         [Datatypes](../Datatypes.m.html#IoticAgent.Datatypes.Datatypes) such as:
         [DECIMAL](../Datatypes.m.html#IoticAgent.Datatypes.DECIMAL)
 
-        `description` (optional) (string) Default None.  The longer descriptive text for this value.
+        `description` (optional) (string) The longer descriptive text for this value.
 
-        `unit` (optional) (ontology url) Default None.  The url of the ontological description of the unit of your value
+        `unit` (optional) (ontology url) The url of the ontological description of the unit of your value
         We recommend you use a constant from  [Units](../Units.m.html#IoticAgent.Units.Units), such as:
         [CELSIUS](../Units.m.html#IoticAgent.Units.Units.CELSIUS)
 
@@ -370,7 +370,7 @@ class Point(object):
         """
         evt = self.__client._request_point_value_create(self.__lid, self.__pid, self.__foc, label, vtype, lang,
                                                         description, unit)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def delete_value(self, label, lang=None):
@@ -384,10 +384,10 @@ class Point(object):
 
         `label` (mandatory) (string) the label for the value you want to delete
 
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
         evt = self.__client._request_point_value_delete(self.__lid, self.__pid, self.__foc, label, lang)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)

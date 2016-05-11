@@ -1,3 +1,11 @@
+UNRELEASED
+- Request sending reliability improvements (on network failure)
+- Allow for underlying socket timeout to be configured
+- Synchronous requests now also time out on lack of response (not just send failure)
+- Removed redundant seqnum & lowseq_resend parameters (Core.Client)
+- Print version information on info logging level
+- Minor documentation updates
+
 v0.3.0
 - Updated for QAPI v0.7.0 support
 - Removed unnecessary returns from ResourceMeta

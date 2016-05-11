@@ -15,7 +15,8 @@
 A subscription the connection you have to another Thing's control.  This object allows you to pass data
 to the other Things control in two ways, `ask` and `tell`:
 
-`ask` where you "fire and forget" - the receiving object doesn't have to let you know whether it has actioned your request
+`ask` where you "fire and forget" - the receiving object doesn't have to let you know whether it has actioned your
+request
 
 `tell` where you expect the receiving object to let you know whether or not has actioned your request
 """
@@ -66,12 +67,12 @@ class RemoteControl(object):
 
         `data` (mandatory) (as applicable) The data you want to share
 
-        `mime` (optional) (string) Default `None`.  The mime type of the data you're sharing.  See:
+        `mime` (optional) (string) The mime type of the data you're sharing.  See:
         [share()](./Point.m.html#IoticAgent.IOT.Point.Point.share)
         """
         logger.info("ask() [subid=%s]", self.__subid)
         evt = self.__client._request_sub_ask(self.__subid, data, mime)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def ask_async(self, data, mime=None):
@@ -107,14 +108,14 @@ class RemoteControl(object):
 
         `data` (mandatory) (as applicable) The data you want to share
 
-        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out
+        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.
 
-        `mime` (optional) (string) Default `None`.  See:
+        `mime` (optional) (string) See:
         [share()](./Point.m.html#IoticAgent.IOT.Point.Point.share)
         """
         logger.info("tell(timeout=%s) [subid=%s]", timeout, self.__subid)
         evt = self.__client._request_sub_tell(self.__subid, data, timeout, mime=mime)
-        evt.wait()
+        evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
         return 'success' if evt.payload['success'] else evt.payload['reason']
 
@@ -125,7 +126,3 @@ class RemoteControl(object):
         """
         logger.info("tell_async(timeout=%s) [subid=%s]", timeout, self.__subid)
         return self.__client._request_sub_tell(self.__subid, data, timeout, mime=mime)
-
-    #
-    # todo: simulate_controlreq -- needs last data and Point instance
-    #

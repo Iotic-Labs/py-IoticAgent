@@ -31,7 +31,7 @@ from socket import timeout as SocketTimeout
 
 from ..third.amqp import Connection, Message, exceptions
 
-from .compat import raise_from, Event, RLock
+from .compat import raise_from, Event, RLock, monotonic
 from .Exceptions import LinkException
 
 
@@ -40,23 +40,36 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     """Helper class to deal with AMQP connection.
     """
 
-    def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback,
-                 sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, draintimeout=0.1):
+    def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback, send_ready_callback,
+                 sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10):
         """
         `host`: Broker 'host:port'
+
         `vhost`: Virtualhost name
+
         `prefix`: username prefix for amqp login
+
         `epid`: entity process ID
+
         `passwd`: password
-        `msg_callback`: function callback for messages
-        `ka_callback`: functionc callback for keepalives
+
+        `msg_callback`: function callback for messages. Arguments: message
+
+        `ka_callback`: function callback for keepalives, Arguments: none
+
+        `send_ready_callback`: callback on send thread readiness. Arguments: last disconnection time
 
         `sslca`: Server Certificate
-        `prefetch` (default 128) max number of messages to get on amqp connection drain
-        `ackpc` (default 0.5) 1..0 percentage of prefetch size of ack'
-        `acksecs` (default 1) max number of seconds between ack messages
-        `heartbeat` (default 10) Every n messages or acksecs send a amqp heartbeat tick
-        `draintimeout` (default 0.05) 0.05=1s/20 Wait for messages from the network.
+
+        `prefetch` max number of messages to get on amqp connection drain
+
+        `ackpc` 1..0 percentage of prefetch size of ack'
+
+        `acksecs` max number of seconds between ack messages
+
+        `heartbeat` Every n messages or acksecs send a amqp heartbeat tick
+
+        `socket_timeout` Timeout of underlying sockets both for connection and subsequent operations
         """
         self.__host = host
         self.__vhost = vhost
@@ -66,6 +79,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         #
         self.__msg_callback = msg_callback
         self.__ka_callback = ka_callback
+        self.__send_ready_callback = send_ready_callback
         #
         self.__sslca = sslca
         self.__prefetch = prefetch
@@ -73,7 +87,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__ack_threshold = self.__prefetch * self.__ackpc
         self.__acksecs = acksecs
         self.__heartbeat = heartbeat
-        self.__draintimeout = draintimeout
+        self.__socket_timeout = socket_timeout
         #
         self.__unacked = 0
         self.__last_id = None
@@ -86,6 +100,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__send_channel = None
         self.__ka_channel = None
         self.__send_thread = None
+        self.__send_exc_time = None
         self.__send_exc = None     # Used to pass exceptions to blocking calls EG .start
         self.__recv_exc = None
 
@@ -93,20 +108,29 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         """start connection threads, blocks until started
         """
         if not (self.__recv_thread or self.__send_thread):
-            # Ensure Events are clear
             self.__end.clear()
             self.__send_ready.clear()
             self.__recv_ready.clear()
-            # Start the Threads and ensure send is ready first !
+            timeout = self.__socket_timeout + 1
+
+            # start & await send thread success (unless timeout reached or an exception has occured)
             self.__send_thread = Thread(target=self.__send_run, name='amqplink_send')
             self.__send_thread.start()
-            # note: connect_timeout in amqp Connection instance below!
-            success = self.__send_ready.wait(timeout=2.5)
+            start_time = monotonic()
+            success = False
+            while not (success or self.__send_exc or monotonic() - start_time > timeout):
+                success = self.__send_ready.wait(.25)
+
             if success:
+                # start & await receiver thread success
                 self.__recv_thread = Thread(target=self.__recv_run, name='amqplink_recv')
                 self.__recv_thread.start()
-                success = self.__recv_ready.wait(timeout=2.5)
-            #
+                start_time = monotonic()
+                success = False
+                while not (success or self.__recv_exc or monotonic() - start_time >= timeout):
+                    success = self.__recv_ready.wait(.25)
+
+            # handler either thread's failure
             if not success:
                 logger.warning("AmqpLink Failed to start.  Giving up.")
                 self.stop()
@@ -140,13 +164,18 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__send_thread.join()
             self.__send_thread = None
 
+    @property
+    def last_send_exc_time(self):
+        """Timestamp (or None) at which send thread last failed
+        """
+        return self.__send_exc_time
+
     def __del__(self):
         self.stop()
 
     def send(self, body, content_type='application/ubjson', timeout=5):
-        """send
-           timeout indicates amount of time to wait for receiving thread to be ready. set to larger
-           than zero to wait (in seconds, fractional) or None to block.
+        """timeout indicates amount of time to wait for receiving thread to be ready. set to larger
+        than zero to wait (in seconds, fractional) or None to block.
         """
         # logger.debug('sending: %s', body)
         if self.__send_ready.wait(timeout):
@@ -172,9 +201,11 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     def __get_ssl_context(cls, sslca=None):
         """Make an SSLConext for this Python version using public or sslca
         """
-        if (version_info[0] == 2 and (version_info[1] >= 7 and version_info[2] >= 9)) or (version_info[0] == 3 and version_info[1] >= 4):
+        if ((version_info[0] == 2 and (version_info[1] >= 7 and version_info[2] >= 9)) or
+                (version_info[0] == 3 and version_info[1] >= 4)):
             logger.debug('SSL method for 2.7.9+ / 3.4+')
-            from ssl import SSLContext, PROTOCOL_TLSv1_2, CERT_REQUIRED, OP_NO_COMPRESSION  # pylint: disable=no-name-in-module
+            # pylint: disable=no-name-in-module
+            from ssl import SSLContext, PROTOCOL_TLSv1_2, CERT_REQUIRED, OP_NO_COMPRESSION
             ctx = SSLContext(PROTOCOL_TLSv1_2)
             ctx.set_ciphers('HIGH:!SSLv3:!TLSv1:!aNULL:@STRENGTH')
             # see CRIME security exploit
@@ -252,8 +283,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                 password=self.__passwd,
                                 virtual_host=self.__vhost,
                                 heartbeat=self.__heartbeat,
-                                connect_timeout=2,
-                                operation_timeout=2,
+                                connect_timeout=self.__socket_timeout,
+                                operation_timeout=self.__socket_timeout,
                                 ssl=self.__get_ssl_context(self.__sslca),
                                 host=self.__host) as conn,\
                         conn.channel(auto_encode_decode=False) as channel_data,\
@@ -264,10 +295,9 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                     acktag = channel_ka.basic_consume(queue=('%s_ka' % self.__epid), exclusive=True, no_ack=True,
                                                       callback=self.__recv_ka_cb)
                     self.__recv_exc = None
-                    self.__recv_ready.set()
                     self.__ka_channel = channel_ka
                     logger.debug('ready')
-
+                    self.__recv_ready.set()
                     try:
                         #
                         # Drain loop
@@ -291,40 +321,38 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                             channel_ka.basic_cancel(acktag)
                         except:
                             pass  # note: Can't do anything here? EG network down
-                        # todo: also clear other channel (for KA) here
-                        # todo: ACK any remaining messages if possible. Otherwise might have to keep track of seq numbers
-                        # of processed messages so can ACK when connection comes back up.
+                        # TODO: ACK any remaining messages if possible. Otherwise might have to keep track of seq
+                        #       numbers of processed messages so can ACK when connection comes back up.
 
             except exceptions.AccessRefused as exc:
                 logger.error("Access Refused (Credentials already in use?)")
+                self.__recv_set_exc_and_wait(exc, 2)
                 self.__recv_exc = exc
-                self.__end.wait(2)
             except exceptions.ConnectionForced as exc:
                 logger.error('Disconnected by broker: %s', exc)
-                self.__send_exc = exc
-                self.__end.wait(2)
+                self.__recv_set_exc_and_wait(exc, 2)
             except SocketTimeout as exc:
                 logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
-                self.__recv_exc = exc
-                self.__end.wait(2)
+                self.__recv_set_exc_and_wait(exc, 2)
             except SSLError as exc:
                 logger.error("ssl.SSLError Bad Certificate?")
-                self.__recv_exc = exc
-                self.__end.wait(2)
+                self.__recv_set_exc_and_wait(exc, 2)
             except (exceptions.AMQPError, OSError) as exc:
                 logger.error('amqp/transport failure, sleeping before retry')
-                self.__recv_exc = exc
-                self.__end.wait(2)
+                self.__recv_set_exc_and_wait(exc, 2)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')
-                # pylint: disable=redefined-variable-type
-                self.__recv_exc = exc
+                self.__recv_set_exc_and_wait(exc, 0)
                 break
 
         logger.debug('finished')
 
+    def __recv_set_exc_and_wait(self, exc, wait_seconds):
+        self.__recv_exc = exc
+        self.__end.wait(wait_seconds)
+
     def __send_run(self):
-        """Send requests only
+        """Send request thread
         """
         while not self.__end.is_set():
             try:
@@ -332,15 +360,17 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                 password=self.__passwd,
                                 virtual_host=self.__vhost,
                                 heartbeat=self.__heartbeat,
-                                connect_timeout=2,
-                                operation_timeout=2,
+                                connect_timeout=self.__socket_timeout,
+                                operation_timeout=self.__socket_timeout,
                                 ssl=self.__get_ssl_context(self.__sslca),
                                 host=self.__host) as conn,\
                         conn.channel(auto_encode_decode=False) as channel:
                     self.__send_channel = channel
-                    self.__send_ready.set()
                     logger.debug('ready')
+                    self.__send_ready.set()
                     try:
+                        self.__send_ready_callback(self.__send_exc_time)
+
                         while not self.__end.is_set():
                             with self.__send_lock:
                                 try:
@@ -358,18 +388,17 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
             except exceptions.ConnectionForced as exc:
                 logger.error('Disconnected by broker, will re-try: %s', exc)
-                self.__send_ready.clear()
-                self.__send_exc = exc
-                self.__end.wait(2)
+                self.__send_set_exc_and_wait(exc, 2)
             except (exceptions.AMQPError, OSError) as exc:
                 logger.error('amqp/transport failure, sleeping before retry', exc_info=True)
-                self.__send_ready.clear()
-                self.__send_exc = exc
-                self.__end.wait(2)
+                self.__send_set_exc_and_wait(exc, 2)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')
-                self.__send_ready.clear()
-                # pylint: disable=redefined-variable-type
-                self.__send_exc = exc
+                self.__send_set_exc_and_wait(exc, 0)
                 break
         logger.debug('finished')
+
+    def __send_set_exc_and_wait(self, exc, wait_seconds):
+        self.__send_exc_time = monotonic()
+        self.__send_exc = exc
+        self.__end.wait(wait_seconds)

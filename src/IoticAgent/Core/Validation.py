@@ -231,7 +231,7 @@ class Validation(object):
 
     @classmethod
     def search_location_check(cls, location):
-        """Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats.
+        """Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats
         """
         if not (isinstance(location, Mapping) and set(location.keys()) == _LOCATION_SEARCH_ARGS):
             raise ValueError('Search location should be mapping with keys: %s' % _LOCATION_SEARCH_ARGS)

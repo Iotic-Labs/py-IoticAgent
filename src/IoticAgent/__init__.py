@@ -26,8 +26,8 @@ Getting Started - Installation
 Make sure you have all the necessary agent code and the dependencies.  This
 can be achieved either by using `pip3 install` or by getting the code from `github`.
 
-1. `py-IoticAgent` Is available either from `pypi` here [py-IoticAgent on pypi](https://pypi.python.org/pypi/py-IoticAgent)
-or from `github` here [py-IoticAgent on github](https://github.com/Iotic-Labs/py-IoticAgent)
+1. `py-IoticAgent` Is available either from `pypi` [here](https://pypi.python.org/pypi/py-IoticAgent] or from `github`
+[here](https://github.com/Iotic-Labs/py-IoticAgent)
 
 1. [optional] `py-lz4framed` compression for messages.  Zlib compression is used by default if lz4 is not present.
 [py-lz4framed on pypi](https://pypi.python.org/pypi/py-lz4framed)
@@ -101,8 +101,8 @@ To setup logging in your script add the following lines _at the top_ of your min
     logging.basicConfig(format='%(asctime)s,%(msecs)03d %(levelname)s [%(name)s] {%(threadName)s} %(message)s',
                         level=logging.WARNING)
 
-This will show Warning, Error and Critical messages only.  The next most verbose level is `logging.INFO` which is used to show
-functions you've called and any extra information a human user might like for normal development.
+This will show Warning, Error and Critical messages only.  The next most verbose level is `logging.INFO` which is used
+to show functions you've called and any extra information a human user might like for normal development.
 There is one more level of logging (`logging.DEBUG`) which shows all the information about everything which
 will be too verbose for most people.
 
@@ -158,8 +158,9 @@ More details: `IoticAgent.IOT.Thing.Thing.create_feed`
 
 Coding - Share data from your feed
 ----------------------------------
-Ok, now to the good bit.  Your code can now scurry off to find some values to share.  Call `share()` on your feed instance.  In our example
-the solar panels' current values feed shares a python dictionary of timestamp, power, current, voltage, and temperature
+Ok, now to the good bit.  Your code can now scurry off to find some values to share.  Call `share()` on your feed
+instance.  In our example the solar panels' current values feed shares a python dictionary of timestamp, power, current,
+voltage, and temperature
 
     #!python
     current_values = {}
@@ -179,9 +180,10 @@ More details: `IoticAgent.IOT.Point.Point.share`
 
 Coding - Following someone else's feed
 --------------------------------------
-To follow someone else's feed, first you need to know the feed's `Globally Unique ID` or `GUID`.  You can get this by searching
- the space on the web UI or they could email it to you.  Then you call `follow()` on your thing object for their remote feed.
- You'll also have to specify the callback function you want the agent to call for you when they next publish that feed.
+To follow someone else's feed, first you need to know the feed's `Globally Unique ID` or `GUID`.  You can get this by
+searching the space on the web UI or they could email it to you.  Then you call `follow()` on your thing object for
+their remote feed.
+You'll also have to specify the callback function you want the agent to call for you when they next publish that feed.
 
     #!python
     # Args is a dict containing data and other details. See Thing.follow() for more information.
@@ -215,8 +217,9 @@ More details: `IoticAgent.IOT.RemoteFeed.RemoteFeed.simulate`
 
 Coding - Following one of your own feeds
 ----------------------------------------
-For anything to do with your own things, feeds and controls you can refer to them by their `nickname`.  So to follow a feed on
-one of your own things, call `follow()` with the a tuple containing the nicknames of your thing/feed and your callback.
+For anything to do with your own things, feeds and controls you can refer to them by their `nickname`.  So to follow a
+feed on one of your own things, call `follow()` with the a tuple containing the nicknames of your thing/feed and your
+callback.
 
     #!python
     thing_solar_panels_receiver.follow(("SolarPanels","Current Values"),
@@ -226,13 +229,13 @@ More details: `IoticAgent.IOT.Thing.Thing.follow`
 
 Coding - Describe your things and feeds in metadata
 ---------------------------------------------------
-The Iotic infrastructure makes great use of semantic metadata to provide meaning for your things, Points and your Points' values.
- In order to use the metadata functions you have to install a 3rd-party library called RDFLib, like so...
+The Iotic infrastructure makes great use of semantic metadata to provide meaning for your things, Points and your
+Points' values. In order to use the metadata functions you have to install a 3rd-party library called RDFLib, like so:
 
     #!bash
     $ sudo easy_install rdflib
 
-...then you can get a metadata helper object from your Thing or feed and describe the Thing in more detail.
+Then you can get a metadata helper object from your Thing or feed and describe the Thing in more detail.
 The label and description fields are free-text searchable so put information in them that will help others to find them.
 The geo-location of your Thing is used if others perform a location-based search.
 
@@ -254,9 +257,10 @@ More details: `IoticAgent.IOT.Thing.Thing.get_meta`
 
 Coding - Describe the contents of your feed in metadata
 -------------------------------------------------------
-One of the most useful things you can do in metadata is to let the receiving parties of your feed data know what the contents
-of your feed are and their data type and units.  There are a couple of extra, helpful modules you can import from the IoticAgent.
- *at the top of your code*.
+One of the most useful things you can do in metadata is to let the receiving parties of your feed data know what the
+contents of your feed are and their data type and units.  There are a couple of extra, helpful modules you can import
+from the IoticAgent.
+*at the top of your code*.
 
     #!python
     from IoticAgent import IOT, Units, Datatypes
@@ -283,9 +287,9 @@ More details: `IoticAgent.IOT.Point.Point.create_value`
 
 Coding - Create a control on your Thing
 ---------------------------------------
-You can also make your Thing respond to activation requests by creating a `control` and its associated callback.  Call `create_control`
-on your Thing object.  A control like the opposite of a feed.  It's a way that other Things can send you data or ask your Thing
-to perform some action(s).
+You can also make your Thing respond to activation requests by creating a `control` and its associated callback.  Call
+`create_control` on your Thing object.  A control like the opposite of a feed.  It's a way that other Things can send
+you data or ask your Thing to perform some action(s).
 
     #!python
     def reset_callback(args):
@@ -312,9 +316,9 @@ Attaching to a remote control is a bit like `following`-ing a feed, except the f
     ...
     r_control_counters.ask(<payload>)  #activate the remote control
 
-The two similar functions `ask()` and `tell()` differ in that `ask()` is doesn't require a confirmation that the action has been
-done, but `tell()` has a callback to be informed when the far end has done the action and a time-out so you can be informed if
-they haven't done it in the time you require.
+The two similar functions `ask()` and `tell()` differ in that `ask()` is doesn't require a confirmation that the
+action has been done, but `tell()` has a callback to be informed when the far end has done the action and a time-out so
+you can be informed if they haven't done it in the time you require.
 
 As you might expect, the `attach` function works for controls on Things you own.
 Use the tuple of `(thing_nickname,control_nickname)` to identify the control instead of the GUID
@@ -323,7 +327,8 @@ Coding - Which Exceptions
 -------------------------
 Parameters are validated on request and raise built-in ValueError.
 
-Network failures raise `IoticAgent.Core.Exceptions.LinkException` which can be imported from IoticAgent.IOT.Exceptions for convenience.
+Network failures raise `IoticAgent.Core.Exceptions.LinkException` which can be imported from IoticAgent.IOT.Exceptions
+for convenience.
 
 If a request response from Iotic Space contains (FAILED)
 

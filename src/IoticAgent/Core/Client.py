@@ -23,11 +23,11 @@ from binascii import a2b_hex
 from collections import OrderedDict
 import string
 import random
-from threading import Thread
+from threading import Thread, Timer
 from struct import Struct
 import logging
 
-from ubjson import dumpb as ubjdumpb, loadb as ubjloadb
+from ubjson import dumpb as ubjdumpb, loadb as ubjloadb, EXTENSION_ENABLED as ubj_ext, __version__ as ubj_version
 
 from .AmqpLink import AmqpLink
 from .Exceptions import LinkException, LinkShutdownException
@@ -112,37 +112,49 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     # QAPI version targeted by Core client
     __qapi_version = '0.7.0'
 
-    def __init__(self, host, vhost, epId, passwd, token, prefix='', seqnum=1,  # pylint: disable=too-many-locals
-                 lang=None, sslca=None, lowseq_resend=True, network_retry_timeout=300, auto_encode_decode=True,
-                 send_queue_size=128, throttle_conf=''):
+    def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
+                 sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
+                 throttle_conf=''):
         """
         `host` amqp broker "host:port"
+
         `vhost` amqp broker virtual host
+
         `epId` amqp username
+
         `passwd` amqp broker password
+
         `token` ascii hex token secret
-        `prefix` (default '') epId prefix depends on container settings
-        `seqnum` (default 1) sequence number if known
-        `lang` (default None) language code to use for relevant (meta data) requests. If not set, the container
+
+        `prefix` epId prefix depends on container settings
+
+        `lang` language code to use for relevant (meta data) requests. If not set, the container
                container default will be used. See also default_lang.
-        `sslca` (default None) path to file of broker SSL Certificate (IF NOT using Public)
-        `lowseq_resend` (default True) If True & FAILED,LOWSEQNUM is received the last request will be resent
-        `network_retry_timeout` (default 300s) If 0 no retry/timeout else seconds.
-        `auto_encode_decode` (default True) Automatically encode/decode text (utf8) and dictionaries (ubjson) when
+
+        `sslca` path to file of broker SSL Certificate (IF NOT using Public)
+
+        `network_retry_timeout` If 0 no retry/timeout else seconds.
+
+        `socket_timeout` Underlying socket connection/operation timeout
+
+        `auto_encode_decode` Automatically encode/decode text (utf8) and dictionaries (ubjson) when
                              sending/receiving point data. When sending, only applies if mime type not specified.
-        `send_queue_size` (default 128) Maximum number of unsent requets to keep in interval queue. The queue can reach
-                                        its size limit when using asynchronous requests AND either `throttle_conf` is
-                                        used or if the the client has not been connected to the container for a while
-                                        (due to network problems). Set to zero for no limit.
-        `throttle_conf' (default '') Automatic request (outgoing) throttling, specified as comma-separate list of
-                                     REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
-                                     requests being sent over the last 60 seconds and no more than 600 requests over the
-                                     last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
-                                     the client without requiring application code to introduce artificial delays.
+
+        `send_queue_size` Maximum number of unsent requets to keep in interval queue. The queue can reach
+                          its size limit when using asynchronous requests AND either `throttle_conf` is
+                          used or if the the client has not been connected to the container for a while
+                          (due to network problems). Set to zero for no limit.
+
+        `throttle_conf` Automatic request (outgoing) throttling, specified as comma-separate list of
+                        REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                        requests being sent over the last 60 seconds and no more than 600 requests over the
+                        last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                        the client without requiring application code to introduce artificial delays.
         """
+        logger.info('ubjson version: %s (extension %s)', ubj_version, 'enabled' if ubj_ext else 'disabled')
         logger.debug("__init__ config host='%s', vhost='%s', epId='%s', passwd='%s', token='%s', prefix='%s'"
-                     " , seqnum='%s', sslca='%s' network_retry_timeout=%s",
-                     host, vhost, epId, passwd, token, prefix, seqnum, sslca, network_retry_timeout)
+                     " , sslca='%s' network_retry_timeout=%s",
+                     host, vhost, epId, passwd, token, prefix, sslca, network_retry_timeout)
         #
         self.__epId = Validation.guid_check_convert(epId)
         self.__default_lang = Validation.lang_check_convert(lang, allow_none=True)
@@ -151,8 +163,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             self.__token = a2b_hex(token.encode('ascii'))
         except Exception as ex:  # pylint: disable=broad-except
             raise_from(ValueError('token invalid'), ex)
-        #
-        self.__seqnum = validate_nonnegative_int(seqnum, 'seqnum')
+        # seq (from this client)
+        self.__seqnum = 1
+        # request id numeric component
+        self.__reqnum = 0
         #
         for param in ('host', 'vhost', 'passwd'):
             Validation.check_convert_string(locals().get(param))
@@ -163,16 +177,19 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         self.__reqpre = self.__rnd_string(6)
         self.__auto_encode_decode = bool(auto_encode_decode)
         #
-        self.__amqplink = AmqpLink(host, vhost, prefix, self.__epId, passwd, self.__dispatch_msg, self.__dispatch_ka, sslca=sslca)
+        self.__amqplink = AmqpLink(host, vhost, prefix, self.__epId, passwd, self.__dispatch_msg, self.__dispatch_ka,
+                                   self.__send_ready_cb, sslca=sslca,
+                                   socket_timeout=validate_nonnegative_int(socket_timeout, 'socket_timeout',
+                                                                           allow_zero=False))
         # seq (from container - initial value used to surpress warning on first message from container)
         self.__cnt_seqnum = -1
-        # __auto_resend
-        self.__lowseq_resend = bool(lowseq_resend)
-        self.__lowseq_resend_stash = ThreadSafeDict()
         # (Core.Client has not been .start or is .stop)
         self.__end = Event()
         self.__end.set()
-        # network_retry
+        # Timer used to retry sending of requests which might not have reached the broker (dummy instance set here)
+        self.__send_retry_requests_timer = Timer(0, self.__send_retry_requests, args=(0,))
+        self.__send_retry_requests_lock = Lock()
+        # network_retry thread
         self.__network_retry_thread = None
         self.__network_retry_timeout = validate_nonnegative_int(network_retry_timeout, 'network_retry_timeout')
         self.__network_retry_queue_size = validate_nonnegative_int(send_queue_size, 'send_queue_size')
@@ -241,9 +258,6 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
         For example if the user app had to shutdown with pending requests.
         The user can rebuild the Events they were waiting for based on the requestId(s).
-
-        :param requestId
-        :return RequestEvent
         """
         with self.__requests:
             if requestId not in self.__requests:
@@ -462,7 +476,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         elif qapi_version[2] > expected[2]:
             logger.info('QAPI patch level change: %s (%s known)', qapi_str, cls.__qapi_version)
         else:
-            logger.debug('QAPI version: %s', qapi_str)
+            logger.info('QAPI version: %s', qapi_str)
 
     def stop(self):
         """Stop the Client, disconnect from queue
@@ -470,6 +484,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         if self.__end.is_set():
             return
         self.__end.set()
+        self.__send_retry_requests_timer.cancel()
         self.__threadpool.stop()
         self.__crud_threadpool.stop()
         self.__amqplink.stop()
@@ -524,7 +539,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     #  limit = int EG 50 (num rows)
     #  offset = int EG 0 (starting position)
     #
-    def _request(self, resource, rtype, action=None, payload=None, offset=None, limit=None, requestId=None, is_crud=False):
+    def _request(self, resource, rtype, action=None, payload=None, offset=None, limit=None, requestId=None,
+                 is_crud=False):
         """_request amqp queue publish helper
 
         return: RequestEvent object or None for failed to publish
@@ -542,9 +558,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 requestId = self.__new_request_id()
             elif requestId in self.__requests:
                 raise ValueError('requestId %s already in use' % requestId)
-            self.__requests[requestId] = ret = RequestEvent(requestId, is_crud=is_crud)
+            inner_msg = self.__make_innermsg(resource, rtype, requestId, action, payload, rng)
+            self.__requests[requestId] = ret = RequestEvent(requestId, inner_msg, is_crud=is_crud)
         #
-        inner_msg = self.__make_innermsg(resource, rtype, requestId, action, payload, rng)
         if not self.__retry_enqueue(PreparedMessage(inner_msg, requestId)):
             raise LinkShutdownException('Client stopped')
         return ret
@@ -562,6 +578,47 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                     return False
             else:
                 return True
+
+    def __send_ready_cb(self, last_send_failure_time):
+        """Callback from AmqpLink on send transport readiness. (Only ever comes from a single thread.)"""
+        logger.debug('Readiness notification (last failed=%s)', last_send_failure_time)
+        # It is possible for multiple timers to be scheduled (if multiple transport failures happen in a fairly short
+        # amount of time. See logic for __send_retry_requests
+        if last_send_failure_time is not None:
+            self.__send_retry_requests_timer.cancel()
+            # allow 10s for responses to come in before attempting to resend
+            self.__send_retry_requests_timer = Timer(10, self.__send_retry_requests, args=(last_send_failure_time,))
+            self.__send_retry_requests_timer.start()
+
+    def __send_retry_requests(self, last_send_failure_time):
+        """Called via Timer from __send_ready to resend requests which might not have been sent due to transport
+           failure. This can happen since the current transport implementation does not received acknowledgements
+           for sent messages."""
+        # make sure multiple failures having set multiple times do not run concurrently
+        with self.__send_retry_requests_lock:
+            with self.__requests:
+                # produce list instead of generator as requests mapping can change during subsequent loop
+                retry_reqs = [req for req in self.__requests.values()
+                              if req._sent_without_response(last_send_failure_time)]
+
+            retry_req_count = 0
+            # don't continue if another network failure has occured (which will trigger this function again)
+            while retry_reqs and self.__amqplink.last_send_exc_time <= last_send_failure_time:
+                req = retry_reqs.pop()
+                # lock individuallly so incoming request handling does not 'pause' for too long
+                with self.__requests:
+                    # might have received a response (or finished since)
+                    if not (req.id_ in self.__requests and req._sent_without_response(last_send_failure_time)):
+                        logger.debug('Not resending request %s (finished or has received response)', req.id_)
+                        continue
+                logger.debug('Resending request %s', req.id_)
+                if not self.__retry_enqueue(PreparedMessage(req._inner_msg_out, req.id_)):
+                    # client shutdown
+                    break
+                retry_req_count += 1
+
+        if retry_req_count:
+            logger.debug('Resending of %d request(s) complete (before %s)', retry_req_count, last_send_failure_time)
 
     def request_ping(self):
         logger.debug("request_ping")
@@ -928,12 +985,13 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __new_request_id(self):
         """requestId follows form "pre num" where pre is some random ascii prefix EG 6 chars long
-        and num is self.__seqnum. MUST be called within self.__requests lock
+        and num is an ever increasing number (self.__reqnum). MUST be called within self.__requests lock
         """
         while True:
             # Since seqnum wraps on 2^64 at most, this should always fit into 32 chars (QAPI request id limit)
             with self.__seqnum_lock:
-                requestId = "%s%d" % (self.__reqpre, self.__seqnum)
+                requestId = "%s%d" % (self.__reqpre, self.__reqnum)
+            self.__reqnum += 1
             if requestId not in self.__requests:
                 break
             # in the unlikely event of a collision update prefix
@@ -959,7 +1017,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         return message[W_HASH] == self.__make_hash(message[W_MESSAGE], self.__token, message[W_SEQ])
 
-    def __make_innermsg(self, resource, rtype, ref, action=None, payload=None, limit=None):
+    @staticmethod
+    def __make_innermsg(resource, rtype, ref, action=None, payload=None, limit=None):
         """return innermsg chunk (dict)
         """
         if action is not None and not isinstance(action, (tuple, list)):
@@ -972,9 +1031,6 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
              M_PAYLOAD: payload}
         if limit is not None:  # Note: fmtted like "0/15" where 0 = offset, 15 = limit
             p[M_RANGE] = limit
-        with self.__lowseq_resend_stash:
-            if self.__lowseq_resend and ref not in self.__lowseq_resend_stash:
-                self.__lowseq_resend_stash[ref] = p
         return p
 
     def __request_except(self, requestId, exc, set_and_forget=True):
@@ -994,14 +1050,17 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             if set_and_forget:
                 req._set()
 
-    def __request_clear_except(self, requestId):
-        """Clear exception from request if set, ignoring non-existant requests"""
+    def __request_mark_sent(self, requestId):
+        """Set send time & clear exception from request if set, ignoring non-existant requests"""
         with self.__requests:
             try:
-                self.__requests[requestId].exception = None
+                req = self.__requests[requestId]
             except KeyError:
                 # request might have had a response already have been removed by receiving thread
                 pass
+            else:
+                req.exception = None
+                req._send_time = monotonic()
 
     def __publish(self, qmsg):
         """Returns True unless sending failed (at which point an exception will have been set in the request)"""
@@ -1069,12 +1128,12 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 self.__request_except(requestId, None)
             else:
                 if self.__send_throttle():
-                    # shutting down
+                    # end event (shutdown) set during throttling
                     break
                 try:
                     published = self.__publish(qmsg)
                 except LinkException as exc:
-                    logger.debug("FAILED TO SEND requestId '%s'", requestId)
+                    logger.debug("Failed to send '%s'", requestId)
                     if retry_timeout:
                         self.__request_except(requestId, exc, set_and_forget=False)
                         # request will be retried (assuming timeout is not reached after delay)
@@ -1084,8 +1143,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 else:
                     # if not published, an exception will have been set on the request already
                     if published:
-                        logger.debug("Sent requestId '%s'", requestId)
-                        self.__request_clear_except(requestId)
+                        logger.debug("Sent request '%s'", requestId)
+                        self.__request_mark_sent(requestId)
 
             queue_task_done()
             qmsg = None
@@ -1237,7 +1296,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             except KeyError:
                 return False
 
-            if self.__handle_low_seq_resend(msg):
+            if self.__handle_low_seq_resend(msg, req):
                 return True
 
             perform_cb = finish = False
@@ -1309,25 +1368,15 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                         # callback by thing and point
                         entity_point_callbacks[payload[P_LID]] = self.__pending_controls.pop(msg[M_CLIENTREF])
 
-    def __handle_low_seq_resend(self, msg):
+    def __handle_low_seq_resend(self, msg, req):
         """special error case - low sequence number (update sequence number & resend if applicable). Returns True if
-           a resend was scheduled, False otherwise"""
+           a resend was scheduled, False otherwise. MUST be called within self.__requests lock."""
         if msg[M_TYPE] == E_FAILED and msg[M_PAYLOAD][P_CODE] == E_FAILED_CODE_LOWSEQNUM:
             with self.__seqnum_lock:
                 self.__seqnum = int(msg[M_PAYLOAD][P_MESSAGE])
-            if self.__lowseq_resend:
-                try:
-                    inner_msg = self.__lowseq_resend_stash[msg[M_CLIENTREF]]
-                except KeyError:
-                    pass
-                else:
-                    # return value indicating shutdown not useful here since this is run in receiver thread
-                    self.__retry_enqueue(PreparedMessage(inner_msg, msg[M_CLIENTREF]))
-                    return True
-        elif self.__lowseq_resend:
-            # since a request might receive multiple responses, don't assume to exist
-            self.__lowseq_resend_stash.pop(msg[M_CLIENTREF], None)
-
+            # return value indicating shutdown not useful here since this is run in receiver thread
+            self.__retry_enqueue(PreparedMessage(req._inner_msg_out, req.id_))
+            return True
         return False
 
     def __perform_unsolicited_callbacks(self, msg):

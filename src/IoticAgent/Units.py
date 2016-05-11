@@ -39,9 +39,11 @@ METER = 'http://purl.obolibrary.org/obo/UO_0000008'
 '''Metric distance unit = 100 cm - alternative spelling'''
 # - Temperature
 CELSIUS = 'http://purl.obolibrary.org/obo/UO_0000027'
-'''Temperature units where the freezing point of water at 273.15 Kelvin is considered 0C and the boiling point 283.15K is 100C'''
+'''Temperature units where the freezing point of water at 273.15 Kelvin is considered 0C and the boiling point 283.15K
+is 100C'''
 FAHRENHEIT = 'http://purl.obolibrary.org/obo/UO_0000195'
-'''A temperature unit which is equal to 5/9ths of a kelvin. Negative 40 degrees Fahrenheit is equal to negative 40 degrees Celsius'''
+'''A temperature unit which is equal to 5/9ths of a kelvin. Negative 40 degrees Fahrenheit is equal to negative 40
+degrees Celsius'''
 KELVIN = 'http://purl.obolibrary.org/obo/UO_0000012'
 '''A thermodynamic temperature unit. 0K is "absolute zero", ~293K is "room temperature", i.e. 20C'''
 # - Speed
@@ -62,7 +64,8 @@ SECOND = 'http://purl.obolibrary.org/obo/UO_0000010'
 JOULE = 'http://purl.obolibrary.org/obo/UO_0000112'
 '''An energy unit which is equal to the energy required when a force of 1 newton moves an object 1 meter'''
 WATT_HOUR = 'http://purl.obolibrary.org/obo/UO_0000223'
-'''An energy unit which is equal to the amount of electrical energy equivalent to a one-watt load drawing power for one hour'''
+'''An energy unit which is equal to the amount of electrical energy equivalent to a one-watt load drawing power for one
+hour'''
 KILOWATT_HOUR = 'http://purl.obolibrary.org/obo/UO_0000224'
 '''An energy unit which is equal to 1000 Watt-hours'''
 # - Power
@@ -81,7 +84,8 @@ LUX = 'http://purl.obolibrary.org/obo/UO_0000116'
 MM_MERCURY = 'http://purl.obolibrary.org/obo/UO_0000272'
 '''A unit of pressure equal to the amount of fluid pressure one millimeter deep in mercury at 0C'''
 PASCAL = 'http://purl.obolibrary.org/obo/UO_0000110'
-''' A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a surface of 1 m^[2]'''
+''' A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a
+surface of 1 m^[2]'''
 # - Radiation
 ROENTGEN = 'http://purl.obolibrary.org/obo/UO_0000136'
 '''An exposure unit which is equal to the amount of radiation required to liberate positive

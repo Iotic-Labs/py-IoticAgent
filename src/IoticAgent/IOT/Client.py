@@ -27,12 +27,15 @@ from IoticAgent.Core.Const import (E_FAILED_CODE_NOTALLOWED, E_FAILED_CODE_UNKNO
                                    E_FAILED_CODE_INTERNALERROR, E_FAILED_CODE_ACCESSDENIED, M_CLIENTREF, M_PAYLOAD,
                                    R_ENTITY, R_FEED, R_CONTROL, R_SUB, P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID,
                                    P_RESOURCE, P_MESSAGE, P_DATA, P_MIME)
+from IoticAgent.Core.utils import validate_nonnegative_int
 
+from . import __version__
 from .Thing import Thing
 from .Config import Config
 from .DB import DB
-from .utils import uuid_to_hex, version_string_to_tuple
-from .Exceptions import IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError
+from .utils import uuid_to_hex, version_string_to_tuple, bool_from
+from .Exceptions import (IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError,
+                         IOTSyncTimeout)
 from .Point import Point, _POINT_TYPES
 from .RemoteFeed import RemoteFeed
 from .RemoteControl import RemoteControl
@@ -41,7 +44,7 @@ from .RemoteControl import RemoteControl
 class Client(object):  # pylint: disable=too-many-public-methods
 
     # Core version targeted by IOT client
-    __core_version = '0.3.0'
+    __core_version = '0.3.1'
 
     def __init__(self, config=None, db=None):
         """
@@ -55,6 +58,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Defaults to the name of the script +".db", e.g. `db="my_script.db"`
         """
         self.__core_version_check()
+        logger.info('IOT version: %s', __version__)
         #
         if isinstance(config, string_types) or config is None:
             self.__config = Config(config)
@@ -67,7 +71,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
             raise ValueError('Minimum configuration for IoticAgent is host, epid, passwd and token\n'
                              'Create file "%s" with contents\n[agent]\nhost = w\nepid = x\npasswd = y\ntoken = z'
                              % self.__config._file_loc())
-        #
+        self.__sync_timeout = validate_nonnegative_int(self.__config.get('iot', 'sync_request_timeout'),
+                                                       'iot.sync_request_timeout', allow_zero=False)
         self.__config.setup_logging()
         #
         try:
@@ -78,10 +83,10 @@ class Client(object):  # pylint: disable=too-many-public-methods
                                         passwd=self.__config.get('agent', 'passwd'),
                                         token=self.__config.get('agent', 'token'),
                                         prefix=self.__config.get('agent', 'prefix'),
-                                        seqnum=self.__config.get('agent', 'seqnum'),
                                         sslca=self.__config.get('agent', 'sslca'),
                                         network_retry_timeout=self.__config.get('core', 'network_retry_timeout'),
-                                        auto_encode_decode=self.__config.get('core', 'auto_encode_decode'),
+                                        socket_timeout=self.__config.get('core', 'socket_timeout'),
+                                        auto_encode_decode=bool_from(self.__config.get('core', 'auto_encode_decode')),
                                         send_queue_size=self.__config.get('core', 'queue_size'),
                                         throttle_conf=self.__config.get('core', 'throttle'))
         except ValueError as ex:
@@ -96,7 +101,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         #
         # Setup catchall for unsolicited feeddata and controlreq and write data to the key/value DB
         self.__db = None
-        if self.__config.get('iot', 'db_last_value').lower() not in ('0', 'False'):
+        if bool_from(self.__config.get('iot', 'db_last_value')):
             self.__db = DB(fn=db)
             self.__client.register_callback_feeddata(self.__cb_catchall_feeddata)
             self.__client.register_callback_controlreq(self.__cb_catchall_controlreq)
@@ -196,6 +201,12 @@ class Client(object):  # pylint: disable=too-many-public-methods
         except:
             pass
 
+    @property
+    def sync_timeout(self):
+        """Value of iot.sync_request_timeout configuration option. Used by all synchronous requests to limit total
+        request wait time."""
+        return self.__sync_timeout
+
     @classmethod
     def __core_version_check(cls):
         core = version_string_to_tuple(Core_Version)
@@ -211,7 +222,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         elif core[2] > expected[2]:
             logger.info('Core client patch level change: %s (%s known)', Core_Version, cls.__core_version)
         else:
-            logger.debug('Core version: %s', Core_Version)
+            logger.info('Core version: %s', Core_Version)
 
     def _notify_thing_lid_change(self, from_lid, to_lid):
         """Used by Thing instances to indicate that a rename operation has happened"""
@@ -274,7 +285,33 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     def register_callback_subscription(self, callback):
         """
-        Register a callback for subscription count change notification
+        Register a callback for subscription count change notification.  This gets called whenever something *else*
+        subscribes to your thing.
+
+        `Note` it is not called when you subscribe to something else.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_FEED or R_CONTROL # the type of the point
+            lid       : <name>              # the local name of your *Point*
+            entityLid : <name>              # the local name of your *Thing*
+            subCount  : <count>             # the total number of remote Things
+                                            # that subscribe to your point
+
+        `Example`
+
+            #!python
+            def subscription_callback(args):
+                print(args)
+            ...
+            client.register_callback_subscription(subscription_callback)
+
+        This would print out something like the following
+
+            #!python
+            OrderedDict([('r', 2), ('lid', 'My_First_Point'),
+                         ('entityLid', 'My_First_Thing'), ('subCount', 13)])
         """
         return self.__client.register_callback_subscription(callback)
 
@@ -366,7 +403,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         logger.info("confirm_tell(success=%s) [lid=\"%s\",pid=\"%s\"]", success, data[P_ENTITY_LID], data[P_LID])
         evt = self._request_point_confirm_tell(R_CONTROL, data[P_ENTITY_LID], data[P_LID], success, data['requestId'])
-        evt.wait()
+        evt.wait(self.__sync_timeout)
         self._except_if_failed(evt)
 
     def save_config(self):
@@ -378,7 +415,10 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def _except_if_failed(event):
-        """Raises an IOTException from the given event if it was not successful"""
+        """Raises an IOTException from the given event if it was not successful. Assumes timeout success flag on event
+        has not been set yet."""
+        if event.success is None:
+            raise IOTSyncTimeout('Requested timed out')
         if not event.success:
             msg = "Request failed, unknown error"
             if isinstance(event.payload, Mapping):
@@ -404,12 +444,12 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `all_my_agents` (optional) (boolean) Default False.  If `False` limit search to just this agent,
+        `all_my_agents` (optional) (boolean) If `False` limit search to just this agent,
         if `True` return list of things belonging to all agents you own.
 
-        `limit` (optional) (integer) Default 500.  Return this many Point details
+        `limit` (optional) (integer) Return this many Point details
 
-        `offset` (optional) (integer) Default 0.  Return Point details starting at this offset
+        `offset` (optional) (integer) Return Point details starting at this offset
         """
         logger.info("list(all_my_agents=%s, limit=%s, offset=%s)", all_my_agents, limit, offset)
         if all_my_agents:
@@ -417,7 +457,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         else:
             evt = self._request_entity_list(limit=limit, offset=offset)
 
-        evt.wait()
+        evt.wait(self.__sync_timeout)
         self._except_if_failed(evt)
         return evt.payload['entities']
 
@@ -451,11 +491,11 @@ class Client(object):  # pylint: disable=too-many-public-methods
         if there is a communications problem between you and the infrastructure
 
         `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.
-        It's "local" in that it's only available to you on this container.  It's not searchable, and never shown to others
+        It's "local" in that it's only available to you on this container, not searchable and not visible to others.
         """
         logger.info("create_thing(lid=\"%s\")", lid)
         evt = self._request_entity_create(lid)
-        evt.wait()
+        evt.wait(self.__sync_timeout)
         self._except_if_failed(evt)
         try:
             with self.__new_things:
@@ -480,7 +520,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         logger.info("delete_thing(lid=\"%s\")", lid)
         evt = self._request_entity_delete(lid)
-        evt.wait()
+        evt.wait(self.__sync_timeout)
         self._except_if_failed(evt)
 
     def delete_thing_async(self, lid):
@@ -556,26 +596,27 @@ class Client(object):  # pylint: disable=too-many-public-methods
         `text` (required) (string) The text to search for. Label and description will be searched
         for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive.
 
-        `lang` (optional) (string) Default None. The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
+        `lang` (optional) (string) The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
         Language is used to limit search to only labels and descriptions in that language. You will only get labels `in
         that language` back from search and then only if there are any in that language
 
-        `location` (optional) (dictionary) Default None.  Latitude, longitude and radius to search within.
+        `location` (optional) (dictionary) Latitude, longitude and radius to search within.
         All values are float, Radius is in kilometers (km).  E.g.  `{"lat"=1.2345, "lon"=54.321, "radius"=6.789}`
 
-        `unit` (optional) (string) Default None.  Valid URL of a unit in an ontology.  Or use a constant from the
+        `unit` (optional) (string) Valid URL of a unit in an ontology.  Or use a constant from the
         [units](../Units.m.html#IoticAgent.Units) class - such as [METRE](../Units.m.html#IoticAgent.Units.METRE)
 
-        `limit` (optional) (integer) Default 500.  Return this many search results
+        `limit` (optional) (integer) Return this many search results
 
-        `offset` (optional) (integer) Default 0.  Return results starting at this offset - good for paging.
+        `offset` (optional) (integer) Return results starting at this offset - good for paging.
 
-        `reduced` (optional) (boolean) Default False.  If `true`, Return the reduced results just containing points and their type
+        `reduced` (optional) (boolean) If `true`, Return the reduced results just containing points and
+        their type
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
         evt = self._request_search(text, lang, location, unit, limit, offset, 'reduced' if reduced else 'full')
-        evt.wait()
+        evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
@@ -607,7 +648,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
                     text, lang, location, unit, limit, offset)
         evt = self._request_search(text, lang, location, unit, limit, offset, 'located')
-        evt.wait()
+        evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
@@ -659,7 +700,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
         you the description of that object.
 
-        `lang` (optional) (string) Default None. The two-character ISO 639-1 language code for which labels, comments
+        `lang` (optional) (string) The two-character ISO 639-1 language code for which labels, comments
         and tags will be returned. This does not affect Values (i.e. when describing a Point).
         """
         if isinstance(guid_or_thing, self.__guid_resources):
@@ -671,7 +712,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         logger.info('describe() [guid="%s"]', guid)
 
         evt = self._request_describe(guid, lang)
-        evt.wait()
+        evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
