@@ -1,4 +1,4 @@
-UNRELEASED
+v0.3.1
 - Request sending reliability improvements (on network failure)
 - Allow for underlying socket timeout to be configured
 - Synchronous requests now also time out on lack of response (not just send failure)

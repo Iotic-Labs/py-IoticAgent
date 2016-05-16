@@ -9,7 +9,7 @@ It provides to styles of interface:
 - **Asynchronous** - for the more advanced programmer, where you can issue commands and then wait on events until they complete.  Your code doesn't block.
 
 ## Documentation
-Source-level documentation is part of the agent.  It requires [pdoc](https://pypi.python.org/pypi/pdoc) to generate.  Run the `make_docs.sh` script to generate it yourself, or it's available online [here](http://pythonhosted.org/py-IoticAgent/) 
+Source-level documentation is part of the agent.  It requires [pdoc](https://pypi.python.org/pypi/pdoc) to generate.  Run the `make_docs.sh` script to generate it yourself, or it's available online [here](http://pythonhosted.org/py-IoticAgent/)
 
 ## System requirements
 This agent requires Python v3.2+ (or 2.7.9+).
@@ -34,8 +34,10 @@ pip3 install py-IoticAgent
 # Optional: The agent can provide additional functionality if rdflib is available
 pip3 install rdflib
 ```
-**Note**: If you do not have Python development headers and a C toolchain installed, this might produce warnings which can be safely ignored.
+**Notes**
 
+- If you do not have Python development headers and a C toolchain installed, this might produce warnings which can be safely ignored.
+- With certains versions of pip the dependency installation of py-ubjson can fail when using `-t` flag. (Symptom: py-IoticAgent is installed but py-ubsjon not. See also [this](https://github.com/pypa/pip/issues/3056) bug. In this case force non-extension installation as follows: `PYUBJSON_NO_EXTENSION=1 pip3 install py-IoticAgent`
 
 ## Using repository
 ```shell
