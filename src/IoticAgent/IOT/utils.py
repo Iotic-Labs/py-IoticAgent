@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 from uuid import UUID
 
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
-from IoticAgent.Core.compat import ensure_unicode, raise_from
+from IoticAgent.Core.compat import ensure_unicode, raise_from, unicode_type
 
 __FOC_STR_MAPPING = {'feed': R_FEED,
                      'control': R_CONTROL}
@@ -31,13 +31,13 @@ __FOC_CODE_MAPPING = {value: key for key, value in __FOC_STR_MAPPING.items()}
 def hex_to_uuid(hstr):
     """Make a 32 ascii char hex into a 8-4-4-4-12 uuid
     """
-    return str(UUID(ensure_unicode(hstr, name='hstr')))
+    return unicode_type(UUID(ensure_unicode(hstr, name='hstr')))
 
 
 def uuid_to_hex(uid):
     """Make 8-4-4-4-12 uuid into plain hex for the QAPI
     """
-    return UUID(ensure_unicode(uid, name='uid')).hex
+    return unicode_type(UUID(ensure_unicode(uid, name='uid')).hex)
 
 
 def str_to_foc(sfoc):

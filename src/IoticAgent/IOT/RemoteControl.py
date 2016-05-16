@@ -25,6 +25,8 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
+from IoticAgent.Core.Validation import Validation
+
 from .utils import hex_to_uuid
 
 
@@ -37,8 +39,8 @@ class RemoteControl(object):
 
     def __init__(self, client, subid, controlid):
         self.__client = client
-        self.__subid = subid
-        self.__controlid = controlid
+        self.__subid = Validation.guid_check_convert(subid)
+        self.__controlid = Validation.guid_check_convert(controlid)
 
     @property
     def subid(self):

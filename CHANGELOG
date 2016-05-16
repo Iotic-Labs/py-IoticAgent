@@ -5,6 +5,7 @@ UNRELEASED
 - Removed redundant seqnum & lowseq_resend parameters (Core.Client)
 - Print version information on info logging level
 - Minor documentation updates
+- Minor resource class validation & consistency updates
 
 v0.3.0
 - Updated for QAPI v0.7.0 support

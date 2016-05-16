@@ -23,6 +23,7 @@ from IoticAgent.Core.Const import (P_RESOURCE, R_FEED, R_CONTROL, R_SUB, P_ID, P
                                    P_POINT_ID, P_POINT_ENTITY_LID, P_POINT_TYPE, P_EPID)
 from IoticAgent.Core import ThreadSafeDict
 from IoticAgent.Core.compat import raise_from, string_types, Sequence
+from IoticAgent.Core.Validation import Validation
 
 from .Exceptions import IOTClientError
 from .RemoteControl import RemoteControl
@@ -41,11 +42,10 @@ class Thing(object):  # pylint: disable=too-many-public-methods
     """
 
     def __init__(self, client, lid, guid, epId):
-        #
         self.__client = client
-        self.__lid = lid
-        self.__guid = guid
-        self.__epId = epId
+        self.__lid = Validation.lid_check_convert(lid)
+        self.__guid = Validation.guid_check_convert(guid)
+        self.__epId = Validation.guid_check_convert(epId)
         #
         # Keep track of newly created points & subs (the requests for which originated from current agent)
         self.__new_feeds = ThreadSafeDict()

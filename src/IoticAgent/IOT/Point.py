@@ -24,6 +24,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
+from IoticAgent.Core.Validation import Validation
 
 from .utils import hex_to_uuid, foc_to_str
 
@@ -47,19 +48,16 @@ class Point(object):
     Controls are many-to-one
     """
     def __init__(self, client, foc, lid, pid, guid):
-        """
-        """
-        #
         self.__client = client
+        Validation.foc_check(foc)
         self.__foc = foc
-        self.__lid = lid
-        self.__pid = pid
-        #
-        self.__guid = guid
+        self.__lid = Validation.lid_check_convert(lid)
+        self.__pid = Validation.pid_check_convert(pid)
+        self.__guid = Validation.guid_check_convert(guid)
 
     @property
     def guid(self):
-        """The Globally Unique ID of this Thing.  In the 8-4-4-4-12 format
+        """The Globally Unique ID of this Point.  In the 8-4-4-4-12 format
         """
         return hex_to_uuid(self.__guid)
 
