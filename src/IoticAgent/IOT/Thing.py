@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 from contextlib import contextmanager
+from functools import partial
 import logging
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ from .Exceptions import IOTClientError
 from .RemoteControl import RemoteControl
 from .RemoteFeed import RemoteFeed
 from .Point import Point, _POINT_TYPES
-from .utils import foc_to_str, uuid_to_hex, hex_to_uuid
+from .utils import foc_to_str, uuid_to_hex
 
 try:
     from .ThingMeta import ThingMeta
@@ -52,11 +53,25 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         self.__new_controls = ThreadSafeDict()
         self.__new_subs = ThreadSafeDict()
 
+    def __str__(self):
+        return '%s (thing, %s)' % (self.__guid, self.__lid)
+
+    def __hash__(self):
+        # Why not just hash guid? Because Thing is used before knowing guid in some cases
+        # Why not hash without guid? Because in two separate containers one could have identicial things
+        # (if not taking guid into account)
+        return hash(self.__lid) ^ hash(self.__guid)
+
+    def __eq__(self, other):
+        return (isinstance(other, Thing) and
+                self.__guid == other.__guid and
+                self.__lid == other.__lid)
+
     @property
     def guid(self):
-        """The Globally Unique ID of this Thing.  In the 8-4-4-4-12 format
+        """The Globally Unique ID of this Thing in hex form (undashed).
         """
-        return hex_to_uuid(self.__guid)
+        return self.__guid
 
     @property
     def lid(self):
@@ -403,7 +418,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         logger.info("create_feed_async(pid=\"%s\") [lid=%s]", pid, self.__lid)
         return self.__create_point_async(R_FEED, pid)
 
-    def create_control(self, pid, control_cb):
+    def create_control(self, pid, callback, callback_parsed=None):
         """Create a control for this Thing with a local point id (pid) and a control request feedback
 
         Returns a new [Point](Point.m.html#IoticAgent.IOT.Point.Point) object
@@ -417,7 +432,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `pid` (required) (string) local id of your Control
 
-        `control_cb` (required) (function reference) callback function to invoke on receipt of a control request.
+        `callback` (required) (function reference) callback function to invoke on receipt of a control request.
         The callback receives a single dict argument, with keys of:
 
             #!python
@@ -428,13 +443,31 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             'lid'       # (local id of control)
             'confirm'   # (whether a confirmation is expected)
             'requestId' # (required for sending confirmation)
-        """
-        logger.info("create_control(pid=\"%s\", control_cb=%s) [lid=%s]", pid, control_cb, self.__lid)
-        return self.__create_point(R_CONTROL, pid, control_cb=control_cb)
 
-    def create_control_async(self, pid, control_cb):
-        logger.info("create_control_async(pid=\"%s\", control_cb=%s) [lid=%s]", pid, control_cb, self.__lid)
-        return self.__create_point_async(R_CONTROL, pid, control_cb=control_cb)
+        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of control data. This
+        is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
+        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
+        if the point data could not be parsed according to its current value description.
+
+        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
+        """
+        logger.info("create_control(pid=\"%s\", control_cb=%s) [lid=%s]", pid, callback, self.__lid)
+        if callback_parsed:
+            callback = self.__get_parsed_control_callback(pid, callback, callback_parsed)
+        return self.__create_point(R_CONTROL, pid, control_cb=callback)
+
+    def create_control_async(self, pid, callback, callback_parsed=None):
+        logger.info("create_control_async(pid=\"%s\", control_cb=%s) [lid=%s]", pid, callback, self.__lid)
+        if callback_parsed:
+            callback = self.__get_parsed_control_callback(pid, callback, callback_parsed)
+        return self.__create_point_async(R_CONTROL, pid, control_cb=callback)
+
+    def __get_parsed_control_callback(self, pid, callback, callback_parsed):
+        Validation.callable_check(callback_parsed)
+        return partial(self.__client._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL,
+                       # used by PointDataObjectHandler as reference
+                       Point(self.__client, R_CONTROL, self.__lid, pid, '0'*32))
 
     def __delete_point(self, foc, pid):
         evt = self.__client._request_point_delete(foc, self.__lid, pid)
@@ -539,6 +572,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             # don't preserve reference if request creation failed
             with new_subs:
                 new_subs.pop(key, None)
+            raise
 
     def __sub_make_request(self, foc, gpid, callback):
         """Make right subscription request depending on whether local or global - used by __sub*"""
@@ -571,7 +605,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
                     self.__lid)
         return self.__sub_make_request(foc, gpid, callback)
 
-    def follow(self, gpid, callback=None):
+    def follow(self, gpid, callback=None, callback_parsed=None):
         """Create a subscription (i.e. follow) a Feed/Point with a global point id (gpid) and a feed data callback
 
         Returns a new [RemoteFeed](RemoteFeed.m.html#IoticAgent.IOT.RemoteFeed.RemoteFeed)
@@ -594,10 +628,22 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             'data' # (decoded or raw bytes)
             'mime' # (None, unless payload was not decoded and has a mime type)
             'pid'  # (the global id of the feed from which the data originates)
+
+        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of feed data. This is
+        equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
+        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
+        if the point data could not be parsed according to its current value description.
+
+        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
         """
+        if callback_parsed:
+            callback = self.__client._get_parsed_feed_callback(callback_parsed, callback)
         return self.__sub(R_FEED, gpid, callback=callback)
 
-    def follow_async(self, gpid, callback=None):
+    def follow_async(self, gpid, callback=None, callback_parsed=None):
+        if callback_parsed:
+            callback = self.__client._get_parsed_feed_callback(callback_parsed, callback)
         return self.__sub_async(R_FEED, gpid, callback=callback)
 
     def attach(self, gpid):
@@ -714,7 +760,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             with new_subs:
                 if key in new_subs:
                     cls = RemoteFeed if payload[P_POINT_TYPE] == R_FEED else RemoteControl
-                    new_subs[key] = cls(self.__client, payload[P_ID], payload[P_POINT_ID])
+                    new_subs[key] = cls(self.__client, payload[P_ID], payload[P_POINT_ID], payload[P_ENTITY_LID])
                 else:
                     logger.warning('Ignoring subscription creation for unexpected %s: %s',
                                    foc_to_str(payload[P_POINT_TYPE]), key[1])

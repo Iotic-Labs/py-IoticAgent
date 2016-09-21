@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 from sys import version_info
+from keyword import kwlist
 
 PY3 = (version_info[0] == 3)
 
@@ -57,8 +58,20 @@ if PY3:  # noqa (complexity)
         else:
             raise ValueError('%s not a valid (unicode) string' % (name if name else 'Argument'))
 
+    # add keywords which are specified in PY2
+    __KEYWORDS = frozenset(kwlist + ['exec', 'print'])
+
+    def valid_identifier(name):
+        """Determines whether the given name could be used a Python identifier"""
+        try:
+            name = ensure_unicode(name)
+        except ValueError:
+            return False
+        return name.isidentifier() and name not in __KEYWORDS
+
 # PY2k
 else:
+    import ast as _ast
     from Queue import Queue, Empty, Full  # noqa (unused import)
     from urlparse import urlparse  # noqa (unsed import)
 
@@ -93,6 +106,30 @@ else:
         else:
             raise ValueError('%s not a valid (unicode) string' % (name if name else 'Argument'))
 
+    # add keywords which are specified in PY3
+    __KEYWORDS = frozenset(kwlist + ['True', 'False', 'None', 'nonlocal'])
+
+    def valid_identifier(name):
+        """Determines whether the given name could be used a Python identifier"""
+        try:
+            name = ensure_unicode(name)
+        except ValueError:
+            return False
+
+        if name in __KEYWORDS:
+            return False
+
+        try:
+            root = _ast.parse(name)
+        except:
+            return False
+
+        return (isinstance(root, _ast.Module) and
+                len(root.body) == 1 and
+                isinstance(root.body[0], _ast.Expr) and
+                isinstance(root.body[0].value, _ast.Name) and
+                root.body[0].value.id == name)
+
 
 if version_info[:2] == (3, 2):
     # pylint: disable=exec-used
@@ -112,9 +149,9 @@ else:
 
 try:
     # only available since 3.3
-    from collections.abc import Sequence, Mapping  # noqa (unused import)
+    from collections.abc import Sequence, Mapping, Iterable  # noqa (unused import)
 except ImportError:
-    from collections import Sequence, Mapping  # noqa (unused import)
+    from collections import Sequence, Mapping, Iterable  # noqa (unused import)
 
 try:
     # only available since 3.3
@@ -137,7 +174,7 @@ def ssl_version_check():
 
 
 # callback function check helper
-try:
+try:  # noqa (complexity)
     # v3.3+ only
     from inspect import signature
 
@@ -152,8 +189,15 @@ try:
 except ImportError:
     # deprecated in v3.5+
     from inspect import getcallargs
+    from functools import partial
 
     def arg_checker(func, *args, **kwargs):
+        # getcallargs doesn't support partials, hence this workaround
+        if isinstance(func, partial):
+            args += func.args
+            if func.keywords:
+                kwargs.update(func.keywords)
+            func = func.func
         try:
             getcallargs(func, *args, **kwargs)
         except TypeError:

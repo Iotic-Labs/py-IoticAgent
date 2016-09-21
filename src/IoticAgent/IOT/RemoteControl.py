@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 from IoticAgent.Core.Validation import Validation
 
-from .utils import hex_to_uuid
+from .Point import PointDataObject
 
 
 class RemoteControl(object):
@@ -37,29 +37,38 @@ class RemoteControl(object):
     This helper object exposes the `ask()` and `tell()` methods and some others.
     """
 
-    def __init__(self, client, subid, controlid):
+    def __init__(self, client, subid, controlid, lid):
         self.__client = client
         self.__subid = Validation.guid_check_convert(subid)
         self.__controlid = Validation.guid_check_convert(controlid)
+        self.__lid = Validation.lid_check_convert(lid)
 
     @property
     def subid(self):
         """`Advanced users only`
-        The global subscription ID for the connection to this remote control. In the 8-4-4-4-12 format
+        The global subscription ID for the connection to this remote control in hex form (undashed).
         """
-        return hex_to_uuid(self.__subid)
+        return self.__subid
 
     @property
     def guid(self):
-        """The Globally Unique ID of the control to which you've attached.  In 8-4-4-4-12 format
+        """The Globally Unique ID of the control to which you've attached in hex form (undashed).
         """
-        return hex_to_uuid(self.__controlid)
+        return self.__controlid
+
+    @property
+    def lid(self):
+        """Local id of thing which has attached to this control"""
+        return self.__lid
+
+    def get_template(self):
+        """Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)
+        instance to use with this control."""
+        return self.__client._get_point_data_handler_for(self).get_template()
 
     def ask(self, data, mime=None):
         """Request a remote control to do something.  Ask is "fire-and-forget" in that you won't receive
         any notification of the success or otherwise of the action at the far end.
-
-        Returns True (which doesn't mean the action has happened, just that the request has been sent
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -73,6 +82,8 @@ class RemoteControl(object):
         [share()](./Point.m.html#IoticAgent.IOT.Point.Point.share)
         """
         logger.info("ask() [subid=%s]", self.__subid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
         evt = self.__client._request_sub_ask(self.__subid, data, mime)
         evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
@@ -116,10 +127,12 @@ class RemoteControl(object):
         [share()](./Point.m.html#IoticAgent.IOT.Point.Point.share)
         """
         logger.info("tell(timeout=%s) [subid=%s]", timeout, self.__subid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
         evt = self.__client._request_sub_tell(self.__subid, data, timeout, mime=mime)
         evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
-        return 'success' if evt.payload['success'] else evt.payload['reason']
+        return True if evt.payload['success'] else evt.payload['reason']
 
     def tell_async(self, data, timeout=10, mime=None):
         """Asyncronous version of [tell()](./RemoteControl.m.html#IoticAgent.IOT.RemoteControl.RemoteControl.tell)

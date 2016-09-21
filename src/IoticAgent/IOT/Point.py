@@ -23,10 +23,11 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-from IoticAgent.Core.Const import R_FEED, R_CONTROL
 from IoticAgent.Core.Validation import Validation
+from IoticAgent.Core.Const import R_FEED, R_CONTROL
+from IoticAgent.Core.compat import Sequence, Mapping, raise_from, string_types, ensure_unicode
 
-from .utils import hex_to_uuid, foc_to_str
+from .utils import private_names_for, foc_to_str
 
 try:
     from .PointMeta import PointMeta
@@ -55,11 +56,27 @@ class Point(object):
         self.__pid = Validation.pid_check_convert(pid)
         self.__guid = Validation.guid_check_convert(guid)
 
+    def __hash__(self):
+        # Why not just hash guid? Because Point is used before knowing guid in some cases
+        # Why not hash without guid? Because in two separate containers one could have identicial points
+        # (if not taking guid into account)
+        return hash(self.__lid) ^ hash(self.__pid) ^ hash(self.__foc) ^ hash(self.__guid)
+
+    def __eq__(self, other):
+        return (isinstance(other, Point) and
+                self.__guid == other.__guid and
+                self.__foc == other.__foc and
+                self.__lid == other.__lid and
+                self.__pid == other.__pid)
+
+    def __str__(self):
+        return '%s (%s: %s, %s)' % (self.__guid, foc_to_str(self.__foc), self.__lid, self.__pid)
+
     @property
     def guid(self):
-        """The Globally Unique ID of this Point.  In the 8-4-4-4-12 format
+        """The Globally Unique ID of this Point in hex form (undashed).
         """
-        return hex_to_uuid(self.__guid)
+        return self.__guid
 
     @property
     def lid(self):
@@ -112,7 +129,7 @@ class Point(object):
 
         `offset` (optional) (integer) Return value details starting at this offset
         """
-        logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", self.__lid, self.__pid, limit, offset)
+        logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", limit, offset, self.__lid, self.__pid)
         evt = self.__client._request_point_value_list(self.__lid, self.__pid, self.__foc, limit=limit, offset=offset)
         evt.wait(self.__client.sync_timeout)
 
@@ -145,6 +162,11 @@ class Point(object):
 
         self.__client._except_if_failed(evt)
         return evt.payload['subs']
+
+    def get_template(self):
+        """Get new [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject) instance
+        to use for sharing data."""
+        return self.__client._get_point_data_handler_for(self).get_template()
 
     def share(self, data, mime=None):
         """Share some data from this Point
@@ -183,12 +205,18 @@ class Point(object):
             my_feed.share("<xml>...</xml>".encode('utf8'), mime="text/xml")
         """
         logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.__lid, self.__pid)
+        if self.__foc != R_FEED:
+            raise TypeError('Only feeds can share (this is a %s)' % self.foc)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
         evt = self.__client._request_point_share(self.__lid, self.__pid, data, mime)
         evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
 
     def share_async(self, data, mime=None):
         logger.info("share_async() [lid=\"%s\",pid=\"%s\"]", self.__lid, self.__pid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
         return self.__client._request_point_share(self.__lid, self.__pid, data, mime)
 
     def get_meta(self):
@@ -389,3 +417,122 @@ class Point(object):
         evt = self.__client._request_point_value_delete(self.__lid, self.__pid, self.__foc, label, lang)
         evt.wait(self.__client.sync_timeout)
         self.__client._except_if_failed(evt)
+
+
+class PointDataObject(object):
+    """Represents a point data reading or template for filling in values, ready to be e.g. shared. NOT threadsafe."""
+
+    __slots__ = tuple(private_names_for('PointDataObject', ('__values', '__filter')))
+
+    def __init__(self, values, value_filter):
+        """Instantiated by
+        [PointDataObjectHandler](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObjectHandler)"""
+        self.__values = _PointValueWrapper(values)
+        self.__filter = value_filter
+
+    @property
+    def values(self):
+        """List of all values"""
+        return self.__values
+
+    def unset(self):
+        """Unsets all values"""
+        for value in self.__values:
+            del value.value
+
+    @property
+    def missing(self):
+        """List of values which do not have a value set yet"""
+        return [value for value in self.__values if value.unset]
+
+    def filter_by(self, text=(), types=(), units=(), include_unset=False):
+        """Return subset of values which match the given text, types and/or units. For a value to be matched, at least
+        one item from each specified filter category has to apply to a value. Each of the categories must be specified
+        as a sequence of strings. If `include_unset` is set, unset values will also be considered."""
+        if not (isinstance(text, Sequence) and all(isinstance(phrase, string_types) for phrase in text)):
+            raise TypeError('text should be sequence of strings')
+        values = ([self.__values[name] for name in self.__filter.filter_by(types=types, units=units)
+                   if include_unset or not self.__values[name].unset]
+                  if types or units else self.__values)
+        if text:
+            # avoid unexpected search by individual characters if a single string was specified
+            if isinstance(text, string_types):
+                text = (ensure_unicode(text),)
+            text = [phrase.lower() for phrase in text]
+            values = [value for value in values
+                      if any((phrase in value.label or phrase in value.description) for phrase in text)]
+        return values
+
+    def to_dict(self):
+        """Converts the set of values into a dictionary. Unset values are excluded."""
+        return {value.label: value.value for value in self.__values if not value.unset}
+
+    @classmethod
+    def _from_dict(cls, values, value_filter, dictionary, allow_unset=True):
+        """Instantiates new PointDataObject, populated from the given dictionary. With allow_unset=False, a ValueError
+        will be raised if any value has not been set. Used by PointDataObjectHandler"""
+        if not isinstance(dictionary, Mapping):
+            raise TypeError('dictionary should be mapping')
+        obj = cls(values, value_filter)
+        values = obj.__values
+        for name, value in dictionary.items():
+            if not isinstance(name, string_types):
+                raise TypeError('Key %s is not a string' % str(name))
+            setattr(values, name, value)
+        if obj.missing and not allow_unset:
+            raise ValueError('%d value(s) are unset' % len(obj.missing))
+        return obj
+
+
+class _PointValueWrapper(object):
+    """Encapsulates a set of values, accessible by their label as well as an iterator. NOT threadsafe.
+
+    pvw = PointValueWrapper(SEQUENCE_OF_VALUES)
+    # This will produce a ValueError if the value has not been set yet
+    print(pvw.some_value)
+    pvw.some_value = 2
+    print(pvw.some_value)
+
+    for value in pvw:
+        print('%s - %s' % (value.label, value.description))
+
+    The whole value object can also be retrieved via key access:
+
+    print(pvw['some_value'].value)
+    """
+
+    __slots__ = tuple(private_names_for('_PointValueWrapper', ('__values',)))
+
+    def __init__(self, values):
+        self.__values = {value.label: value.copy() for value in values}
+
+    def __iter__(self):
+        return iter(self.__values.values())
+
+    def __getattr__(self, name):
+        try:
+            return self.__values[name].value
+        except KeyError as ex:
+            raise_from(AttributeError('no such value'), ex)
+
+    def __getitem__(self, key):
+        try:
+            return self.__values[key]
+        except KeyError as ex:
+            raise_from(KeyError('no such value'), ex)
+
+    def __setattr__(self, name, value):
+        # private attributes belonging to class
+        if name.startswith('_PointValueWrapper__'):
+            super(_PointValueWrapper, self).__setattr__(name, value)
+        else:
+            try:
+                self.__values[name].value = value
+            except KeyError as ex:
+                raise_from(AttributeError('no such value'), ex)
+
+    def __delattr__(self, name):
+        try:
+            del self.__values[name].value
+        except KeyError as ex:
+            raise_from(AttributeError('no such value'), ex)

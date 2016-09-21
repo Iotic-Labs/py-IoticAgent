@@ -22,8 +22,6 @@ logger = logging.getLogger(__name__)
 
 from IoticAgent.Core.Validation import Validation
 
-from .utils import hex_to_uuid
-
 
 class RemoteFeed(object):
     """Feed Subscription helper object.
@@ -32,23 +30,29 @@ class RemoteFeed(object):
     This helper object provides `simulate()` and `get_last()`
     """
 
-    def __init__(self, client, subid, feedid):
+    def __init__(self, client, subid, feedid, lid):
         self.__client = client
         self.__subid = Validation.guid_check_convert(subid)
         self.__feedid = Validation.guid_check_convert(feedid)
+        self.__lid = Validation.lid_check_convert(lid)
 
     @property
     def subid(self):
         """`Advanced users only`
-        The global subscription ID for the connection to this remote feed. In the 8-4-4-4-12 format
+        The global subscription ID for the connection to this remote feed in hex form (undashed).
         """
-        return hex_to_uuid(self.__subid)
+        return self.__subid
 
     @property
     def guid(self):
-        """The Globally Unique ID of the Point you've followed.  In 8-4-4-4-12 format
+        """The Globally Unique ID of the Point you've followed in hex form (undashed).
         """
-        return hex_to_uuid(self.__feedid)
+        return self.__feedid
+
+    @property
+    def lid(self):
+        """Local id of thing which is following to this feed"""
+        return self.__lid
 
     def get_last(self):
         """Get the last instance of feeddata from the feed.  Useful if the remote Thing doesn't publish

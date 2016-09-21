@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +110,7 @@ TIME = 'time'
 omitting everything up to and including the separator "T". Examples: "00:00:00" is midnight,
 and "13:04:00" is an hour and four minutes after noon.
 '''
-URI = 'anyUri'
+URI = 'anyURI'
 '''
 The data must conform to the syntax of a Uniform Resource Identifier (URI), as defined in RFC 2396
 as amended by RFC 2732. Example: "http://www.nmt.edu/tcc/"

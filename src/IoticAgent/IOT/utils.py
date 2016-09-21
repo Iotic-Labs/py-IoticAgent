@@ -18,14 +18,16 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
+from re import compile as re_compile
 from uuid import UUID
 
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
-from IoticAgent.Core.compat import ensure_unicode, raise_from, unicode_type
+from IoticAgent.Core.compat import ensure_unicode, raise_from, unicode_type, string_types, Iterable
 
 __FOC_STR_MAPPING = {'feed': R_FEED,
                      'control': R_CONTROL}
 __FOC_CODE_MAPPING = {value: key for key, value in __FOC_STR_MAPPING.items()}
+__PRIVATE_NAME_PATTERN = re_compile(r'^__.*[^_]_?$')
 
 
 def hex_to_uuid(hstr):
@@ -65,3 +67,24 @@ def version_string_to_tuple(version):
 def bool_from(obj):
     """Returns True if string representation of obj is not 0 or False (case-insensitive)"""
     return str(obj).lower() not in ('0', 'false')
+
+
+def private_name_for(var_name, cls):
+    """Returns mangled variable name (if applicable) for the given variable and class instance.
+       See https://docs.python.org/3/tutorial/classes.html#private-variables"""
+    if not (isinstance(var_name, string_types) and var_name):
+        raise TypeError('var_name must be non-empty string')
+    if not (isinstance(cls, type) or isinstance(cls, string_types)):
+        raise TypeError('cls not a class or string')
+    if __PRIVATE_NAME_PATTERN.match(var_name):
+        class_name = cls.__name__ if isinstance(cls, type) else cls
+        return '_%s%s' % (class_name.lstrip('_'), var_name)
+    else:
+        return var_name
+
+
+def private_names_for(cls, names):
+    """Returns iterable of private names using privateNameFor()"""
+    if not isinstance(names, Iterable):
+        raise TypeError('names must be an interable')
+    return (private_name_for(item, cls) for item in names)

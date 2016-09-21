@@ -16,6 +16,7 @@
 
 from __future__ import unicode_literals
 
+from functools import partial
 import warnings
 import logging
 logger = logging.getLogger(__name__)
@@ -26,25 +27,27 @@ from IoticAgent.Core.compat import Mapping, raise_from, string_types
 from IoticAgent.Core.Const import (E_FAILED_CODE_NOTALLOWED, E_FAILED_CODE_UNKNOWN, E_FAILED_CODE_MALFORMED,
                                    E_FAILED_CODE_INTERNALERROR, E_FAILED_CODE_ACCESSDENIED, M_CLIENTREF, M_PAYLOAD,
                                    R_ENTITY, R_FEED, R_CONTROL, R_SUB, P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID,
-                                   P_RESOURCE, P_MESSAGE, P_DATA, P_MIME)
+                                   P_RESOURCE, P_MESSAGE, P_DATA, P_MIME, P_POINT_TYPE, P_POINT_ID)
 from IoticAgent.Core.utils import validate_nonnegative_int
+from IoticAgent.Core.Validation import Validation
 
 from . import __version__
 from .Thing import Thing
 from .Config import Config
 from .DB import DB
-from .utils import uuid_to_hex, version_string_to_tuple, bool_from
+from .utils import uuid_to_hex, version_string_to_tuple, bool_from, foc_to_str
 from .Exceptions import (IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError,
                          IOTSyncTimeout)
 from .Point import Point, _POINT_TYPES
 from .RemoteFeed import RemoteFeed
 from .RemoteControl import RemoteControl
+from .PointValueHelper import PointDataObjectHandler
 
 
 class Client(object):  # pylint: disable=too-many-public-methods
 
     # Core version targeted by IOT client
-    __core_version = '0.3.1'
+    __core_version = '0.3.2'
 
     def __init__(self, config=None, db=None):
         """
@@ -111,6 +114,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
         # Allows client to forward e.g. Point creation callbacks to the relevant Thing instance. This contains the most
         # recent instance of any single Thing (since creation requests can be performed more than once).
         self.__private_things = ThreadSafeDict()
+        # PointDataObjectHandler cache
+        self.__point_data_handlers = ThreadSafeDict()
 
     @property
     def agent_id(self):
@@ -245,7 +250,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         return self.__client.is_alive()
 
-    def register_catchall_feeddata(self, callback):
+    def register_catchall_feeddata(self, callback, callback_parsed=None):
         """
         Registers a callback that is called for all feeddata your Thing receives
 
@@ -257,11 +262,21 @@ class Client(object):  # pylint: disable=too-many-public-methods
             ...
             client.register_catchall_feeddata(feeddata_callback)
 
-       `callback` (required) the function name that you want to be called on receipt of new feed data
+        `callback` (required) the function name that you want to be called on receipt of new feed data
+
+        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of feed data. This is
+        equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
+        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
+        if the point data could not be parsed according to its current value description.
+
+        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
 
         More details on the contents of the `data` dictionary for feeds see:
         [follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)
         """
+        if callback_parsed:
+            callback = self._get_parsed_feed_callback(callback_parsed, callback)
         return self.__client.register_callback_feeddata(callback)
 
     def register_catchall_controlreq(self, callback):
@@ -314,6 +329,26 @@ class Client(object):  # pylint: disable=too-many-public-methods
                          ('entityLid', 'My_First_Thing'), ('subCount', 13)])
         """
         return self.__client.register_callback_subscription(callback)
+
+    def __callback_subscribed_filter(self, callback, msg):
+        payload = msg[M_PAYLOAD]
+        if payload[P_RESOURCE] == R_SUB:
+            cls = RemoteFeed if payload[P_POINT_TYPE] == R_FEED else RemoteControl
+            callback(cls(self, payload[P_ID], payload[P_POINT_ID], payload[P_ENTITY_LID]))
+
+    def register_callback_subscribed(self, callback):
+        """
+        Register a callback for new subscription. This gets called whenever one of *your* things subscribes to something
+        else.
+
+        `Note` it is not called when whenever something else subscribes to your thing.
+
+        The payload passed to your callback is either a
+        [RemoteControl](RemoteControl.m.html#IoticAgent.IOT.RemoteControl.RemoteControl) or
+        [RemoteFeed](RemoteFeed.m.html#IoticAgent.IOT.RemoteFeed.RemoteFeed) instance.
+        """
+        return self.__client.register_callback_created(partial(self.__callback_subscribed_filter, callback),
+                                                       serialised=False)
 
     def simulate_feeddata(self, feedid, data=None, mime=None):
         """Simulate the last feeddata received for given feedid
@@ -412,6 +447,35 @@ class Client(object):  # pylint: disable=too-many-public-methods
         self.__config.set('agent', 'seqnum', self.__client.get_seqnum())
         self.__config.set('agent', 'lang', self.__client.default_lang)
         self.__config.save()
+
+    def _get_parsed_feed_callback(self, callback_parsed, callback):
+        Validation.callable_check(callback_parsed)
+        return partial(self._parsed_callback_wrapper, callback_parsed, callback, R_FEED, None)
+
+    def _get_point_data_handler_for(self, point):
+        """Used by point instances and data callbacks"""
+        with self.__point_data_handlers:
+            try:
+                return self.__point_data_handlers[point]
+            except KeyError:
+                return self.__point_data_handlers.setdefault(point, PointDataObjectHandler(point, self))
+
+    def _parsed_callback_wrapper(self, callback_parsed, callback_plain, foc, point_ref, data):
+        """Used to by register_catchall_feeddata() and Thing class (follow, create_point) to present point
+        data as an object."""
+        if foc == R_FEED:
+            point_ref = data['pid']
+
+        try:
+            data['parsed'] = self._get_point_data_handler_for(point_ref).get_template(data=data['data'])
+        except:
+            logger.warning('Failed to parse %s data for %s%s', foc_to_str(foc), point_ref,
+                           '' if callback_plain else ', ignoring',
+                           exc_info=logger.isEnabledFor(logging.DEBUG))
+            if callback_plain:
+                callback_plain(data)
+        else:
+            callback_parsed(data)
 
     @staticmethod
     def _except_if_failed(event):
@@ -538,9 +602,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
             # reduced=False returns dict similar to below
             {
                 "2b2d8b068e404861b19f9e060877e002": {
-                    "long": "-1.74803",
+                    "long": -1.74803,
                     "matches": 3.500,
-                    "lat": "52.4539",
+                    "lat": 52.4539,
                     "label": "Weather Station #2",
                     "points": {
                         "a300cc90147f4e2990195639de0af201": {
@@ -556,9 +620,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
                     }
                 },
                 "76a3b24b02d34f20b675257624b0e001": {
-                    "long": "0.716356",
+                    "long": 0.716356,
                     "matches": 2.000,
-                    "lat": "52.244384",
+                    "lat": 52.244384,
                     "label": "Weather Station #1",
                     "points": {
                         "fb1a4a4dbb2642ab9f836892da93f101": {
@@ -696,7 +760,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
         `guid_or_thing` (mandatory) (string or object).
         If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12
-        format.
+        (or undashed) format.
         If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
         you the description of that object.
 
@@ -720,9 +784,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
     def __cb_created(self, msg, duplicated=False):
         # Only consider solicitied creation events since there is no cache. This also applies to things reassigned to
         # this agent.
-        if msg[M_CLIENTREF] is not None:
-            payload = msg[M_PAYLOAD]
+        payload = msg[M_PAYLOAD]
 
+        if msg[M_CLIENTREF] is not None:
             if payload[P_RESOURCE] == R_ENTITY:
                 lid = payload[P_LID]
                 if payload[P_EPID] != self.__client.epId:

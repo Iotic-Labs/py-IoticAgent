@@ -19,11 +19,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 from .compat import Queue, Empty, Event, Lock
+from .Profiler import profiled_thread
 
 
 DEBUG_ENABLED = logger.getEffectiveLevel() == logging.DEBUG
 
 
+@profiled_thread
 def worker(num, queue, stop):
     stop_is_set = stop.is_set
     queue_get = queue.get

@@ -64,9 +64,17 @@ class ResourceMeta(object):
             return URIRef(s)
 
     def _get_properties(self, predicate):
+        # returns properties as n3() encoded string
         ret = []
         for _, _, o in self._graph.triples((None, predicate, None)):
             ret.append(o.n3())
+        return ret
+
+    def _get_properties_rdf(self, predicate):
+        # returns properties as rdflib objects
+        ret = []
+        for _, _, o in self._graph.triples((None, predicate, None)):
+            ret.append(o)
         return ret
 
     def _remove_properties_by_language(self, predicate, lang):
@@ -161,9 +169,17 @@ class ResourceMeta(object):
         """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
         you'll get a list of labels in the `N3` syntax, e.g. `["fish"@en, "poisson"@fr]`
 
-        Returns list of labels in N3 formal
+        Returns list of labels in N3 format
         """
         return self._get_properties(RDFS.label)
+
+    def get_labels_rdf(self):
+        """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
+        you'll get a list of labels as rdflib.term.Literal objects
+
+        Returns list of labels as rdflib.term.Literals
+        """
+        return self._get_properties_rdf(RDFS.label)
 
     def delete_label(self, lang=None):
         """Deletes all the `label` metadata properties on your Thing/Point for this language
@@ -203,6 +219,14 @@ class ResourceMeta(object):
         Returns list of descriptions in N3 format or empty list if none.
         """
         return self._get_properties(RDFS.comment)
+
+    def get_descriptions_rdf(self):
+        """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
+        language, so you'll get a list of descriptions as rdflib.term.Literals
+
+        Returns list of descriptions as rdflib.term.Literals or empty list if none.
+        """
+        return self._get_properties_rdf(RDFS.comment)
 
     def delete_description(self, lang=None):
         """Deletes all the `label` metadata properties on your Thing/Point for this language

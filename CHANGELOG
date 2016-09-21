@@ -1,3 +1,24 @@
+v0.3.2
+- Remote point instances now include entity LID to which subscription applies
+- Start processing callbacks only after QAPI ping has completed
+- Return resource guids without dashes (to be in line with request
+  responses which have no dashes for them). Dashed guids can still be
+  provided as input to methods.
+- Added ThingRunner class to ease running of agent code (optionally in
+  background thread).
+- Added feed/control data template generator (from metadata)
+  Provides additional callbacks to filter only data which conforms to its
+  value description.
+- Return True on control tell success (string on failure)
+- Added check to prevent sharing attempt with Controls
+- Allow CRUD callbacks not to be serialised (so as to allow for
+  additional QAPI requests after e.g. receiving a sub-created callback)
+- Added subscribed (i.e. new subscription to own thing) calback
+- Fix unsolicited resource logging exception
+- Allow for easy profiling of agent threads (include user's own)
+- Correction to default throttling limits
+- Log (warn) long throttling waits
+
 v0.3.1
 - Request sending reliability improvements (on network failure)
 - Allow for underlying socket timeout to be configured

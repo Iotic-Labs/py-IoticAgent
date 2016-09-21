@@ -32,6 +32,7 @@ from ubjson import dumpb as ubjdumpb, loadb as ubjloadb, EXTENSION_ENABLED as ub
 from .AmqpLink import AmqpLink
 from .Exceptions import LinkException, LinkShutdownException
 from .RequestEvent import RequestEvent
+from .Profiler import profiled_thread
 from .MessageDecoder import decode_sent_msg, decode_rcvd_msg
 from .ThreadSafeDict import ThreadSafeDict
 from .Validation import Validation, VALIDATION_MAX_ENCODED_LENGTH
@@ -265,45 +266,46 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 return True
         return False
 
-    def register_callback_created(self, func):
+    def __add_callback(self, type_, func, serialised_if_crud=True):
+        """sync_if_crud indicates whether to serialise this callback (applies only to CRUD)"""
+        Validation.callable_check(func)
+        with self.__callbacks:
+            self.__callbacks[type_].append((func, serialised_if_crud))
+
+    def register_callback_created(self, func, serialised=True):
         """Register a callback function to receive QAPI Unsolicited (resource) CREATED. The
-        callback receives a single argument - the inner message.
+        callback receives a single argument - the inner message. If `serialised` is not set,
+        the callbacks might arrive out-of-order (e.g. created point before created thing).
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_CREATED].append(func)
+        self.__add_callback(_CB_CREATED, func, serialised_if_crud=serialised)
 
-    def register_callback_duplicate(self, func):
+    def register_callback_duplicate(self, func, serialised=True):
         """Register a callback function to receive QAPI Unsolicited (resource) DUPLICATE. The
-        callback receives a single argument - the inner message.
+        callback receives a single argument - the inner message. If `serialised` is not set,
+        the callbacks might arrive out-of-order.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_DUPLICATE].append(func)
+        self.__add_callback(_CB_DUPLICATE, func, serialised_if_crud=serialised)
 
-    def register_callback_renamed(self, func):
+    def register_callback_renamed(self, func, serialised=True):
         """Register a callback function to receive QAPI Unsolicited (resource) RENAMED. The
-        callback receives a single argument - the inner message.
+        callback receives a single argument - the inner message. If `serialised` is not set,
+        the callbacks might arrive out-of-order.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_RENAMED].append(func)
+        self.__add_callback(_CB_RENAMED, func, serialised_if_crud=serialised)
 
-    def register_callback_deleted(self, func):
+    def register_callback_deleted(self, func, serialised=True):
         """Register a callback function to receive QAPI Unsolicited (resource) DELETED. The
-        callback receives a single argument - the inner message.
+        callback receives a single argument - the inner message. If `serialised` is not set,
+        the callbacks might arrive out-of-order.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_DELETED].append(func)
+        self.__add_callback(_CB_DELETED, func, serialised_if_crud=serialised)
 
-    def register_callback_reassigned(self, func):
+    def register_callback_reassigned(self, func, serialised=True):
         """Register a callback function to receive QAPI Unsolicited (entity) REASSIGNED. The
-        callback receives a single argument - the inner message.
+        callback receives a single argument - the inner message. If `serialised` is not set,
+        the callbacks might arrive out-of-order.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_REASSIGNED].append(func)
+        self.__add_callback(_CB_REASSIGNED, func, serialised_if_crud=serialised)
 
     def register_callback_subscription(self, func):
         """Register a callback function to receive subscription count changes. The callback receives
@@ -312,33 +314,25 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         subCount (the current subscription count). Note: Subscription count changes can occur for
         each new (or deleted) subscription.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_SUBSCRIPTION].append(func)
+        self.__add_callback(_CB_SUBSCRIPTION, func)
 
     def register_callback_debug_send(self, func):
         """Register a callback function for every sent message, including on retries. The callback
            receives a single argument - the sent message in raw byte form.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_DEBUG_SEND].append(func)
+        self.__add_callback(_CB_DEBUG_SEND, func)
 
     def register_callback_debug_rcvd(self, func):
         """Register a callback function to every GOOD recieved message. The callback receives a single
         argument - the unwrapped message as a dict.
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_DEBUG_RCVD].append(func)
+        self.__add_callback(_CB_DEBUG_RCVD, func)
 
     def register_callback_debug_bad(self, func):
         """Register a callback function to every BAD received message (EG bad sign). The callback
         receives two arguments - the received message in raw byte form and the content type
         """
-        Validation.callable_check(func, arg_count=2)
-        with self.__callbacks:
-            self.__callbacks[_CB_DEBUG_BAD].append(func)
+        self.__add_callback(_CB_DEBUG_BAD, func)
 
     def register_callback_feeddata(self, func):
         """Register a callback function to every FEEDDATA message! The callback receives a single
@@ -346,9 +340,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         was not decoded and has a mime type) and 'pid' (the global id of the feed from which
         the data originates).
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_FEEDDATA].append(func)
+        self.__add_callback(_CB_FEEDDATA, func)
 
     def register_callback_controlreq(self, func):
         """Register a callback function to every CONTROLREQ message! The callback receives a single
@@ -358,9 +350,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         control), 'confirm' (whether a confirmation is expected) and 'requestId' (required for
         sending confirmation).
         """
-        Validation.callable_check(func)
-        with self.__callbacks:
-            self.__callbacks[_CB_CONTROLREQ].append(func)
+        self.__add_callback(_CB_CONTROLREQ, func)
 
     def simulate_feeddata(self, feedid, data, mime=None):
         """Send feed data"""
@@ -400,7 +390,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         try:
             callback = self.__callbacks[_CB_CONTROL][payload[P_ENTITY_LID]][payload[P_LID]]
         except KeyError:
-            logger.warning("Recevied Control Request for %s,%s but no callback registered.",
+            logger.warning("Received Control Request for %s,%s but no callback registered.",
                            payload[P_ENTITY_LID], payload[P_LID])
         else:
             self.__threadpool.submit(callback, arg)
@@ -419,8 +409,6 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
         self.__end.clear()
         try:
-            self.__threadpool.start()
-            self.__crud_threadpool.start()
             self.__network_retry_queue = Queue(self.__network_retry_queue_size)
             self.__network_retry_thread = Thread(target=self.__network_retry, name='network')
             self.__network_retry_thread.start()
@@ -436,22 +424,24 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             if not req.wait(5):
                 raise Exception("No container response to ping within 5s")
             # (for req.payload) pylint: disable=unsubscriptable-object
-            if req.success:
-                payload = req.payload
-                self.__qapi_version_check(payload)
-                if self.__default_lang is None:
-                    self.__default_lang = payload['lang']
-                self.__container_params = payload
-                try:
-                    self.set_compression(payload['compression'])
-                except ValueError as ex:
-                    raise_from(Exception('Container compression method (%d) unsupported' % payload['compression']), ex)
-            else:
+            if not req.success:
                 try:
                     info = ': %s' % req.payload[P_MESSAGE]
                 except (KeyError, TypeError):
                     info = ''
                 raise Exception("Unexpected ping failure: %s" % info)
+
+            payload = req.payload
+            self.__qapi_version_check(payload)
+            if self.__default_lang is None:
+                self.__default_lang = payload['lang']
+            self.__container_params = payload
+            try:
+                self.set_compression(payload['compression'])
+            except ValueError as ex:
+                raise_from(Exception('Container compression method (%d) unsupported' % payload['compression']), ex)
+            self.__threadpool.start()
+            self.__crud_threadpool.start()
         except:
             self.stop()
             raise
@@ -1100,7 +1090,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         #
         return True
 
-    def __network_retry(self):  # noqa (complexity)  pylint: disable=too-many-branches
+    @profiled_thread  # noqa (complexity)
+    def __network_retry(self):  # pylint: disable=too-many-branches
         queue_get = self.__network_retry_queue.get
         queue_task_done = self.__network_retry_queue.task_done
         retry_timeout = self.__network_retry_timeout
@@ -1160,11 +1151,13 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     def __fire_callback(self, type_, *args, **kwargs):
         """Returns True if at least one callback was called"""
         called = False
+        plain_submit = self.__threadpool.submit
         with self.__callbacks:
-            submit = self.__crud_threadpool.submit if type_ in _CB_CRUD_TYPES else self.__threadpool.submit
-            for func in self.__callbacks[type_]:
+            submit = self.__crud_threadpool.submit if type_ in _CB_CRUD_TYPES else plain_submit
+            for func, serialised_if_crud in self.__callbacks[type_]:
                 called = True
-                submit(func, *args, **kwargs)
+                # allow CRUD callbacks to not be serialised if requested
+                (submit if serialised_if_crud else plain_submit)(func, *args, **kwargs)
         return called
 
     def __dispatch_ka(self):

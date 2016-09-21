@@ -109,7 +109,7 @@ class Config(object):
                 'socket_timeout': 10,
                 'auto_encode_decode': 1,
                 'queue_size': 128,
-                'throttle': '540/30,1890/300'
+                'throttle': '480/30,1680/300'
             },
             'logging': {
                 'amqp': 'warning',

@@ -31,6 +31,7 @@ from socket import timeout as SocketTimeout
 
 from ..third.amqp import Connection, Message, exceptions
 
+from .Profiler import profiled_thread
 from .compat import raise_from, Event, RLock, monotonic
 from .Exceptions import LinkException
 
@@ -269,7 +270,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__last_id = msg.delivery_tag
             self.__unacked += 1
 
-    def __recv_run(self):  # noqa (complexity) pylint: disable=too-many-branches,too-many-statements
+    @profiled_thread  # noqa (complexity)
+    def __recv_run(self):  # pylint: disable=too-many-branches,too-many-statements
         """Main receive thread/loop
         """
         while not self.__end.is_set():
@@ -351,6 +353,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__recv_exc = exc
         self.__end.wait(wait_seconds)
 
+    @profiled_thread
     def __send_run(self):
         """Send request thread
         """

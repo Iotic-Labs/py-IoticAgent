@@ -26,7 +26,7 @@ from .compat import monotonic, int_types, raise_from
 class RateLimiter(object):
     """Allows an action to be automatically limited to at most N iterations over time interval T"""
 
-    def __init__(self, interval, iterations, wait_cmd=None):
+    def __init__(self, interval, max_iterations, wait_cmd=None):
         """
         `interval` - (int) time period in seconds to which max_iterations applies
 
@@ -35,7 +35,7 @@ class RateLimiter(object):
         `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
                      automatically interruptable wait.
         """
-        if not all(isinstance(param, int_types) and param > 0 for param in (interval, iterations)):
+        if not all(isinstance(param, int_types) and param > 0 for param in (interval, max_iterations)):
             raise ValueError('Parameters must be positive integers')
         if wait_cmd is None:
             self.__wait_cmd = self.sleep
@@ -47,7 +47,7 @@ class RateLimiter(object):
             self.__wait_cmd = wait_cmd
 
         self.__interval = interval
-        self.__max_iterations = iterations
+        self.__max_iterations = max_iterations
         self.__iterations = deque()
         self.__lock = Lock()
 
@@ -79,7 +79,10 @@ class RateLimiter(object):
             else:
                 # wait until oldest sample is too old
                 delay = max(0, iterations[0] + self.__interval - timestamp)
-                logger.debug('throttling delay: %f', delay)
+                # only notify user about longer delays
+                if delay > 1:
+                    logger.warning('Send throttling delay (interval=%d, max_iterations=%d): %.2fs', self.__interval,
+                                   self.__max_iterations, delay)
                 retval = self.__wait_cmd(delay)
                 # log actual addition time
                 iterations.append(monotonic())
