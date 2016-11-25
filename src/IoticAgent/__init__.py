@@ -176,7 +176,7 @@ You can share pretty much what you like: strings, bytes, dictionaries, json and 
 try to bundle it up for you.  You can be assured that whatever you share will come out "the other end"
  in the same format: share a dict; they get a dict, etc.
 
-More details: `IoticAgent.IOT.Point.Point.share`
+More details: `IoticAgent.IOT.Point.Feed.share`
 
 Coding - Following someone else's feed
 --------------------------------------
@@ -199,7 +199,7 @@ More details: `IoticAgent.IOT.Thing.Thing.follow`
 Coding - Simulating someone else's feed
 ---------------------------------------
 You might be wondering why you want to remember the
-[RemoteFeed](IOT/RemoteFeed.m.html#IoticAgent.IOT.RemoteFeed.RemoteFeed) object.  (`r_feed_current_values` in the code)
+[RemoteFeed](IOT/RemoteFeed.m.html#IoticAgent.IOT.RemotePoint.RemoteFeed) object.  (`r_feed_current_values` in the code)
 This can be useful if they don't publish often and you want to
 simulate their publishes in your code for testing.  Call `simulate()` on the remote feed object like so...
 
@@ -213,7 +213,7 @@ simulate their publishes in your code for testing.  Call `simulate()` on the rem
  block is necessary as `simulate()` will raise an exception if it's got nothing to simulate - normally because you've
  never received anything and it can't just make something up.
 
-More details: `IoticAgent.IOT.RemoteFeed.RemoteFeed.simulate`
+More details: `IoticAgent.IOT.RemotePoint.RemoteFeed.simulate`
 
 Coding - Following one of your own feeds
 ----------------------------------------
@@ -308,7 +308,7 @@ Coding - Attaching to a remote control
 --------------------------------------
 Attaching to a remote control is a bit like `following`-ing a feed, except the functions is `attach()` on
  the remote Thing.  Once you've attached, you can call `ask()` or `tell()` on your
- [RemoteControl](IOT/RemoteControl.m.html#IoticAgent.IOT.RemoteControl.RemoteControl) object.
+ [RemoteControl](IOT/RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl) object.
 
     #!python
     r_counters_GUID = "long-string-of-numbers"  # GUID of remote control

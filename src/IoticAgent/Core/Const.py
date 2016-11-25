@@ -44,6 +44,7 @@ E_CONTROLREQ = 8
 E_SUBSCRIBED = 9
 E_RENAMED = 10
 E_REASSIGNED = 11
+E_RECENTDATA = 12
 
 # Resource types
 R_PING = 0
@@ -100,6 +101,8 @@ P_DATA = 'data'
 P_SUCCESS = 'success'
 P_CONFIRM = 'confirm'
 P_SUB_ID = 'subId'
+P_TIME = 'time'
+P_SAMPLES = 'samples'
 
 #
 # Configuration

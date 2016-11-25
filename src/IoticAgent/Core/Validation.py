@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from __future__ import unicode_literals
+from datetime import datetime, timedelta
 from uuid import UUID
 from re import compile as re_compile
 
@@ -24,6 +25,7 @@ from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, en
 
 VALIDATION_LID_LEN = 64
 VALIDATION_MIME_LEN = 64
+VALIDATION_TIME_FMT = '%Y-%m-%dT%H:%M:%S.%fZ'
 VALIDATION_META_FMT = {'n3', 'xml', 'turtle'}
 VALIDATION_META_LANGUAGE = 2
 VALIDATION_META_LABEL = 64
@@ -59,7 +61,7 @@ _PATTERN_URL_PART = re_compile(r'^(?u)\S{3}\S*$')
 _LOCATION_SEARCH_ARGS = frozenset(('lat', 'long', 'radius'))
 
 
-class Validation(object):
+class Validation(object):  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def check_convert_string(obj, name=None,
@@ -171,6 +173,20 @@ class Validation(object):
                 return mime
             else:
                 raise ValueError('mime too long (%d)' % VALIDATION_MIME_LEN)
+
+    __zeroOffsetOrNone = frozenset((timedelta(0), None))
+
+    @classmethod
+    def datetime_check_convert(cls, time, allow_none=False, require_utc=True, to_iso8601=True):
+        if time is None and allow_none:
+            return None
+        if not isinstance(time, datetime):
+            raise ValueError('datetime instance required')
+        if require_utc:
+            offset = time.utcoffset()
+            if offset not in cls.__zeroOffsetOrNone:
+                raise ValueError('datetime instance must be naive or have zero UTC offset')
+        return ensure_unicode(time.strftime(VALIDATION_TIME_FMT)) if to_iso8601 else time
 
     @staticmethod
     def foc_check(foc):

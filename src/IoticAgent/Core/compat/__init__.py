@@ -199,7 +199,7 @@ except ImportError:
                 kwargs.update(func.keywords)
             func = func.func
         try:
-            getcallargs(func, *args, **kwargs)
+            getcallargs(func, *args, **kwargs)  # pylint: disable=deprecated-method
         except TypeError:
             return False
         else:

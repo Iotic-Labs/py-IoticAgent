@@ -14,6 +14,11 @@
 
 from __future__ import unicode_literals
 
+from functools import partial
+import logging
+logger = logging.getLogger(__name__)
+DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+
 from .compat import Event
 
 
@@ -24,7 +29,7 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
     """
 
     __slots__ = ('_RequestEvent__event', 'id_', 'success', 'payload', 'is_crud', 'exception', '_send_time',
-                 '_inner_msg_out', '_messages')
+                 '_inner_msg_out', '_messages', '_complete_func')
 
     def __init__(self, id_, inner_msg_out=None, is_crud=False):
         self.__event = Event()  # pylint: disable=assigning-non-slot
@@ -53,6 +58,9 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
         #
         # Raw messages from the QAPI
         self._messages = []
+        #
+        # function to run on completion
+        self._complete_func = None
 
     def _sent_without_response(self, send_time_before):
         """Used internally to determine whether the request has not received any response from the container and was
@@ -75,6 +83,15 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
     def _set(self):
         """Called internally by Client to indicate this request has finished"""
         self.__event.set()
+        if self._complete_func:
+            try:
+                self._complete_func()
+            except:
+                logger.warning('Post-completion function failed to run', exc_info=DEBUG_ENABLED)
+
+    def _run_on_completion(self, func, *args, **kwargs):
+        """Function to call when request has finished, after having been set. Paramters are NOT validated."""
+        self._complete_func = partial(func, *args, **kwargs)
 
     def wait(self, timeout=None):
         """Wait for the request to finish, optionally timing out. Returns True if the request has finished or False if

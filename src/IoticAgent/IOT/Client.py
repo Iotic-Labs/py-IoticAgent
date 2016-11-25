@@ -27,27 +27,25 @@ from IoticAgent.Core.compat import Mapping, raise_from, string_types
 from IoticAgent.Core.Const import (E_FAILED_CODE_NOTALLOWED, E_FAILED_CODE_UNKNOWN, E_FAILED_CODE_MALFORMED,
                                    E_FAILED_CODE_INTERNALERROR, E_FAILED_CODE_ACCESSDENIED, M_CLIENTREF, M_PAYLOAD,
                                    R_ENTITY, R_FEED, R_CONTROL, R_SUB, P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID,
-                                   P_RESOURCE, P_MESSAGE, P_DATA, P_MIME, P_POINT_TYPE, P_POINT_ID)
+                                   P_RESOURCE, P_MESSAGE, P_POINT_TYPE, P_POINT_ID)
 from IoticAgent.Core.utils import validate_nonnegative_int
 from IoticAgent.Core.Validation import Validation
 
 from . import __version__
 from .Thing import Thing
 from .Config import Config
-from .DB import DB
 from .utils import uuid_to_hex, version_string_to_tuple, bool_from, foc_to_str
 from .Exceptions import (IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError,
                          IOTSyncTimeout)
 from .Point import Point, _POINT_TYPES
-from .RemoteFeed import RemoteFeed
-from .RemoteControl import RemoteControl
+from .RemotePoint import RemoteFeed, RemoteControl
 from .PointValueHelper import PointDataObjectHandler
 
 
 class Client(object):  # pylint: disable=too-many-public-methods
 
     # Core version targeted by IOT client
-    __core_version = '0.3.2'
+    __core_version = '0.3.3'
 
     def __init__(self, config=None, db=None):
         """
@@ -57,8 +55,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Defaults to the name of the script +".ini", e.g. `config="my_script.ini"`. Alternatively
         an existing [Config](Config.m.html#IoticAgent.IOT.Config.Config) object can be specified.
 
-        `db` (optional): The name of the database file to be used for storing key-value pairs by the agent.
-        Defaults to the name of the script +".db", e.g. `db="my_script.db"`
+        `db` (optional): DEPRECATED
         """
         self.__core_version_check()
         logger.info('IOT version: %s', __version__)
@@ -69,6 +66,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
             self.__config = config
         else:
             raise ValueError('config should be string or Config instance')
+        if db is not None:
+            warnings.warn('constructor db paramter has been deprecated', DeprecationWarning)
         #
         if any(self.__config.get('agent', item) is None for item in ('host', 'epid', 'passwd', 'token')):
             raise ValueError('Minimum configuration for IoticAgent is host, epid, passwd and token\n'
@@ -101,13 +100,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         self.__client.register_callback_duplicate(self.__cb_duplicated)
         self.__client.register_callback_reassigned(self.__cb_reassigned)
         self.__client.register_callback_deleted(self.__cb_deleted)
-        #
-        # Setup catchall for unsolicited feeddata and controlreq and write data to the key/value DB
-        self.__db = None
-        if bool_from(self.__config.get('iot', 'db_last_value')):
-            self.__db = DB(fn=db)
-            self.__client.register_callback_feeddata(self.__cb_catchall_feeddata)
-            self.__client.register_callback_controlreq(self.__cb_catchall_controlreq)
+        self.__client.register_callback_recent_data(self.__cb_recent_data)
         #
         # Keeps track of newly created things (the requests for which originated from this agent)
         self.__new_things = ThreadSafeDict()
@@ -116,6 +109,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
         self.__private_things = ThreadSafeDict()
         # PointDataObjectHandler cache
         self.__point_data_handlers = ThreadSafeDict()
+        # recent data callbacks by request id
+        self.__recent_data_callbacks = ThreadSafeDict()
 
     @property
     def agent_id(self):
@@ -189,12 +184,6 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         if self.__client.is_alive():
             self.__client.stop()
-
-    def close(self):
-        """`DEPRECATED`. Please note IOT.Client now requires a .start call.  close becomes stop.
-        """
-        warnings.warn('close() has been deprecated, use stop() instead', DeprecationWarning)
-        self.stop()
 
     def __exit__(self, exc_type, exc_value, traceback):
         return self.stop()
@@ -344,19 +333,16 @@ class Client(object):  # pylint: disable=too-many-public-methods
         `Note` it is not called when whenever something else subscribes to your thing.
 
         The payload passed to your callback is either a
-        [RemoteControl](RemoteControl.m.html#IoticAgent.IOT.RemoteControl.RemoteControl) or
-        [RemoteFeed](RemoteFeed.m.html#IoticAgent.IOT.RemoteFeed.RemoteFeed) instance.
+        [RemoteControl](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl) or
+        [RemoteFeed](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteFeed) instance.
         """
         return self.__client.register_callback_created(partial(self.__callback_subscribed_filter, callback),
                                                        serialised=False)
 
-    def simulate_feeddata(self, feedid, data=None, mime=None):
+    def simulate_feeddata(self, feedid, data, mime=None, time=None):
         """Simulate the last feeddata received for given feedid
         Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code
         without having to wait for the remote thing to share again.
-
-        Raises KeyError - if there is no data with which to simulate.  I.e. you haven't received any and haven't
-        used the data= and mime= parameters
 
         Raises RuntimeError - if the key-value store "database" is disabled
 
@@ -364,39 +350,17 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
         `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data
 
-        `mime` (optional) (string) The mime type of your data.  See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Point.share)
+        `mime` (optional) (string) The mime type of your data. See also:
+        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
+
+        `time` (optional) (datetime) UTC timestamp for share. See also:
+        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
         """
-        if data is None:
-            if self.__db is None:
-                raise RuntimeError("simulate_feeddata disabled with [iot] db_last_value = 0")
-            # can raise KeyError if not available
-            data, mime = self.__db.kv_get(feedid)
-        self.__client.simulate_feeddata(feedid, data, mime)
+        self.__client.simulate_feeddata(feedid, data, mime, time)
 
     #
     # todo: simulate_controlreq -- needs last data and Point instance
     #
-
-    def get_last_feeddata(self, feedid):
-        """Get the value of the last feed data from a remote thing, if any has been received
-
-        Returns last data for feedid and mime (as tuple), or tuple of (None, None) if not found
-
-        Raises KeyError - if there is no data to get.  Probably because you haven't received any and haven't
-        called [simulate_feeddata()](#IoticAgent.IOT.Client.Client.simulate_feeddata)
-         with the data= and mime= parameters set
-
-        Raises RuntimeError - if the key-value store "database" is disabled
-
-        `feedid` (required) (string) local id of your Feed
-        """
-        if self.__db is None:
-            raise RuntimeError("get_last_feeddata disabled with [iot] db_last_value = 0")
-        try:
-            return self.__db.kv_get(feedid)  # data, mime
-        except KeyError:
-            return None, None
 
     def confirm_tell(self, data, success):
         """Confirm that you've done as you were told.  Call this from your control callback to confirm action.
@@ -482,7 +446,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """Raises an IOTException from the given event if it was not successful. Assumes timeout success flag on event
         has not been set yet."""
         if event.success is None:
-            raise IOTSyncTimeout('Requested timed out')
+            raise IOTSyncTimeout('Requested timed out', event)
         if not event.success:
             msg = "Request failed, unknown error"
             if isinstance(event.payload, Mapping):
@@ -491,14 +455,14 @@ class Client(object):  # pylint: disable=too-many-public-methods
                 if P_CODE in event.payload:
                     code = event.payload[P_CODE]
                     if code == E_FAILED_CODE_ACCESSDENIED:
-                        raise IOTAccessDenied(msg)
+                        raise IOTAccessDenied(msg, event)
                     if code == E_FAILED_CODE_INTERNALERROR:
-                        raise IOTInternalError(msg)
+                        raise IOTInternalError(msg, event)
                     if code in (E_FAILED_CODE_MALFORMED, E_FAILED_CODE_NOTALLOWED):
-                        raise IOTMalformed(msg)
+                        raise IOTMalformed(msg, event)
                     if code == E_FAILED_CODE_UNKNOWN:
-                        raise IOTUnknown(msg)
-            raise IOTException(msg)
+                        raise IOTUnknown(msg, event)
+            raise IOTException(msg, event)
 
     def list(self, all_my_agents=False, limit=500, offset=0):
         """List `all` the things created by this client on this or all your agents
@@ -610,12 +574,14 @@ class Client(object):  # pylint: disable=too-many-public-methods
                         "a300cc90147f4e2990195639de0af201": {
                             "matches": 3.000,
                             "label": "Feed 201",
-                            "type": "Feed"
+                            "type": "Feed",
+                            "storesRecent": true
                         },
                         "a300cc90147f4e2990195639de0af202": {
                             "matches": 1.500,
                             "label": "Feed 202",
-                            "type": "Feed"
+                            "type": "Feed",
+                            "storesRecent": false
                         }
                     }
                 },
@@ -628,12 +594,14 @@ class Client(object):  # pylint: disable=too-many-public-methods
                         "fb1a4a4dbb2642ab9f836892da93f101": {
                             "matches": 1.000,
                             "label": "My weather feed",
-                            "type": "Feed"
+                            "type": "Feed",
+                            "storesRecent": false
                         },
                         "fb1a4a4dbb2642ab9f836892da93c102": {
                             "matches": 1.000,
                             "label": None,
-                            "type": "Control"
+                            "type": "Control",
+                            "storesRecent": false
                         }
                     }
                 }
@@ -736,12 +704,14 @@ class Client(object):  # pylint: disable=too-many-public-methods
                         {
                             "type": "Control",
                             "label": "Control 101",
-                            "guid": "fb1a4a4dbb2642ab9f836892da93c101"
+                            "guid": "fb1a4a4dbb2642ab9f836892da93c101",
+                            "storesRecent": false
                         },
                         {
                             "type": "Feed",
                             "label": "My weather feed",
-                            "guid": "fb1a4a4dbb2642ab9f836892da93f101"
+                            "guid": "fb1a4a4dbb2642ab9f836892da93f101",
+                            "storesRecent": true
                         }
                     ],
                     "comment": "A lovely weather station...",
@@ -854,21 +824,40 @@ class Client(object):  # pylint: disable=too-many-public-methods
         else:
             logger.debug('Ignoring unsolicited deletion request of type %d', msg[M_PAYLOAD][P_RESOURCE])
 
-    def __cb_catchall_feeddata(self, data):
-        try:
-            # todo - confusing to store feed & control data in same dictionary?
-            self.__db.kv_set(data['pid'], (data[P_DATA], data[P_MIME]))
-        except (IOError, OSError):
-            logger.warning('Failed to write feed data for %s to db', data['pid'], exc_info=DEBUG_ENABLED)
+    def __cb_recent_data(self, data):
+        with self.__recent_data_callbacks:
+            try:
+                # determine specific callback
+                callback = self.__recent_data_callbacks[data[M_CLIENTREF]]
+            except KeyError:
+                logger.debug('No callback for recent data request with id %s', data[M_CLIENTREF])
+            else:
+                try:
+                    callback(data)
+                except:
+                    logger.warning('Recent data callback failed for point %s', data[P_POINT_ID], exc_info=DEBUG_ENABLED)
 
-    def __cb_catchall_controlreq(self, data):
-        try:
-            # todo - confusing to store feed & control data in same dictionary?
-            # (although shouldn't clash since here includes spae and pid (above for feeds) should not
-            self.__db.kv_set('%s %s' % (data[P_ENTITY_LID], data[P_LID]), (data[P_DATA], data[P_MIME]))
-        except (IOError, OSError):
-            logger.warning('Failed to write control request data for lid=%s pid=%s to db', data[P_ENTITY_LID],
-                           data[P_LID], exc_info=DEBUG_ENABLED)
+    # Registrer specific callback function (for a recent data callback) which will be removed on request completion. The
+    # request is NOT checked first.
+    def _add_recent_cb_for(self, req, func):
+        with self.__recent_data_callbacks:
+            self.__recent_data_callbacks[req.id_] = partial(self.__recent_cb_per_sample, func)
+        req._run_on_completion(self.__remove_recent_cb_for, req.id_)
+
+    # multi-sample to per-sample callback wrapper
+    @staticmethod
+    def __recent_cb_per_sample(func, data):
+        samples = data['samples']
+        for sample in samples:
+            func(sample)
+
+    # used by _add_recent_cb_for only
+    def __remove_recent_cb_for(self, request_id):
+        with self.__recent_data_callbacks:
+            try:
+                self.__recent_data_callbacks.pop(request_id, None)
+            except KeyError:
+                logger.warning('recent cb does not exist for request %s', request_id)
 
     # Wrap Core.Client functions so IOT contains everything.
     # These are protected functions used by Client, Thing, Point etc.
@@ -877,6 +866,12 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     def _request_point_list_detailed(self, foc, lid, pid):
         return self.__client.request_point_list_detailed(foc, lid, pid)
+
+    def _request_point_recent_info(self, foc, lid, pid):
+        return self.__client.request_point_recent_info(foc, lid, pid)
+
+    def _request_point_recent_config(self, foc, lid, pid, max_samples=0):
+        return self.__client.request_point_recent_config(foc, lid, pid, max_samples)
 
     def _request_entity_list(self, limit=0, offset=500):
         return self.__client.request_entity_list(limit=limit, offset=offset)
@@ -914,8 +909,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
     def _request_entity_meta_set(self, lid, rdf, fmt):
         return self.__client.request_entity_meta_set(lid, rdf, fmt)
 
-    def _request_point_create(self, foc, lid, pid, control_cb=None):
-        return self.__client.request_point_create(foc, lid, pid, control_cb)
+    def _request_point_create(self, foc, lid, pid, control_cb=None, save_recent=0):
+        return self.__client.request_point_create(foc, lid, pid, control_cb, save_recent)
 
     def _request_point_rename(self, foc, lid, pid, newpid):
         return self.__client.request_point_rename(foc, lid, pid, newpid)
@@ -923,8 +918,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
     def _request_point_delete(self, foc, lid, pid):
         return self.__client.request_point_delete(foc, lid, pid)
 
-    def _request_point_share(self, lid, pid, data, mime):
-        return self.__client.request_point_share(lid, pid, data, mime)
+    def _request_point_share(self, lid, pid, data, mime, time):
+        return self.__client.request_point_share(lid, pid, data, mime, time)
 
     def _request_point_confirm_tell(self, foc, lid, pid, success, requestId):
         return self.__client.request_point_confirm_tell(foc, lid, pid, success, requestId)
@@ -970,6 +965,9 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     def _request_sub_list(self, lid, limit, offset):
         return self.__client.request_sub_list(lid, limit, offset)
+
+    def _request_sub_recent(self, sub_id, count=None):
+        return self.__client.request_sub_recent(sub_id, count)
 
     def _request_search(self, text, lang, location, unit, limit, offset, type_='full'):
         return self.__client.request_search(text, lang, location, unit, limit, offset, type_)

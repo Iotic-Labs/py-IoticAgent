@@ -25,8 +25,7 @@ from IoticAgent.Core.compat import Sequence, Lock, valid_identifier
 
 from .Exceptions import IOTUnknown
 from .Point import Point, PointDataObject
-from .RemoteFeed import RemoteFeed
-from .RemoteControl import RemoteControl
+from .RemotePoint import RemotePoint
 from .utils import private_names_for
 
 
@@ -140,7 +139,7 @@ class PointDataObjectHandler(object):
         if isinstance(point, Point):
             self.__remote = False
             self.__point = point
-        elif isinstance(point, (RemoteFeed, RemoteControl)):
+        elif isinstance(point, RemotePoint):
             self.__point = point.guid
             self.__remote = True
         else:

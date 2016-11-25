@@ -27,7 +27,7 @@ except ImportError:
 
 from IoticAgent.Core import Validation
 
-from .ResourceMeta import ResourceMeta
+from .ResourceMeta import ResourceMeta, IOTIC_NS
 
 
 GEO_NS = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
@@ -37,6 +37,9 @@ class ThingMeta(ResourceMeta):
     """Metadata helper for Thing class.  Wraps RDF graph and provides simple
     get/set/delete methods for location.  All other methods inherited from ResourceMeta
     """
+
+    _labelPredicate = IOTIC_NS.entityLabel
+    _commentPredicate = IOTIC_NS.entityComment
 
     def set_location(self, lat, lon):
         Validation.location_check(lat, lon)

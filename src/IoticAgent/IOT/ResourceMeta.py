@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from rdflib import Graph, Literal, URIRef
-    from rdflib.namespace import RDF, RDFS, DCTERMS
+    from rdflib.namespace import Namespace, RDF, RDFS, DCTERMS
 except ImportError:
     logger.warning("rdflib not found.  ResourceMeta helper will not be available.")
     raise
@@ -28,6 +28,8 @@ except ImportError:
 from IoticAgent.Core import Validation
 
 from .utils import uuid_to_hex
+
+IOTIC_NS = Namespace('http://purl.org/net/iotic-labs#')
 
 
 class ResourceMeta(object):
@@ -38,6 +40,11 @@ class ResourceMeta(object):
         `Do not instantiate directly`
 
     """
+
+    # overridden by subclasses
+    _labelPredicate = RDFS.label
+    _commentPredicate = RDFS.comment
+
     def __init__(self, parent, rdf, default_lang, fmt='n3'):
         #
         self.__parent = parent
@@ -163,7 +170,7 @@ class ResourceMeta(object):
         # remove any other labels with this language before adding
         self.delete_label(lang)
         subj = self._get_uuid_uriref()
-        self._graph.add((subj, RDFS.label, Literal(label, lang)))
+        self._graph.add((subj, self._labelPredicate, Literal(label, lang)))
 
     def get_labels(self):
         """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
@@ -171,7 +178,7 @@ class ResourceMeta(object):
 
         Returns list of labels in N3 format
         """
-        return self._get_properties(RDFS.label)
+        return self._get_properties(self._labelPredicate)
 
     def get_labels_rdf(self):
         """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
@@ -179,7 +186,8 @@ class ResourceMeta(object):
 
         Returns list of labels as rdflib.term.Literals
         """
-        return self._get_properties_rdf(RDFS.label)
+
+        return self._get_properties_rdf(self._labelPredicate)
 
     def delete_label(self, lang=None):
         """Deletes all the `label` metadata properties on your Thing/Point for this language
@@ -190,7 +198,7 @@ class ResourceMeta(object):
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
-        self._remove_properties_by_language(RDFS.label,
+        self._remove_properties_by_language(self._labelPredicate,
                                             Validation.lang_check_convert(lang, default=self._default_lang))
 
     def set_description(self, description, lang=None):
@@ -207,10 +215,10 @@ class ResourceMeta(object):
         """
         description = Validation.description_check_convert(description)
         lang = Validation.lang_check_convert(lang, default=self._default_lang)
-        # remove any other descriptions (AKA RDFS.comment s) with this language before adding
+        # remove any other descriptions with this language before adding
         self.delete_description(lang)
         subj = self._get_uuid_uriref()
-        self._graph.add((subj, RDFS.comment, Literal(description, lang)))
+        self._graph.add((subj, self._commentPredicate, Literal(description, lang)))
 
     def get_descriptions(self):
         """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
@@ -218,7 +226,7 @@ class ResourceMeta(object):
 
         Returns list of descriptions in N3 format or empty list if none.
         """
-        return self._get_properties(RDFS.comment)
+        return self._get_properties(self._commentPredicate)
 
     def get_descriptions_rdf(self):
         """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
@@ -226,7 +234,7 @@ class ResourceMeta(object):
 
         Returns list of descriptions as rdflib.term.Literals or empty list if none.
         """
-        return self._get_properties_rdf(RDFS.comment)
+        return self._get_properties_rdf(self._commentPredicate)
 
     def delete_description(self, lang=None):
         """Deletes all the `label` metadata properties on your Thing/Point for this language
@@ -237,5 +245,5 @@ class ResourceMeta(object):
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
-        self._remove_properties_by_language(RDFS.comment,
+        self._remove_properties_by_language(self._commentPredicate,
                                             Validation.lang_check_convert(lang, default=self._default_lang))

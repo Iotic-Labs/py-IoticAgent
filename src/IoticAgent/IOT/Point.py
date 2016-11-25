@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
+from .Resource import Resource
 from IoticAgent.Core.Validation import Validation
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
 from IoticAgent.Core.compat import Sequence, Mapping, raise_from, string_types, ensure_unicode
@@ -38,45 +39,35 @@ except ImportError:
 _POINT_TYPES = frozenset((R_FEED, R_CONTROL))
 
 
-class Point(object):
-    """Point class.  A Point represents either a feed or control.
+class Point(Resource):
 
-    `Feeds` are advertised when a Thing has data to share.  They are for out-going data which will get shared with any
-    remote Things that have followed them.  Feeds are one-to-many.
+    # overridden by subclasses (e.g. R_FEED)
+    _type = None
 
-    `Controls` are where a Thing invites others to send it data.  Controls can be used to activate some hardware,
-    reset counters, change reporting intervals - pretty much anything you want to change the state of a Thing.
-    Controls are many-to-one
+    """Point class. A base class for feed or control.
     """
-    def __init__(self, client, foc, lid, pid, guid):
-        self.__client = client
-        Validation.foc_check(foc)
-        self.__foc = foc
+    def __init__(self, client, lid, pid, guid):
+        if self._type not in _POINT_TYPES:
+            raise TypeError('_type not set to a valid point type')
+        super(Point, self).__init__(client, guid)
         self.__lid = Validation.lid_check_convert(lid)
         self.__pid = Validation.pid_check_convert(pid)
-        self.__guid = Validation.guid_check_convert(guid)
 
     def __hash__(self):
         # Why not just hash guid? Because Point is used before knowing guid in some cases
         # Why not hash without guid? Because in two separate containers one could have identicial points
         # (if not taking guid into account)
-        return hash(self.__lid) ^ hash(self.__pid) ^ hash(self.__foc) ^ hash(self.__guid)
+        return hash(self.__lid) ^ hash(self.__pid) ^ hash(self._type) ^ hash(self.guid)
 
     def __eq__(self, other):
         return (isinstance(other, Point) and
-                self.__guid == other.__guid and
-                self.__foc == other.__foc and
+                self.guid == other.guid and
+                self._type == other._type and
                 self.__lid == other.__lid and
                 self.__pid == other.__pid)
 
     def __str__(self):
-        return '%s (%s: %s, %s)' % (self.__guid, foc_to_str(self.__foc), self.__lid, self.__pid)
-
-    @property
-    def guid(self):
-        """The Globally Unique ID of this Point in hex form (undashed).
-        """
-        return self.__guid
+        return '%s (%s: %s, %s)' % (self.guid, foc_to_str(self._type), self.__lid, self.__pid)
 
     @property
     def lid(self):
@@ -95,7 +86,7 @@ class Point(object):
     def foc(self):
         """Whether this Point is a feed or control.  String of either `"feed"` or `"control"`
         """
-        return foc_to_str(self.__foc)
+        return foc_to_str(self._type)
 
     def rename(self, new_pid):
         """Rename the Point.
@@ -109,9 +100,9 @@ class Point(object):
         `new_pid` (required) (string) the new local identifier of your Point
         """
         logger.info("rename(new_pid=\"%s\") [lid=%s, pid=%s]", new_pid, self.__lid, self.__pid)
-        evt = self.__client._request_point_rename(self.__foc, self.__lid, self.__pid, new_pid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_rename(self._type, self.__lid, self.__pid, new_pid)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
         self.__pid = new_pid
 
     def list(self, limit=50, offset=0):
@@ -130,16 +121,16 @@ class Point(object):
         `offset` (optional) (integer) Return value details starting at this offset
         """
         logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", limit, offset, self.__lid, self.__pid)
-        evt = self.__client._request_point_value_list(self.__lid, self.__pid, self.__foc, limit=limit, offset=offset)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_point_value_list(self.__lid, self.__pid, self._type, limit=limit, offset=offset)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['values']
 
     def list_followers(self):
-        """list followers for this Point This includes remote follows and remote attaches
+        """list followers for this point, i.e. remote follows for feeds and remote attaches for controls.
 
-        Returns QAPI list function payload
+        Returns QAPI subscription list function payload
 
             #!python
             {
@@ -157,67 +148,11 @@ class Point(object):
 
         `offset` (optional) (integer) Return value details starting at this offset
         """
-        evt = self.__client._request_point_list_detailed(self.__foc, self.__lid, self.__pid)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_point_list_detailed(self._type, self.__lid, self.__pid)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['subs']
-
-    def get_template(self):
-        """Get new [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject) instance
-        to use for sharing data."""
-        return self.__client._get_point_data_handler_for(self).get_template()
-
-    def share(self, data, mime=None):
-        """Share some data from this Point
-
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
-
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `data` (mandatory) (as applicable) The data you want to share
-
-        `mime` (optional) (string) The mime type of the data you're sharing.  There are some
-        Iotic Labs-defined default values:
-
-        `"idx/1"` - Corresponds to "application/ubjson" - the recommended way to send mixed data.
-        Share a python dictionary as the data and the agent will to the encoding and decoding for you.
-
-            #!python
-            data = {}
-            data["timestamp"] = datetime.datetime.now().isoformat()
-            data["temperature"] = self._convert_to_celsius(ADC.read(1))
-            # ...etc...
-            my_feed.share(data)
-
-        `"idx/2"` Corresponds to "text/plain" - the recommended way to send "byte" data.
-        Share a utf8 string as data and the agent will pass it on, unchanged.
-
-            #!python
-            my_feed.share("string data".encode('utf8'), mime="idx/2")
-
-        `"text/xml"` or any other valid mime type.  To show the recipients that
-         you're sending something more than just bytes
-
-            #!python
-            my_feed.share("<xml>...</xml>".encode('utf8'), mime="text/xml")
-        """
-        logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.__lid, self.__pid)
-        if self.__foc != R_FEED:
-            raise TypeError('Only feeds can share (this is a %s)' % self.foc)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        evt = self.__client._request_point_share(self.__lid, self.__pid, data, mime)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
-
-    def share_async(self, data, mime=None):
-        logger.info("share_async() [lid=\"%s\",pid=\"%s\"]", self.__lid, self.__pid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        return self.__client._request_point_share(self.__lid, self.__pid, data, mime)
 
     def get_meta(self):
         """Get the metadata object for this Point
@@ -235,7 +170,7 @@ class Point(object):
         if PointMeta is None:
             raise RuntimeError("PointMeta not available")
         rdf = self.get_meta_rdf(fmt='n3')
-        return PointMeta(self, rdf, self.__client.default_lang, fmt='n3')
+        return PointMeta(self, rdf, self._client.default_lang, fmt='n3')
 
     def get_meta_rdf(self, fmt='n3'):
         """Get the metadata for this Point in rdf fmt
@@ -254,18 +189,18 @@ class Point(object):
         `fmt` (optional) (string) The format of RDF you want returned.
         Valid formats are: "xml", "n3", "turtle"
         """
-        evt = self.__client._request_point_meta_get(self.__foc, self.__lid, self.__pid, fmt=fmt)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_point_meta_get(self._type, self.__lid, self.__pid, fmt=fmt)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['meta']
 
     def set_meta_rdf(self, rdf, fmt='n3'):
         """Set the metadata for this Point in rdf fmt
         """
-        evt = self.__client._request_point_meta_set(self.__foc, self.__lid, self.__pid, rdf, fmt=fmt)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_meta_set(self._type, self.__lid, self.__pid, rdf, fmt=fmt)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
         """Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
@@ -287,9 +222,9 @@ class Point(object):
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self.__client._request_point_tag_create(self.__foc, self.__lid, self.__pid, tags, lang, delete=False)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_tag_create(self._type, self.__lid, self.__pid, tags, lang, delete=False)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
         """Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
@@ -311,9 +246,9 @@ class Point(object):
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self.__client._request_point_tag_delete(self.__foc, self.__lid, self.__pid, tags, lang)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_tag_delete(self._type, self.__lid, self.__pid, tags, lang)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def list_tag(self, limit=50, offset=0):
         """List `all` the tags for this Point
@@ -344,10 +279,10 @@ class Point(object):
 
         `offset` (optional) (integer) Return tags starting at this offset
         """
-        evt = self.__client._request_point_tag_list(self.__foc, self.__lid, self.__pid, limit=limit, offset=offset)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_point_tag_list(self._type, self.__lid, self.__pid, limit=limit, offset=offset)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['tags']
 
     def create_value(self, label, vtype, lang=None, description=None, unit=None):
@@ -394,10 +329,10 @@ class Point(object):
                                  "Fish-tank temperature in celsius",
                                  Units.CELSIUS)
         """
-        evt = self.__client._request_point_value_create(self.__lid, self.__pid, self.__foc, label, vtype, lang,
-                                                        description, unit)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_value_create(self.__lid, self.__pid, self._type, label, vtype, lang,
+                                                       description, unit)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def delete_value(self, label, lang=None):
         """Delete the labelled value on this Point
@@ -414,9 +349,133 @@ class Point(object):
         None means use the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
-        evt = self.__client._request_point_value_delete(self.__lid, self.__pid, self.__foc, label, lang)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_value_delete(self.__lid, self.__pid, self._type, label, lang)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
+
+
+class Feed(Point):
+    """`Feeds` are advertised when a Thing has data to share.  They are for out-going data which will get shared with
+    any remote Things that have followed them.  Feeds are one-to-many.
+    """
+    _type = R_FEED
+
+    def get_template(self):
+        """Get new [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject) instance
+        to use for sharing data."""
+        return self._client._get_point_data_handler_for(self).get_template()
+
+    def share(self, data, mime=None, time=None):
+        """Share some data from this Feed
+
+        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
+        containing the error if the infrastructure detects a problem
+
+        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
+        if there is a communications problem between you and the infrastructure
+
+        `data` (mandatory) (as applicable) The data you want to share
+
+        `mime` (optional) (string) The mime type of the data you're sharing.  There are some
+        Iotic Labs-defined default values:
+
+        `"idx/1"` - Corresponds to "application/ubjson" - the recommended way to send mixed data.
+        Share a python dictionary as the data and the agent will to the encoding and decoding for you.
+
+            #!python
+            data = {}
+            data["temperature"] = self._convert_to_celsius(ADC.read(1))
+            # ...etc...
+            my_feed.share(data)
+
+        `"idx/2"` Corresponds to "text/plain" - the recommended way to send textual data.
+        Share a utf8 string as data and the agent will pass it on, unchanged.
+
+            #!python
+            my_feed.share(u"string data")
+
+        `"text/xml"` or any other valid mime type.  To show the recipients that
+         you're sending something more than just bytes
+
+            #!python
+            my_feed.share("<xml>...</xml>".encode('utf8'), mime="text/xml")
+
+        `time` (optional) (datetime) UTC time for this share. If not specified, the container's time will be used. Thus
+        it makes almost no sense to specify `datetime.utcnow()` here. This parameter can be used to indicate that the
+        share time does not correspond to the time to which the data applies, e.g. to populate recent storgage with
+        historical data.
+        """
+        logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.lid, self.pid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
+        evt = self._client._request_point_share(self.lid, self.pid, data, mime, time)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
+
+    def share_async(self, data, mime=None, time=None):
+        logger.info("share_async() [lid=\"%s\",pid=\"%s\"]", self.lid, self.pid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
+        return self._client._request_point_share(self.lid, self.pid, data, mime, time)
+
+    def get_recent_info(self):
+        """Retrieves statistics and configuration about recent storage for this Feed.
+
+        Returns QAPI recent info function payload
+
+            #!python
+            {
+                "maxSamples": 0,
+                "count": 0
+            }
+
+        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
+        containing the error if the infrastructure detects a problem
+
+        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
+        if there is a communications problem between you and the infrastructure
+        """
+        evt = self._client._request_point_recent_info(self._type, self.lid, self.pid)
+        evt.wait(self._client.sync_timeout)
+
+        self._client._except_if_failed(evt)
+        return evt.payload['recent']
+
+    def set_recent_config(self, max_samples=0):
+        """Update/configure recent data settings for this Feed. If the container does not support recent storage or it
+        is not enabled for this owner, this function will have no effect.
+
+        `max_samples` (optional) (int) how many shares to store for later retrieval. If not supported by container, this
+        argument will be ignored. A value of zero disables this feature whilst a negative value requests the maximum
+        sample store amount.
+
+        Returns QAPI recent config function payload
+
+            #!python
+            {
+                "maxSamples": 0
+            }
+
+        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
+        containing the error if the infrastructure detects a problem
+
+        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
+        if there is a communications problem between you and the infrastructure
+        """
+        evt = self._client._request_point_recent_config(self._type, self.lid, self.pid, max_samples)
+        evt.wait(self._client.sync_timeout)
+
+        self._client._except_if_failed(evt)
+        return evt.payload
+
+
+class Control(Point):
+    """`Controls` are where a Thing invites others to send it data.  Controls can be used to activate some hardware,
+    reset counters, change reporting intervals - pretty much anything you want to change the state of a Thing.
+    Controls are many-to-one.
+    """
+
+    _type = R_CONTROL
 
 
 class PointDataObject(object):

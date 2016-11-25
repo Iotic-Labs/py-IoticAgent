@@ -27,9 +27,9 @@ from IoticAgent.Core.compat import raise_from, string_types, Sequence
 from IoticAgent.Core.Validation import Validation
 
 from .Exceptions import IOTClientError
-from .RemoteControl import RemoteControl
-from .RemoteFeed import RemoteFeed
-from .Point import Point, _POINT_TYPES
+from .Resource import Resource
+from .RemotePoint import RemoteFeed, RemoteControl
+from .Point import Feed, Control
 from .utils import foc_to_str, uuid_to_hex
 
 try:
@@ -37,41 +37,35 @@ try:
 except ImportError:
     ThingMeta = None
 
+_POINT_TYPE_TO_CLASS = {cls._type: cls for cls in (Feed, Control)}
 
-class Thing(object):  # pylint: disable=too-many-public-methods
+
+class Thing(Resource):  # pylint: disable=too-many-public-methods
     """Thing class
     """
 
     def __init__(self, client, lid, guid, epId):
-        self.__client = client
+        super(Thing, self).__init__(client, guid)
         self.__lid = Validation.lid_check_convert(lid)
-        self.__guid = Validation.guid_check_convert(guid)
         self.__epId = Validation.guid_check_convert(epId)
-        #
         # Keep track of newly created points & subs (the requests for which originated from current agent)
         self.__new_feeds = ThreadSafeDict()
         self.__new_controls = ThreadSafeDict()
         self.__new_subs = ThreadSafeDict()
 
     def __str__(self):
-        return '%s (thing, %s)' % (self.__guid, self.__lid)
+        return '%s (thing, %s)' % (self.guid, self.__lid)
 
     def __hash__(self):
         # Why not just hash guid? Because Thing is used before knowing guid in some cases
         # Why not hash without guid? Because in two separate containers one could have identicial things
         # (if not taking guid into account)
-        return hash(self.__lid) ^ hash(self.__guid)
+        return hash(self.__lid) ^ hash(self.guid)
 
     def __eq__(self, other):
         return (isinstance(other, Thing) and
-                self.__guid == other.__guid and
+                self.guid == other.guid and
                 self.__lid == other.__lid)
-
-    @property
-    def guid(self):
-        """The Globally Unique ID of this Thing in hex form (undashed).
-        """
-        return self.__guid
 
     @property
     def lid(self):
@@ -95,19 +89,15 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         """
         return self.__epId
 
-    def __list(self, foc, pid=None, limit=500, offset=0):
+    def __list(self, foc, limit=500, offset=0):
         logger.info("__list(foc=\"%s\", limit=%s, offset=%s) [lid=%s]", foc_to_str(foc), limit, offset, self.__lid)
-        if pid is None:
-            evt = self.__client._request_point_list(foc, self.__lid, limit=limit, offset=offset)
-        else:
-            evt = self.__client._request_point_list_detailed(foc, self.__lid, pid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_list(foc, self.__lid, limit=limit, offset=offset)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
         return evt.payload
 
-    def list_feeds(self, pid=None, limit=500, offset=0):
+    def list_feeds(self, limit=500, offset=0):
         """List `all` the feeds on this Thing.
-        Detailed list for a particular feed if feed id `pid` provided.
 
         Returns QAPI list function payload
 
@@ -117,17 +107,14 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `pid` (optional) (string) Local id of the feed for which you want the detailed listing.
-
         `limit` (optional) (integer) Return this many Point details
 
         `offset` (optional) (integer) Return Point details starting at this offset
         """
-        return self.__list(R_FEED, pid=pid, limit=limit, offset=offset)['feeds']
+        return self.__list(R_FEED, limit=limit, offset=offset)['feeds']
 
-    def list_controls(self, pid=None, limit=500, offset=0):
+    def list_controls(self, limit=500, offset=0):
         """List `all` the controls on this Thing.
-        Detailed list for a particular control if control id `pid` provided.
 
         Returns QAPI list function payload
 
@@ -137,13 +124,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `pid` (optional) (string) Local id of the control for which you want the detailed listing.
-
         `limit` (optional) (integer) Return this many Point details
 
         `offset` (optional) (integer) Return Point details starting at this offset
         """
-        return self.__list(R_CONTROL, pid=pid, limit=limit, offset=offset)['controls']
+        return self.__list(R_CONTROL, limit=limit, offset=offset)['controls']
 
     def set_public(self, public=True):
         """Sets your Thing to be public to all.  If `public=True`.
@@ -161,9 +146,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         to be searched by anybody
         """
         logger.info("set_public(public=%s) [lid=%s]", public, self.__lid)
-        evt = self.__client._request_entity_meta_setpublic(self.__lid, public)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_meta_setpublic(self.__lid, public)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def rename(self, new_lid):
         """Rename the Thing.
@@ -180,11 +165,11 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `new_lid` (required) (string) the new local identifier of your Thing
         """
         logger.info("rename(new_lid=\"%s\") [lid=%s]", new_lid, self.__lid)
-        evt = self.__client._request_entity_rename(self.__lid, new_lid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_rename(self.__lid, new_lid)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
         self.__lid = new_lid
-        self.__client._notify_thing_lid_change(self.__lid, new_lid)
+        self._client._notify_thing_lid_change(self.__lid, new_lid)
 
     def reassign(self, new_epid):
         """Reassign the Thing from one agent to another.
@@ -202,9 +187,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         current agent will be chosen. If False, existing agent will be unassigned.
         """
         logger.info("reassign(new_epid=\"%s\") [lid=%s]", new_epid, self.__lid)
-        evt = self.__client._request_entity_reassign(self.__lid, new_epid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_reassign(self.__lid, new_epid)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def create_tag(self, tags, lang=None):
         """Create tags for a Thing in the language you specify. Tags can only contain alphanumeric (unicode) characters
@@ -226,9 +211,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self.__client._request_entity_tag_create(self.__lid, tags, lang, delete=False)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_tag_create(self.__lid, tags, lang, delete=False)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def delete_tag(self, tags, lang=None):
         """Delete tags for a Thing in the language you specify. Case will be ignored and any tags matching lower-cased
@@ -250,9 +235,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self.__client._request_entity_tag_delete(self.__lid, tags, lang)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_tag_delete(self.__lid, tags, lang)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def list_tag(self, limit=500, offset=0):
         """List `all` the tags for this Thing
@@ -283,10 +268,10 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `offset` (optional) (integer) Return tags starting at this offset
         """
-        evt = self.__client._request_entity_tag_list(self.__lid, limit=limit, offset=offset)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_entity_tag_list(self.__lid, limit=limit, offset=offset)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['tags']
 
     def get_meta(self):
@@ -299,7 +284,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if ThingMeta is None:
             raise RuntimeError("ThingMeta not available")
         rdf = self.get_meta_rdf(fmt='n3')
-        return ThingMeta(self, rdf, self.__client.default_lang, fmt='n3')
+        return ThingMeta(self, rdf, self._client.default_lang, fmt='n3')
 
     def get_meta_rdf(self, fmt='n3'):
         """Get the metadata for this Thing in rdf fmt
@@ -318,10 +303,10 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `fmt` (optional) (string) The format of RDF you want returned.
         Valid formats are: "xml", "n3", "turtle"
         """
-        evt = self.__client._request_entity_meta_get(self.__lid, fmt=fmt)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_entity_meta_get(self.__lid, fmt=fmt)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['meta']
 
     def set_meta_rdf(self, rdf, fmt='n3'):
@@ -339,9 +324,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `fmt` (optional) (string) The format of RDF you have sent.
         Valid formats are: "xml", "n3", "turtle"
         """
-        evt = self.__client._request_entity_meta_set(self.__lid, rdf, fmt=fmt)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_entity_meta_set(self.__lid, rdf, fmt=fmt)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def get_feed(self, pid):
         """Get the details of a newly created feed. This only applies to asynchronous creation of feeds and the new feed
@@ -349,8 +334,8 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `NOTE` - Destructive Read. Once you've called get_feed once, any further calls will raise a `KeyError`
 
-        Returns a [Point](Point.m.html#IoticAgent.IOT.Point.Point) object,
-        which corresponds to the cached entry for this local point id
+        Returns a [Feed](Point.m.html#IoticAgent.IOT.Point.Feed) object,
+        which corresponds to the cached entry for this local feed id
 
         `pid` (required) (string) Point id - local identifier of your feed.
 
@@ -368,8 +353,8 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
         `NOTE` - Destructive Read. Once you've called get_control once, any further calls will raise a `KeyError`
 
-        Returns a [Point](Point.m.html#IoticAgent.IOT.Point.Point) object,
-        which corresponds to the cached entry for this local point id
+        Returns a [Control](Point.m.html#IoticAgent.IOT.Point.Control) object,
+        which corresponds to the cached entry for this local control id
 
         `pid` (required) (string) local identifier of your control.
 
@@ -381,10 +366,10 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             except KeyError as ex:
                 raise_from(KeyError('Control %s not know as new' % pid), ex)
 
-    def __create_point(self, foc, pid, control_cb=None):
-        evt = self.__client._request_point_create(foc, self.__lid, pid, control_cb=control_cb)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+    def __create_point(self, foc, pid, control_cb=None, save_recent=0):
+        evt = self._client._request_point_create(foc, self.__lid, pid, control_cb=control_cb, save_recent=save_recent)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
         store = self.__new_feeds if foc == R_FEED else self.__new_controls
         try:
             with store:
@@ -394,14 +379,14 @@ class Thing(object):  # pylint: disable=too-many-public-methods
                                             (foc_to_str(foc), pid, self.__lid)),
                              ex)
 
-    def __create_point_async(self, foc, pid, control_cb=None):
-        return self.__client._request_point_create(foc, self.__lid, pid, control_cb=control_cb)
+    def __create_point_async(self, foc, pid, control_cb=None, save_recent=0):
+        return self._client._request_point_create(foc, self.__lid, pid, control_cb=control_cb, save_recent=save_recent)
 
-    def create_feed(self, pid):
+    def create_feed(self, pid, save_recent=0):
         """Create a new Feed for this Thing with a local point id (pid).
 
-        Returns a new [Point](Point.m.html#IoticAgent.IOT.Point.Point) object,
-        or the existing one, if the Point already exists
+        Returns a new [Feed](Point.m.html#IoticAgent.IOT.Point.Feed) object,
+        or the existing one, if the Feed already exists
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -410,19 +395,24 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if there is a communications problem between you and the infrastructure
 
         `pid` (required) (string) local id of your Feed
+
+        `save_recent` (optional) (int) how many shares to store for later retrieval. If not supported by container, this
+        argument will be ignored. A value of zero disables this feature whilst a negative value requests the maximum
+        sample store amount. See also
+        [Feed.set_recent_config](./Point.m.html#IoticAgent.IOT.Point.Feed.set_recent_config).
         """
         logger.info("create_feed(pid=\"%s\") [lid=%s]", pid, self.__lid)
-        return self.__create_point(R_FEED, pid)
+        return self.__create_point(R_FEED, pid, save_recent=save_recent)
 
-    def create_feed_async(self, pid):
+    def create_feed_async(self, pid, save_recent=0):
         logger.info("create_feed_async(pid=\"%s\") [lid=%s]", pid, self.__lid)
-        return self.__create_point_async(R_FEED, pid)
+        return self.__create_point_async(R_FEED, pid, save_recent=save_recent)
 
     def create_control(self, pid, callback, callback_parsed=None):
         """Create a control for this Thing with a local point id (pid) and a control request feedback
 
-        Returns a new [Point](Point.m.html#IoticAgent.IOT.Point.Point) object
-        or the existing one if the Point already exists
+        Returns a new [Control](Point.m.html#IoticAgent.IOT.Point.Control) object
+        or the existing one if the Control already exists
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -465,17 +455,17 @@ class Thing(object):  # pylint: disable=too-many-public-methods
 
     def __get_parsed_control_callback(self, pid, callback, callback_parsed):
         Validation.callable_check(callback_parsed)
-        return partial(self.__client._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL,
+        return partial(self._client._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL,
                        # used by PointDataObjectHandler as reference
-                       Point(self.__client, R_CONTROL, self.__lid, pid, '0'*32))
+                       Control(self._client, self.__lid, pid, '0'*32))
 
     def __delete_point(self, foc, pid):
-        evt = self.__client._request_point_delete(foc, self.__lid, pid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_point_delete(foc, self.__lid, pid)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def __delete_point_async(self, foc, pid):
-        return self.__client._request_point_delete(foc, self.__lid, pid)
+        return self._client._request_point_delete(foc, self.__lid, pid)
 
     def delete_feed(self, pid):
         """Delete a feed, identified by its local id.
@@ -580,19 +570,19 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         if isinstance(gpid, string_types):
             gpid = uuid_to_hex(gpid)
             with self.__sub_add_reference((foc, gpid)):
-                return self.__client._request_sub_create(self.__lid, foc, gpid, callback=callback)
+                return self._client._request_sub_create(self.__lid, foc, gpid, callback=callback)
         # local
         elif isinstance(gpid, Sequence) and len(gpid) == 2:
             with self.__sub_add_reference((foc, tuple(gpid))):
-                return self.__client._request_sub_create_local(self.__lid, foc, *gpid, callback=callback)
+                return self._client._request_sub_create_local(self.__lid, foc, *gpid, callback=callback)
         else:
             raise ValueError('gpid must be string or two-element tuple')
 
     def __sub(self, foc, gpid, callback=None):
         logger.info("__sub(foc=%s, gpid=\"%s\", callback=%s) [lid=%s]", foc_to_str(foc), gpid, callback, self.__lid)
         evt = self.__sub_make_request(foc, gpid, callback)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
         try:
             return self.__get_sub(foc, gpid)
         except KeyError as ex:
@@ -608,7 +598,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
     def follow(self, gpid, callback=None, callback_parsed=None):
         """Create a subscription (i.e. follow) a Feed/Point with a global point id (gpid) and a feed data callback
 
-        Returns a new [RemoteFeed](RemoteFeed.m.html#IoticAgent.IOT.RemoteFeed.RemoteFeed)
+        Returns a new [RemoteFeed](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteFeed)
         object or the existing one if the subscription already exists - OR -
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
@@ -628,6 +618,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             'data' # (decoded or raw bytes)
             'mime' # (None, unless payload was not decoded and has a mime type)
             'pid'  # (the global id of the feed from which the data originates)
+            'time' # (datetime representing UTC timestamp of share)
 
         `callback_parsed` (optional) (function reference) callback function to invoke on receipt of feed data. This is
         equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
@@ -638,18 +629,18 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
         """
         if callback_parsed:
-            callback = self.__client._get_parsed_feed_callback(callback_parsed, callback)
+            callback = self._client._get_parsed_feed_callback(callback_parsed, callback)
         return self.__sub(R_FEED, gpid, callback=callback)
 
     def follow_async(self, gpid, callback=None, callback_parsed=None):
         if callback_parsed:
-            callback = self.__client._get_parsed_feed_callback(callback_parsed, callback)
+            callback = self._client._get_parsed_feed_callback(callback_parsed, callback)
         return self.__sub_async(R_FEED, gpid, callback=callback)
 
     def attach(self, gpid):
         """Create a subscription (i.e. attach) to a Control-Point with a global point id (gpid) and a feed data callback
 
-        Returns a new [RemoteControl](RemoteControl.m.html#IoticAgent.IOT.RemoteControl.RemoteControl)
+        Returns a new [RemoteControl](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl)
         object or the existing one if the subscription already exists
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
@@ -670,9 +661,9 @@ class Thing(object):  # pylint: disable=too-many-public-methods
     def __sub_delete(self, subid):
         if isinstance(subid, (RemoteFeed, RemoteControl)):
             subid = subid.subid
-        evt = self.__client._request_sub_delete(subid)
-        evt.wait(self.__client.sync_timeout)
-        self.__client._except_if_failed(evt)
+        evt = self._client._request_sub_delete(subid)
+        evt.wait(self._client.sync_timeout)
+        self._client._except_if_failed(evt)
 
     def unfollow(self, subid):
         """Remove a subscription of a Feed with a global subscription id (gpid)
@@ -732,19 +723,19 @@ class Thing(object):  # pylint: disable=too-many-public-methods
         Note: For Things following a Point see
         [list_followers](./Point.m.html#IoticAgent.IOT.Point.Point.list_followers)
         """
-        evt = self.__client._request_sub_list(self.__lid, limit=limit, offset=offset)
-        evt.wait(self.__client.sync_timeout)
+        evt = self._client._request_sub_list(self.__lid, limit=limit, offset=offset)
+        evt.wait(self._client.sync_timeout)
 
-        self.__client._except_if_failed(evt)
+        self._client._except_if_failed(evt)
         return evt.payload['subs']
 
     def _cb_created(self, payload, duplicated):
         """Indirect callback (via Client) for point & subscription creation responses"""
-        if payload[P_RESOURCE] in _POINT_TYPES:
+        if payload[P_RESOURCE] in _POINT_TYPE_TO_CLASS:
             store = self.__new_feeds if payload[P_RESOURCE] == R_FEED else self.__new_controls
+            cls = _POINT_TYPE_TO_CLASS[payload[P_RESOURCE]]
             with store:
-                store[payload[P_LID]] = Point(self.__client, payload[P_RESOURCE], payload[P_ENTITY_LID], payload[P_LID],
-                                              payload[P_ID])
+                store[payload[P_LID]] = cls(self._client, payload[P_ENTITY_LID], payload[P_LID], payload[P_ID])
             logger.debug('Added %s: %s (for %s)', foc_to_str(payload[P_RESOURCE]), payload[P_LID],
                          payload[P_ENTITY_LID])
 
@@ -760,7 +751,7 @@ class Thing(object):  # pylint: disable=too-many-public-methods
             with new_subs:
                 if key in new_subs:
                     cls = RemoteFeed if payload[P_POINT_TYPE] == R_FEED else RemoteControl
-                    new_subs[key] = cls(self.__client, payload[P_ID], payload[P_POINT_ID], payload[P_ENTITY_LID])
+                    new_subs[key] = cls(self._client, payload[P_ID], payload[P_POINT_ID], payload[P_ENTITY_LID])
                 else:
                     logger.warning('Ignoring subscription creation for unexpected %s: %s',
                                    foc_to_str(payload[P_POINT_TYPE]), key[1])

@@ -21,6 +21,14 @@ def version_string_to_tuple(version):
     return tuple(int(part) if part.isdigit() else part for part in version.split('.'))
 
 
+def validate_int(obj, name):
+    try:
+        obj = int(obj)
+    except (ValueError, TypeError) as ex:
+        raise_from(ValueError('%s invalid' % name), ex)
+    return obj
+
+
 def validate_nonnegative_int(obj, name, allow_zero=False):
     try:
         obj = int(obj)

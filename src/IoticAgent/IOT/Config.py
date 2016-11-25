@@ -50,12 +50,6 @@ class Config(object):
 
         `[iot] =` Settings for the IOT wrapper
 
-            #!python
-            db_last_value = # 0 (default). Create (or, by default, don't create)
-                            # a script.db file to store  the last feeddata and
-                            # controlreq values (0=disable, 1=enable).
-                            # Defaults to disable
-
             sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
                                    # option should have a higher value set than core.network_retry_timeout.
 
@@ -101,7 +95,6 @@ class Config(object):
                 'prefix': ''
             },
             'iot': {
-                'db_last_value': 0,
                 'sync_request_timeout': 330
             },
             'core': {

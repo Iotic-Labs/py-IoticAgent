@@ -11,15 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Helper object for getting and setting metadata for an Iotic Point programmatically
+"""Wrapper object for Iotic resources
 """
+from __future__ import unicode_literals
 
-from .ResourceMeta import ResourceMeta, IOTIC_NS
+from IoticAgent.Core.Validation import Validation
 
 
-class PointMeta(ResourceMeta):
-    """PointMeta class does nothing more than its base class: ResourceMeta
+class Resource(object):
+    """Resource base class
     """
 
-    _labelPredicate = IOTIC_NS.pointLabel
-    _commentPredicate = IOTIC_NS.pointComment
+    def __init__(self, client, guid):
+        self.__client = client
+        self.__guid = Validation.guid_check_convert(guid)
+
+    @property
+    def guid(self):
+        """The Globally Unique ID of this resource in hex form (undashed).
+        """
+        return self.__guid
+
+    @property
+    def _client(self):
+        """For internal use: reference to IOT.Client instance"""
+        return self.__client

@@ -19,7 +19,15 @@ from IoticAgent.Core.Exceptions import LinkException, LinkShutdownException  # n
 
 class IOTException(Exception):
     """Base Exception class for IOT"""
-    pass
+
+    def __init__(self, msg, event=None):
+        super(IOTException, self).__init__(msg)
+        self.__event = event
+
+    @property
+    def event(self):
+        """Returns RequestEvent instance associated with exception, or None if not available/applicable"""
+        return self.__event
 
 
 class IOTSyncTimeout(IOTException):

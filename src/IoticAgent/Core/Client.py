@@ -16,6 +16,7 @@
 
 from __future__ import unicode_literals
 
+from datetime import datetime
 from hashlib import sha256 as hashfunc
 from re import compile as re_compile
 from hmac import new as hmacNew
@@ -43,14 +44,17 @@ from .compat import (PY3, py_version_check, ssl_version_check, monotonic, Queue,
 from .ThreadPool import ThreadPool
 from .Mime import valid_mimetype, expand_idx_mimetype
 from .RateLimiter import RateLimiter
-from .utils import version_string_to_tuple, validate_nonnegative_int
+from .utils import version_string_to_tuple, validate_nonnegative_int, validate_int
 from .Const import (C_CREATE, C_UPDATE, C_DELETE, C_LIST, E_COMPLETE, E_FAILED, E_PROGRESS, E_FAILED_CODE_LOWSEQNUM,
                     E_CREATED, E_DUPLICATED, E_DELETED, E_FEEDDATA, E_CONTROLREQ, E_SUBSCRIBED, E_RENAMED, E_REASSIGNED,
+                    E_RECENTDATA,
                     R_PING, R_ENTITY, R_FEED, R_CONTROL, R_SUB, R_ENTITY_META, R_FEED_META, R_CONTROL_META,
-                    R_VALUE_META, R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE, W_SEQ,
-                    W_HASH, W_COMPRESSION, W_MESSAGE, COMP_NONE, M_RESOURCE, M_TYPE, M_CLIENTREF, M_ACTION, M_PAYLOAD,
-                    M_RANGE, P_CODE, P_RESOURCE, P_MESSAGE, P_LID, P_ENTITY_LID, P_FEED_ID, P_POINT_ID, P_DATA, P_MIME,
-                    P_POINT_TYPE, COMP_DEFAULT, COMP_SIZE, COMP_LZ4F)
+                    R_VALUE_META, R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE,
+                    W_SEQ, W_HASH, W_COMPRESSION, W_MESSAGE,
+                    M_RESOURCE, M_TYPE, M_CLIENTREF, M_ACTION, M_PAYLOAD, M_RANGE,
+                    P_CODE, P_RESOURCE, P_MESSAGE, P_LID, P_ENTITY_LID, P_FEED_ID, P_POINT_ID, P_DATA, P_MIME,
+                    P_POINT_TYPE, P_TIME, P_SAMPLES,
+                    COMP_NONE, COMP_DEFAULT, COMP_SIZE, COMP_LZ4F)
 
 py_version_check()
 ssl_version_check()
@@ -79,6 +83,7 @@ _CB_CONTROL = 10        # lid -> {pid -> func} (1:1)
 _CB_CONTROLREQ = 11     # Catch All CONTROLREQ Messages!
 _CB_REASSIGNED = 12     # Unsolicited REASSIGNED message
 _CB_SUBSCRIPTION = 13   # Unsolicited SUBSCRIPTION count changed message
+_CB_RECENT_DATA = 14    # Requested recent data samples
 
 # callback CRUD types which should be serialised
 _CB_CRUD_TYPES = frozenset((_CB_CREATED, _CB_DUPLICATE, _CB_RENAMED, _CB_DELETED, _CB_REASSIGNED))
@@ -98,12 +103,15 @@ _RSP_TYPE_FINISH = frozenset((E_COMPLETE, E_FAILED, E_DUPLICATED))
 _RSP_TYPE_SUCCESS = _RSP_TYPE_FINISH - {E_FAILED}
 # resonses which signify a resource now (or already) exist
 _RSP_TYPE_CREATION = frozenset((E_CREATED, E_DUPLICATED))
+# responses which do not signify completion or failure and are not CRUD
+_RSP_TYPE_ONGOING = frozenset((E_PROGRESS, E_RECENTDATA))
 # responses which result in callbacks for which the whole payload is passed along
 _RSP_PAYLOAD_CB_MAPPING = {E_CREATED: _CB_CREATED,
                            E_DUPLICATED: _CB_DUPLICATE,
                            E_RENAMED: _CB_RENAMED,
                            E_DELETED: _CB_DELETED,
-                           E_REASSIGNED: _CB_REASSIGNED}
+                           E_REASSIGNED: _CB_REASSIGNED,
+                           E_RECENTDATA: _CB_RECENT_DATA}
 
 
 class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-public-methods
@@ -111,7 +119,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '0.7.0'
+    __qapi_version = '0.8.0'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -207,7 +215,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         self.__callbacks = ThreadSafeDict((type_, []) for type_ in
                                           (_CB_DEBUG_KA, _CB_DEBUG_SEND, _CB_DEBUG_BAD, _CB_DEBUG_RCVD, _CB_CREATED,
                                            _CB_DUPLICATE, _CB_RENAMED, _CB_DELETED, _CB_FEEDDATA, _CB_CONTROLREQ,
-                                           _CB_REASSIGNED, _CB_SUBSCRIPTION))
+                                           _CB_REASSIGNED, _CB_SUBSCRIPTION, _CB_RECENT_DATA))
         # mappings of pointId -> callback list
         self.__callbacks.update({type_: {} for type_ in (_CB_FEED, _CB_CONTROL)})
         #
@@ -316,6 +324,15 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         self.__add_callback(_CB_SUBSCRIPTION, func)
 
+    def register_callback_recent_data(self, func):
+        """Register a callback function to receive recent data samples. The callback receives
+        a single argument - a dict with c, the reference to the original request, pointId, the
+        id of the point to which the data applies, and samples, a list of dicts containing time
+        (the timestamp of the recent data sample), mime and data. If auto_encode_decode is enabled,
+        the data & mime fields might be modified."
+        """
+        self.__add_callback(_CB_RECENT_DATA, func)
+
     def register_callback_debug_send(self, func):
         """Register a callback function for every sent message, including on retries. The callback
            receives a single argument - the sent message in raw byte form.
@@ -352,18 +369,20 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         self.__add_callback(_CB_CONTROLREQ, func)
 
-    def simulate_feeddata(self, feedid, data, mime=None):
+    def simulate_feeddata(self, feedid, data, mime=None, time=None):
         """Send feed data"""
         # Separate public method since internal one does not require parameter checks
         feedid = Validation.guid_check_convert(feedid)
         mime = Validation.mime_check_convert(mime, allow_none=True)
-        self.__simulate_feeddata(feedid, data, mime)
+        Validation.datetime_check_convert(time, allow_none=True, to_iso8601=False)
+        self.__simulate_feeddata(feedid, data, mime, datetime.utcnow() if time is None else time)
 
     # Used by both simulate_feeddata() and internally to propagate feed data
-    def __simulate_feeddata(self, feedid, data, mime=None):
+    def __simulate_feeddata(self, feedid, data, mime, time):
         arg = {'data': data,
                'pid': feedid,
-               'mime': mime}
+               'mime': mime,
+               'time': time}
 
         # general catch-all
         have_general = self.__fire_callback(_CB_FEEDDATA, arg)
@@ -698,16 +717,19 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         logger.debug("request_entity_tag_list lid='%s'", lid)
         return self._request(R_ENTITY_TAG_META, C_LIST, (lid,), None, offset=offset, limit=limit)
 
-    def request_point_create(self, foc, lid, pid, control_cb=None):
+    def request_point_create(self, foc, lid, pid, control_cb=None, save_recent=0):
         """request point create: feed or control, lid and pid point lid
         """
         Validation.foc_check(foc)
         lid = Validation.lid_check_convert(lid)
         pid = Validation.pid_check_convert(pid)
-        logger.debug("request_point_create foc=%i lid='%s' pid='%s'", foc, lid, pid)
+        save_recent = validate_int(save_recent, 'save_recent')
+        logger.debug("request_point_create foc=%i lid='%s' pid='%s' save_recent=%d", foc, lid, pid, save_recent)
 
         if foc == R_CONTROL:
             Validation.callable_check(control_cb)
+            if save_recent:
+                logger.warning('ignoring non-zero save_recent value for control')
             evt = self._request(foc, C_CREATE, (lid,), {'lid': pid}, is_crud=True)
             with self.__pending_controls:
                 self.__pending_controls[evt.id_] = control_cb
@@ -715,7 +737,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         elif control_cb:
             raise ValueError('callback specified for Feed')
         else:
-            return self._request(foc, C_CREATE, (lid,), {'lid': pid}, is_crud=True)
+            return self._request(foc, C_CREATE, (lid,), {'lid': pid, 'saveRecent': save_recent}, is_crud=True)
 
     def request_point_rename(self, foc, lid, pid, newpid):
         Validation.foc_check(foc)
@@ -753,6 +775,21 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         pid = Validation.pid_check_convert(pid)
         logger.debug("request_point_list_detailed foc=%i lid='%s' pid='%s'", foc, lid, pid)
         return self._request(foc, C_LIST, (lid, pid))
+
+    def request_point_recent_info(self, foc, lid, pid):
+        Validation.foc_check(foc)
+        lid = Validation.lid_check_convert(lid)
+        pid = Validation.pid_check_convert(pid)
+        logger.debug("request_point_recent_info foc=%i lid='%s' pid='%s'", foc, lid, pid)
+        return self._request(foc, C_LIST, (lid, pid, 'recent'))
+
+    def request_point_recent_config(self, foc, lid, pid, max_samples=0):
+        Validation.foc_check(foc)
+        lid = Validation.lid_check_convert(lid)
+        pid = Validation.pid_check_convert(pid)
+        max_samples = validate_int(max_samples, 'max_samples')
+        logger.debug("request_point_recent_config foc=%i lid='%s' pid='%s'", foc, lid, pid)
+        return self._request(foc, C_UPDATE, (lid, pid, 'recent'), {'maxSamples': max_samples})
 
     @classmethod
     def __res_to_meta(cls, res):
@@ -923,13 +960,14 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             logger.warning('auto-decode failed, returning bytes', exc_info=DEBUG_ENABLED)
             return rbytes, mime
 
-    def request_point_share(self, lid, pid, data, mime=None):
+    def request_point_share(self, lid, pid, data, mime=None, time=None):
         logger.debug("request_point_share lid='%s' pid='%s'", lid, pid)
         lid = Validation.lid_check_convert(lid)
         pid = Validation.pid_check_convert(pid)
         mime = Validation.mime_check_convert(mime, allow_none=True)
+        time = Validation.datetime_check_convert(time, allow_none=True)
         mime, data = self.__point_data_to_bytes(data, mime)
-        return self._request(R_FEED, C_UPDATE, (lid, pid, 'share'), {'mime': mime, 'data': data})
+        return self._request(R_FEED, C_UPDATE, (lid, pid, 'share'), {'mime': mime, 'data': data, 'time': time})
 
     def request_sub_ask(self, sub_id, data, mime=None):
         logger.debug("request_sub_ask sub_id=%s", sub_id)
@@ -953,6 +991,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         logger.debug("request_sub_list lid=%s", lid)
         lid = Validation.lid_check_convert(lid)
         return self._request(R_SUB, C_LIST, (lid,), offset=offset, limit=limit)
+
+    def request_sub_recent(self, sub_id, count=None):
+        logger.debug("request_sub_recent sub_id=%s, count=%s", sub_id, count)
+        Validation.guid_check_convert(sub_id)
+        return self._request(R_SUB, C_LIST, (sub_id, 'recent'), {'count': count})
 
     def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_='full'):
         logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s",
@@ -1300,7 +1343,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                     finish = True
                     # Exception - DUPLICATED also should produce callback
                     perform_cb = (msg[M_TYPE] == E_DUPLICATED)
-                elif msg[M_TYPE] != E_PROGRESS:
+                elif msg[M_TYPE] not in _RSP_TYPE_ONGOING:
                     perform_cb = True
             else:
                 logger.warning('Reference unexpected for request %s of type %s', msg[M_CLIENTREF],
@@ -1361,6 +1404,14 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                         # callback by thing and point
                         entity_point_callbacks[payload[P_LID]] = self.__pending_controls.pop(msg[M_CLIENTREF])
 
+        elif msg[M_TYPE] == E_RECENTDATA:
+            samples = []
+            for sample in payload[P_SAMPLES]:
+                data, mime, time = self.__decode_data_time(sample)
+                samples.append({'data': data, 'mime': mime, 'time': time})
+            self.__fire_callback(_CB_RECENT_DATA, {'c': msg[M_CLIENTREF],
+                                                   'samples': samples})
+
     def __handle_low_seq_resend(self, msg, req):
         """special error case - low sequence number (update sequence number & resend if applicable). Returns True if
            a resend was scheduled, False otherwise. MUST be called within self.__requests lock."""
@@ -1372,9 +1423,24 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             return True
         return False
 
+    __share_time_fmt = '%Y-%m-%dT%H:%M:%S.%fZ'
+
+    def __decode_data_time(self, payload):
+        """Extract time and decode payload (based on mime type) from payload. Applies to E_FEEDDATA and E_RECENTDATA.
+        Returns tuple of data, mime, time."""
+        data, mime = self.__bytes_to_share_data(payload)
+        try:
+            time = datetime.strptime(payload.get(P_TIME), self.__share_time_fmt)
+        except (ValueError, TypeError):
+            logger.warning('Share payload from container has invalid timestamp (%s), will use naive local time',
+                           payload.get(P_TIME))
+            time = datetime.utcnow()
+        return data, mime, time
+
     def __perform_unsolicited_callbacks(self, msg):
         """Callbacks for which a client reference is either optional or does not apply at all"""
         type_ = msg[M_TYPE]
+        payload = msg[M_PAYLOAD]
 
         # callbacks for responses which might be unsolicited (e.g. created or deleted)
         if type_ in _RSP_PAYLOAD_CB_MAPPING:
@@ -1382,13 +1448,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
         # Perform callbacks for feed data
         elif type_ == E_FEEDDATA:
-            # decoded first since simulate_feeddata expects decoded content
-            data, mime = self.__bytes_to_share_data(msg[M_PAYLOAD])
-            self.simulate_feeddata(msg[M_PAYLOAD][P_FEED_ID], data, mime)
+            self.__simulate_feeddata(payload[P_FEED_ID], *self.__decode_data_time(payload))
 
         # Perform callbacks for unsolicited subscriber message
         elif type_ == E_SUBSCRIBED:
-            self.__fire_callback(_CB_SUBSCRIPTION, msg[M_PAYLOAD])
+            self.__fire_callback(_CB_SUBSCRIPTION, payload)
 
         else:
             logger.error('Unexpected message type for unsolicited callback %s', type_)
