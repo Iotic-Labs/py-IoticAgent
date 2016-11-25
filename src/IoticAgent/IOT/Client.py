@@ -45,7 +45,7 @@ from .PointValueHelper import PointDataObjectHandler
 class Client(object):  # pylint: disable=too-many-public-methods
 
     # Core version targeted by IOT client
-    __core_version = '0.3.3'
+    __core_version = '0.4.0'
 
     def __init__(self, config=None, db=None):
         """

@@ -34,7 +34,7 @@ else:
     READ_MD = lambda f: convert(f, 'rst')
 
 
-VERSION = '0.3.3'
+VERSION = '0.4.0'
 
 setup(
     name='py-IoticAgent',
