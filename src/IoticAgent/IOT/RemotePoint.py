@@ -67,12 +67,14 @@ class RemoteFeed(RemotePoint):
     """
 
     def get_last(self):
-        """Shorthand for get_recent(1). Returns None if no recent data is available for this point or a dict containing:
+        """Returns None if no recent data is available for this point or a dict containing:
 
             #!python
             'data' # (decoded or raw bytes)
             'mime' # (None, unless payload was not decoded and has a mime type)
             'time' # (datetime representing UTC timestamp of share)
+
+        Note: Shorthand for get_recent(1).
         """
         try:
             return next(self.get_recent(1))
