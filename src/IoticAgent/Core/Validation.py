@@ -261,11 +261,10 @@ class Validation(object):  # pylint: disable=too-many-public-methods
     def search_check_convert(cls, text, lang, location, unit, default_lang):
         arg_count = 0
         payload = {}
+
         if text is not None:
             payload['text'] = cls.__search_text_check_convert(text)
             arg_count += 1
-        else:
-            raise ValueError('text parameter required for search')
 
         payload['lang'] = cls.lang_check_convert(lang, default=default_lang)
 
@@ -273,12 +272,13 @@ class Validation(object):  # pylint: disable=too-many-public-methods
             cls.search_location_check(location)
             payload.update(location)
             arg_count += 1
+            if location['radius'] > 25:
+                raise ValueError('radius cannot exceed 25km when no search text supplied')
 
         if unit is not None:
             payload['unit'] = cls.value_unit_check_convert(unit)
             arg_count += 1
 
-        # NOTE: This check is for future use once text is optional - currently this will not trigger
         if not arg_count:
             raise ValueError('At least one of text, location and unit must be specified')
 

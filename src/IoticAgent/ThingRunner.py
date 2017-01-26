@@ -41,7 +41,7 @@ class ThingRunner(object):
                         break
 
         # runs in foreground, blocking
-        MyRunner().run('other', 'arguments', config='agent.ini')
+        MyRunner('other', 'arguments', config='agent.ini').run()
 
     Optionally implement `on_startup` or `on_shutdown` to perform one-off actions at the beginning/end of the agent's
     run cycle.

@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
 
 from threading import Thread
 try:
-    from time import perf_counter
+    from time import perf_counter  # pylint: disable=no-name-in-module
 except:
-    from time import clock as perf_counter  # python2
+    from time import clock as perf_counter
 import inspect
 
 from .compat import Lock
@@ -73,6 +73,7 @@ def tester(i, d):
             x = d[i]
     with d:
         logger.info("tester %i done: %s", i, d)
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

@@ -17,10 +17,11 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-from .Point import PointDataObject
 from IoticAgent.Core.Validation import Validation
 from IoticAgent.Core.utils import validate_nonnegative_int
 from IoticAgent.Core.compat import Queue, Empty, monotonic
+
+from .Point import PointDataObject
 
 
 class RemotePoint(object):

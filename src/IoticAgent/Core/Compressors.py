@@ -28,6 +28,7 @@ from .Const import COMP_NONE, COMP_ZLIB, COMP_LZ4F
 def __dummy(*args, **kwargs):  # pylint: disable=unused-argument
     raise NotImplementedError('(de)compression type unavailable')
 
+
 try:
     from lz4framed import compress as _lz4f_compress, Decompressor as _lz4f_Decompressor
 except ImportError:

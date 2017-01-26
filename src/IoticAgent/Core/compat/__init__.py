@@ -169,7 +169,9 @@ def py_version_check():
 
 def ssl_version_check():
     from ssl import OPENSSL_VERSION_INFO as sslv, OPENSSL_VERSION
-    if not (sslv[0] == 1 and sslv[1] == 0 and sslv[2] > 0):
+    if not (sslv[0] > 1 or
+            (sslv[0] == 1 and sslv[1] > 0) or
+            (sslv[0] == 1 and sslv[1] == 0 and sslv[2] > 0)):
         raise Exception('At least SSL v1.0.1 required for TLS v1.2 (found %s)' % OPENSSL_VERSION)
 
 

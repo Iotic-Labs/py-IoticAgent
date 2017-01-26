@@ -23,11 +23,11 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-from .Resource import Resource
 from IoticAgent.Core.Validation import Validation
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
 from IoticAgent.Core.compat import Sequence, Mapping, raise_from, string_types, ensure_unicode
 
+from .Resource import Resource
 from .utils import private_names_for, foc_to_str
 
 try:

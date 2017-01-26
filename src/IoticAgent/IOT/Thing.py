@@ -457,7 +457,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         Validation.callable_check(callback_parsed)
         return partial(self._client._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL,
                        # used by PointDataObjectHandler as reference
-                       Control(self._client, self.__lid, pid, '0'*32))
+                       Control(self._client, self.__lid, pid, '0' * 32))
 
     def __delete_point(self, foc, pid):
         evt = self._client._request_point_delete(foc, self.__lid, pid)

@@ -42,10 +42,10 @@ from .RemotePoint import RemoteFeed, RemoteControl
 from .PointValueHelper import PointDataObjectHandler
 
 
-class Client(object):  # pylint: disable=too-many-public-methods
+class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.4.0'
+    __core_version = '0.4.1'
 
     def __init__(self, config=None, db=None):
         """
@@ -319,6 +319,184 @@ class Client(object):  # pylint: disable=too-many-public-methods
         """
         return self.__client.register_callback_subscription(callback)
 
+    @classmethod
+    def __callback_payload_only(cls, callback, msg):
+        # Only pass the payload to callback
+        callback(msg[M_PAYLOAD])
+
+    def register_callback_created(self, func, serialised=True):
+        """
+        Register a callback for resource creation.  This will be called when any *new* resource
+        is created within your agent.  If `serialised` is not set, the callbacks might arrive
+        in a different order to they were requested.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_ENTITY, R_FEED, etc # the type of resource created
+            lid       : <name>                # the local name of the resource
+            id        : <GUID>                # the global Id of the resource
+            epId      : <GUID>                # the global Id of your agent
+
+        `Note` resource types are defined [here](../Core/Const.m.html)
+
+        `Example`
+
+            #!python
+            def created_callback(args):
+                print(args)
+            ...
+            client.register_callback_created(created_callback)
+
+        This would print out something like the following on creation of an R_ENTITY
+
+            #!python
+            OrderedDict([(u'lid', u'new_thing1'), (u'r', 1),
+                         (u'epId', u'ffd47b75ea786f55c76e337cdc47665a'),
+                         (u'id', u'3f11df0a09588a6a1a9732e3837765f8')]))
+        """
+        self.__client.register_callback_created(partial(self.__callback_payload_only, func), serialised=serialised)
+
+    def register_callback_duplicate(self, func, serialised=True):
+        """
+        Register a callback for resource creation but where the resource already exists in Iotic Space.
+        In this case the existing reference is passed to you.
+        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_ENTITY, R_FEED, etc # the type of existing resource
+            lid       : <name>                # the local name of the
+                                              # existing resource
+            id        : <GUID>                # the global Id of the
+                                              # existing resource
+            epId      : <GUID>                # the global Id of your agent
+
+        `Note` resource types are defined [here](../Core/Const.m.html)
+
+        `Example`
+
+            #!python
+            def duplicated_callback(args):
+                print(args)
+            ...
+            client.register_callback_created(duplicated_callback)
+
+        This would print out something like the following on re-creation of an R_ENTITY
+
+            #!python
+            OrderedDict([(u'lid', u'new_thing1'), (u'r', 1),
+                         (u'epId', u'ffd47b75ea786f55c76e337cdc47665a'),
+                         (u'id', u'3f11df0a09588a6a1a9732e3837765f8')]))
+        """
+        self.__client.register_callback_duplicate(partial(self.__callback_payload_only, func), serialised=serialised)
+
+    def register_callback_renamed(self, func, serialised=True):
+        """
+        Register a callback for resource rename.  This will be called when any resource
+        is renamed within your agent.
+        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_ENTITY, R_FEED, etc # the type of resource deleted
+            lid       : <name>                # the new local name of the resource
+            oldLid    : <name>                # the old local name of the resource
+            id        : <GUID>                # the global Id of the resource
+
+        `Note` resource types are defined [here](../Core/Const.m.html)
+
+        `Example`
+
+            #!python
+            def renamed_callback(args):
+                print(args)
+            ...
+            client.register_callback_renamed(renamed_callback)
+
+        This would print out something like the following on renaming of an R_ENTITY
+
+            #!python
+            OrderedDict([(u'lid', u'new_name'),
+                         (u'r', 1),
+                         (u'oldLid', u'old_name'),
+                         (u'id', u'4448993b44738411de5fe2a6cf32d957')])
+        """
+
+        self.__client.register_callback_renamed(partial(self.__callback_payload_only, func), serialised=serialised)
+
+    def register_callback_deleted(self, func, serialised=True):
+        """
+        Register a callback for resource deletion.  This will be called when any resource
+        is deleted within your agent.
+        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_ENTITY, R_FEED, etc # the type of resource deleted
+            lid       : <name>                # the local name of the resource
+            id        : <GUID>                # the global Id of the resource
+
+        `Note` resource types are defined [here](../Core/Const.m.html)
+
+        `Example`
+
+            #!python
+            def deleted_callback(args):
+                print(args)
+            ...
+            client.register_callback_deleted(deleted_callback)
+
+        This would print out something like the following on deletion of an R_ENTITY
+
+            #!python
+            OrderedDict([(u'lid', u'old_thing1'),
+                         (u'r', 1),
+                         (u'id', u'315637813d801ec6f057c67728bf00c2')])
+        """
+        self.__client.register_callback_deleted(partial(self.__callback_payload_only, func), serialised=serialised)
+
+    def register_callback_reassigned(self, func, serialised=True):
+        """
+        Register a callback for resource reassignment.  This will be called when any resource
+        is reassigned to or from your agent.
+        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+
+        The payload passed to your callback is an OrderedDict with the following keys
+
+            #!python
+            r         : R_ENTITY, R_FEED, etc # the type of resource reassigned
+            lid       : <name>                # the local name of the resource
+            epId      : <GUID>                # the global Id of the agent the
+                                              # resource has been reassigned *to*
+            id        : <GUID>                # the global Id of the resource
+
+        `Note` resource types are defined [here](../Core/Const.m.html)
+
+        `Note` You can check whether this is an assign "in" or "out" by comparing the epId with your current
+        agent id, using the `IOT.Client.agent_id` property.  If it's the same it's a reassign to you.
+
+        `Example`
+
+            #!python
+            def reassigned_callback(args):
+                print(args)
+            ...
+            client.register_callback_reassigned(reassigned_callback)
+
+        This would print out something like the following on assignment of an R_ENTITY to
+
+            #!python
+            OrderedDict([(u'lid', u'moved_thing'),
+                         (u'r', 1),
+                         (u'epId', u'5a8d603ee757133d66d99875d0584c72'),
+                         (u'id', u'4448993b44738411de5fe2a6cf32d957')])
+        """
+        self.__client.register_callback_reassigned(partial(self.__callback_payload_only, func), serialised)
+
     def __callback_subscribed_filter(self, callback, msg):
         payload = msg[M_PAYLOAD]
         if payload[P_RESOURCE] == R_SUB:
@@ -557,8 +735,8 @@ class Client(object):  # pylint: disable=too-many-public-methods
 
     def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False):
         """Search the Iotic Space for public Things with metadata matching the search parameters:
-        text, (lang, location, unit, limit, offset)=optional. Note that only things which have at least one
-        point defined can be found.
+        text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can
+        be found.
 
         Returns dict of results as below (first with reduced=False, second with reduced=True)- OR -
 
@@ -625,7 +803,7 @@ class Client(object):  # pylint: disable=too-many-public-methods
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `text` (required) (string) The text to search for. Label and description will be searched
+        `text` (optional) (string) The text to search for. Label and description will be searched
         for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive.
 
         `lang` (optional) (string) The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
@@ -633,17 +811,18 @@ class Client(object):  # pylint: disable=too-many-public-methods
         that language` back from search and then only if there are any in that language
 
         `location` (optional) (dictionary) Latitude, longitude and radius to search within.
-        All values are float, Radius is in kilometers (km).  E.g.  `{"lat"=1.2345, "lon"=54.321, "radius"=6.789}`
+        All values are float, Radius is in kilometers (km). E.g. `{"lat"=1.2345, "long"=54.321, "radius"=6.789}`. Note:
+        If `text` has not been specified, radius can at most be 25km.
 
         `unit` (optional) (string) Valid URL of a unit in an ontology.  Or use a constant from the
-        [units](../Units.m.html#IoticAgent.Units) class - such as [METRE](../Units.m.html#IoticAgent.Units.METRE)
+        [units](../Units.m.html#IoticAgent.Units) class - such as [METRE](../Units.m.html#IoticAgent.Units.METRE).
 
-        `limit` (optional) (integer) Return this many search results
+        `limit` (optional) (integer) Return this many search results.
 
         `offset` (optional) (integer) Return results starting at this offset - good for paging.
 
-        `reduced` (optional) (boolean) If `true`, Return the reduced results just containing points and
-        their type
+        `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and
+        their type.
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)

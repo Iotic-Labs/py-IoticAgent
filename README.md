@@ -1,9 +1,9 @@
 # Overview
-py-IoticAgent is the python-language client for  [Iotic Space](https://iotic-labs.com/whatisit/concept/).  It enables a suitably authorised and authenticated python program to connect to the space to share data - and to "find and bind" to receive data from other things.
+py-IoticAgent is the Python language client for  [Iotic Space](https://iotic-labs.com/whatisit/concept/).  It enables a suitably authorised and authenticated Python program to connect to the space to share data - and to "find and bind" to receive data from other things.
 
 It's designed to work in parallel with the UI at the [Iotic Labs Developer Portal](https://developer.iotic-labs.com/)
 
-It provides to styles of interface:
+It provides two styles of interface:
 
 - **Synchronous** - where your code blocks until the system has done what you asked before returning.
 - **Asynchronous** - for the more advanced programmer, where you can issue commands and then wait on events until they complete.  Your code doesn't block.
@@ -12,20 +12,20 @@ It provides to styles of interface:
 Source-level documentation is part of the agent.  It requires [pdoc](https://pypi.python.org/pypi/pdoc) to generate.  Run the `make_docs.sh` script to generate it yourself, or it's available online [here](http://pythonhosted.org/py-IoticAgent/)
 
 ## System requirements
-This agent requires Python v3.2+ (or 2.7.9+).
+This agent requires Python 3.2+ or 2.7.9+.
 
 ## Dependencies
-The agent has one mandatory two optional dependencies
+The agent has one mandatory and two optional dependencies:
 
-- **Mandatory** [py-ubjson](https://pypi.python.org/pypi/py-ubjson) to enable universal binary json
+- **Mandatory** [py-ubjson](https://pypi.python.org/pypi/py-ubjson) to enable universal binary JSON
 - **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression
-- **Optional** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling api
+- **Optional** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling API
 
 
-## Installing
+# Installing
 **Notes**
 
-- All examples use Python 3 commands but these should also work using the Python v2 equivalents.
+- All examples use Python 3 commands but these should also work using the Python 2 equivalents.
 - PyPI releases are signed with the [Iotic Labs Software release signing key](https://iotic-labs.com/iotic-labs.com.asc)
 
 ## Using pip
@@ -51,3 +51,17 @@ pip3 install -t 3rd rdflib
 
 export PYTHONPATH=`pwd`/3rd:`pwd`/src
 ```
+
+## Running under Mac OS X
+Apple are not updating their bundled openssl lib, so to get a modern version you need to build one.
+
+1. Install the xcode command line tools
+
+2. Install [brew](http://brew.sh/)
+
+3. Install Python3
+  ```
+brew install python3
+```
+
+Now either pip or repository install methods from above should work.

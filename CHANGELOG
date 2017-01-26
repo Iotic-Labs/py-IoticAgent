@@ -1,3 +1,9 @@
+UNRELEASED
+- SSL version check allows for OpenSSL 1.1.x series
+- Expose additional callbacks in IOT module (from Core)
+- Search text now optional (location radius restricted to 25km in that case)
+- Minor documentation updates
+
 v0.4.0
 - Updated for QAPI v0.8.0 support
 - Meta labels & comments now use iotic specific properties

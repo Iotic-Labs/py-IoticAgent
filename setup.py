@@ -28,13 +28,13 @@ except ImportError:
 try:
     from pypandoc import convert
 except ImportError:
-    READ_MD = lambda f: open(f, 'r').read()
+    READ_MD = lambda f: open(f, 'r').read()  # noqa: E731
     print('Warning: pypandoc module not found, will not convert Markdown to RST')
 else:
-    READ_MD = lambda f: convert(f, 'rst')
+    READ_MD = lambda f: convert(f, 'rst')  # noqa: E731
 
 
-VERSION = '0.4.0'
+VERSION = '0.4.1'
 
 setup(
     name='py-IoticAgent',
