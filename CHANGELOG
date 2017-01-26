@@ -1,4 +1,4 @@
-UNRELEASED
+v0.4.1
 - SSL version check allows for OpenSSL 1.1.x series
 - Expose additional callbacks in IOT module (from Core)
 - Search text now optional (location radius restricted to 25km in that case)

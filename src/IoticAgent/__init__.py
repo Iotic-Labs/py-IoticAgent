@@ -24,16 +24,16 @@ an exhaustive introduction to all the code. Follow the links on the left to see 
 Getting Started - Installation
 ------------------------------
 Make sure you have all the necessary agent code and the dependencies.  This
-can be achieved either by using `pip3 install` or by getting the code from `github`.
+can be achieved either by using `pip3 install` or by getting the code from `GitHub`.
 
-1. `py-IoticAgent` Is available either from `pypi` [here](https://pypi.python.org/pypi/py-IoticAgent] or from `github`
+1. `py-IoticAgent` Is available either from `PyPI` [here](https://pypi.python.org/pypi/py-IoticAgent) or from `GitHub`
 [here](https://github.com/Iotic-Labs/py-IoticAgent)
 
 1. [optional] `py-lz4framed` compression for messages.  Zlib compression is used by default if lz4 is not present.
 [py-lz4framed on pypi](https://pypi.python.org/pypi/py-lz4framed)
 
 1. [optional] `rdflib` - You can install RDFLib yourself if you want to take advantage of advanced metadata
-features. [Rdflib on pypi](https://pypi.python.org/pypi/rdflib)
+features. [rdflib on PyPI](https://pypi.python.org/pypi/rdflib)
 
 Getting Started - Environment - Note on PYTHONPATH
 ------------------------------------------------
