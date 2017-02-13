@@ -16,38 +16,32 @@ Iotic Agent In Brief
 --------------------
 The `IoticAgent` module is the route from your code to Iotic Space.  There's a
 simple API built around concepts similar to those used in social networking for
-humans.  For example you can `follow` someone else's feed and `share` your own.
+humans.  For example, you can `follow` someone else's feed and `share` your own.
 
-This brief guide is a quick way to get started coding.  It does not attempt to be
-an exhaustive introduction to all the code. Follow the links on the left to see detail
+This brief guide shows a quick way to get started coding.  It does not attempt to be
+an exhaustive introduction to all the code. Follow the links on the left to see more detail.
 
 Getting Started - Installation
 ------------------------------
-Make sure you have all the necessary agent code and the dependencies.  This
-can be achieved either by using `pip3 install` or by getting the code from `GitHub`.
+The **simplest installation guide** is the
+[README on GitHub](https://github.com/Iotic-Labs/py-IoticAgent/blob/master/README.md).
 
-1. `py-IoticAgent` Is available either from `PyPI` [here](https://pypi.python.org/pypi/py-IoticAgent) or from `GitHub`
-[here](https://github.com/Iotic-Labs/py-IoticAgent)
-
-1. [optional] `py-lz4framed` compression for messages.  Zlib compression is used by default if lz4 is not present.
-[py-lz4framed on pypi](https://pypi.python.org/pypi/py-lz4framed)
-
-1. [optional] `rdflib` - You can install RDFLib yourself if you want to take advantage of advanced metadata
-features. [rdflib on PyPI](https://pypi.python.org/pypi/rdflib)
+Head over there now to do the install, then come back here.
 
 Getting Started - Environment - Note on PYTHONPATH
 ------------------------------------------------
-Depending on how you did your install, you will need to be careful that PYTHONPATH is set to
+If you install from Git, or use an advanced pip install technique, you will need to be careful that PYTHONPATH is set to
 where you've installed the IoticAgent and any dependencies.
 
-- If you used pypi and *didn't* specify a directory to install it, then you don't need to do anything
+- If you used pip to install from PyPI and *didn't* specify a directory in which to install, you don't need to
+do anything.
 - If you cloned github or used pypi with the `-t` option, then you'll need to tell python where to look for the
-modules you've installed.
-Look at the instruction on github [here](https://github.com/Iotic-Labs/py-IoticAgent#using-repository)
+modules you've installed.  See the ['Install from Git' instructions](https://github.com/Iotic-Labs/py-IoticAgent)
+on GitHub.
 
 Coding - Minimum script
 -----------------------
-Create a new python script in the src directory with the
+Create a new Python script in the src directory with the
 following lines.  This is the minimal Iotic Agent.  Let's call it
 `my_script.py` for now.
 
@@ -230,12 +224,7 @@ More details: `IoticAgent.IOT.Thing.Thing.follow`
 Coding - Describe your things and feeds in metadata
 ---------------------------------------------------
 The Iotic infrastructure makes great use of semantic metadata to provide meaning for your things, Points and your
-Points' values. In order to use the metadata functions you have to install a 3rd-party library called RDFLib, like so:
-
-    #!bash
-    $ sudo easy_install rdflib
-
-Then you can get a metadata helper object from your Thing or feed and describe the Thing in more detail.
+Points' values. You can get a metadata helper object from your Thing (or Feed) and describe the Thing in more detail.
 The label and description fields are free-text searchable so put information in them that will help others to find them.
 The geo-location of your Thing is used if others perform a location-based search.
 

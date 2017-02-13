@@ -119,7 +119,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '0.8.1'
+    __qapi_version = '1.0.0'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -701,16 +701,12 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         logger.debug("request_entity_meta_setpublic lid='%s' public='%s'", lid, public)
         return self._request(R_ENTITY_META, C_UPDATE, (lid, 'setPublic'), {'public': public})
 
-    def request_entity_tag_create(self, lid, tags, lang=None, delete=False):
+    def request_entity_tag_update(self, lid, tags, delete=False):
         lid = Validation.lid_check_convert(lid)
         tags = Validation.tags_check_convert(tags)
-        lang = Validation.lang_check_convert(lang, default=self.__default_lang)
         delete = Validation.bool_check_convert('delete', delete)
-        logger.debug("request_entity_tag_create lid='%s' tags=%s lang=%s delete=%s", lid, tags, lang, delete)
-        return self._request(R_ENTITY_TAG_META, C_UPDATE, (lid,), {'tags': tags, 'lang': lang, 'delete': delete})
-
-    def request_entity_tag_delete(self, lid, tags, lang=None):
-        return self.request_entity_tag_create(lid, tags, lang, True)
+        logger.debug("request_entity_tag_update lid='%s' tags=%s delete=%s", lid, tags, delete)
+        return self._request(R_ENTITY_TAG_META, C_UPDATE, (lid,), {'tags': tags, 'delete': delete})
 
     def request_entity_tag_list(self, lid, limit=100, offset=0):
         lid = Validation.lid_check_convert(lid)
@@ -828,14 +824,13 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         return self._request(R_VALUE_META, C_CREATE, (lid, pid, foc),
                              {'label': label, 'type': vtype, 'lang': lang, 'comment': comment, 'unit': unit})
 
-    def request_point_value_delete(self, lid, pid, foc, label, lang=None):
+    def request_point_value_delete(self, lid, pid, foc, label=None):
         Validation.foc_check(foc)
         lid = Validation.lid_check_convert(lid)
         pid = Validation.pid_check_convert(pid)
         label = Validation.label_check_convert(label)
-        lang = Validation.lang_check_convert(lang, default=self.__default_lang)
-        logger.debug("request_point_value_delete foc=%i lid='%s' pid='%s' label=%s lang=%s", foc, lid, pid, label, lang)
-        return self._request(R_VALUE_META, C_DELETE, (lid, pid, foc, label, lang))
+        logger.debug("request_point_value_delete foc=%i lid='%s' pid='%s' label=%s", foc, lid, pid, label)
+        return self._request(R_VALUE_META, C_DELETE, (lid, pid, foc) if label is None else (lid, pid, foc, label))
 
     def request_point_value_list(self, lid, pid, foc, limit=500, offset=0):
         Validation.foc_check(foc)
@@ -853,22 +848,17 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         else:
             raise ValueError('Unknown point type %s' % foc)
 
-    def request_point_tag_create(self, foc, lid, pid, tags, lang=None, delete=False):
+    def request_point_tag_update(self, foc, lid, pid, tags, delete=False):
         Validation.foc_check(foc)
         lid = Validation.lid_check_convert(lid)
         pid = Validation.pid_check_convert(pid)
         tags = Validation.tags_check_convert(tags)
-        lang = Validation.lang_check_convert(lang, default=self.__default_lang)
         delete = Validation.bool_check_convert('delete', delete)
-        logger.debug("request_point_tag_create foc=%i lid='%s' pid='%s' tags=%s lang=%s delete=%s", foc, lid, pid, tags,
-                     lang, delete)
+        logger.debug("request_point_tag_update foc=%i lid='%s' pid='%s' tags=%s delete=%s", foc, lid, pid, tags, delete)
         return self._request(self.__point_type_to_tag_type(foc),
                              C_UPDATE,
                              (lid, pid),
-                             {'tags': tags, 'lang': lang, 'delete': delete})
-
-    def request_point_tag_delete(self, foc, lid, pid, tags, lang=None):
-        return self.request_point_tag_create(foc, lid, pid, tags, lang, True)
+                             {'tags': tags, 'delete': delete})
 
     def request_point_tag_list(self, foc, lid, pid, limit=500, offset=0):
         Validation.foc_check(foc)
@@ -1032,7 +1022,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         return requestId
 
     # used by __make_hash
-    __byte_packer = Struct('>Q').pack
+    __byte_packer = Struct(b'>Q').pack
 
     @classmethod
     def __make_hash(cls, innermsg, token, seqnum):
@@ -1084,7 +1074,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 req._set()
 
     def __request_mark_sent(self, requestId):
-        """Set send time & clear exception from request if set, ignoring non-existant requests"""
+        """Set send time & clear exception from request if set, ignoring non-existent requests"""
         with self.__requests:
             try:
                 req = self.__requests[requestId]

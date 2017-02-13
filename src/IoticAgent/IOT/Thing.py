@@ -191,7 +191,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
-    def create_tag(self, tags, lang=None):
+    def create_tag(self, tags):
         """Create tags for a Thing in the language you specify. Tags can only contain alphanumeric (unicode) characters
         and the underscore. Tags will be stored lower-cased.
 
@@ -203,19 +203,15 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
 
         `tags` (mandatory) (list) - the list of tags you want to add to your Thing, e.g.
         `["garden", "soil"]`
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self._client._request_entity_tag_create(self.__lid, tags, lang, delete=False)
+        evt = self._client._request_entity_tag_update(self.__lid, tags, delete=False)
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
-    def delete_tag(self, tags, lang=None):
+    def delete_tag(self, tags):
         """Delete tags for a Thing in the language you specify. Case will be ignored and any tags matching lower-cased
         will be deleted.
 
@@ -227,34 +223,26 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
 
         `tags` (mandatory) (list) - the list of tags you want to delete from your Thing, e.g.
         `["garden", "soil"]`
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self._client._request_entity_tag_delete(self.__lid, tags, lang)
+        evt = self._client._request_entity_tag_update(self.__lid, tags, delete=True)
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
     def list_tag(self, limit=500, offset=0):
         """List `all` the tags for this Thing
 
-        Returns tag dictionary of lists of tags keyed by language. As below
+        Returns lists of tags, as below
 
             #!python
-            {
-                "en": [
-                    "mytag1",
-                    "mytag2"
-                ],
-                "de": [
-                    "ein_name",
-                    "nochein_name"
-                ]
-            }
+            [
+                "mytag1",
+                "mytag2"
+                "ein_name",
+                "nochein_name"
+            ]
 
         - OR...
 

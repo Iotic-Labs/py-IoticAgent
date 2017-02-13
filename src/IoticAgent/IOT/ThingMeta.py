@@ -46,8 +46,8 @@ class ThingMeta(ResourceMeta):
         # should only have one location, so delete old lat/lon first
         self.delete_location()
         subj = self._get_uuid_uriref()
-        self._graph.add((subj, GEO_NS["lat"], Literal('{latitude}'.format(latitude=lat), datatype=XSD.float)))
-        self._graph.add((subj, GEO_NS["long"], Literal('{longitude}'.format(longitude=lon), datatype=XSD.float)))
+        self._graph.add((subj, GEO_NS.lat, Literal('%s' % lat, datatype=XSD.float)))
+        self._graph.add((subj, GEO_NS.long, Literal('%s' % lon, datatype=XSD.float)))
 
     def get_location(self):
         """Gets the current geo location of your Thing
@@ -57,10 +57,10 @@ class ThingMeta(ResourceMeta):
         lat = None
         lon = None
         # note: always picks from first triple
-        for _, _, o in self._graph.triples((None, GEO_NS["lat"], None)):
+        for _, _, o in self._graph.triples((None, GEO_NS.lat, None)):
             lat = float(o)
             break
-        for _, _, o in self._graph.triples((None, GEO_NS["long"], None)):
+        for _, _, o in self._graph.triples((None, GEO_NS.long, None)):
             lon = float(o)
             break
 
@@ -70,7 +70,7 @@ class ThingMeta(ResourceMeta):
         """Deletes all the `geo:lat` and `geo:long` metadata properties on your Thing
         """
         # normally this should only remove one triple each
-        for s, p, o in self._graph.triples((None, GEO_NS["lat"], None)):
+        for s, p, o in self._graph.triples((None, GEO_NS.lat, None)):
             self._graph.remove((s, p, o))
-        for s, p, o in self._graph.triples((None, GEO_NS["long"], None)):
+        for s, p, o in self._graph.triples((None, GEO_NS.long, None)):
             self._graph.remove((s, p, o))

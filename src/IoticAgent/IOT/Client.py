@@ -17,7 +17,6 @@
 from __future__ import unicode_literals
 
 from functools import partial
-import warnings
 import logging
 logger = logging.getLogger(__name__)
 DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
@@ -45,17 +44,15 @@ from .PointValueHelper import PointDataObjectHandler
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.4.1'
+    __core_version = '0.5.0'
 
-    def __init__(self, config=None, db=None):
+    def __init__(self, config=None):
         """
         Creates an IOT.Client instance which provides access to Iotic Space
 
         `config` (optional): The name of the config file containing the connection parameters.
         Defaults to the name of the script +".ini", e.g. `config="my_script.ini"`. Alternatively
         an existing [Config](Config.m.html#IoticAgent.IOT.Config.Config) object can be specified.
-
-        `db` (optional): DEPRECATED
         """
         self.__core_version_check()
         logger.info('IOT version: %s', __version__)
@@ -66,8 +63,6 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             self.__config = config
         else:
             raise ValueError('config should be string or Config instance')
-        if db is not None:
-            warnings.warn('constructor db paramter has been deprecated', DeprecationWarning)
         #
         if any(self.__config.get('agent', item) is None for item in ('host', 'epid', 'passwd', 'token')):
             raise ValueError('Minimum configuration for IoticAgent is host, epid, passwd and token\n'
@@ -804,11 +799,12 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         if there is a communications problem between you and the infrastructure
 
         `text` (optional) (string) The text to search for. Label and description will be searched
-        for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive.
+        for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive. Tag
+        search is language neutral.
 
         `lang` (optional) (string) The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
         Language is used to limit search to only labels and descriptions in that language. You will only get labels `in
-        that language` back from search and then only if there are any in that language
+        that language` back from search and then only if there are any in that language.
 
         `location` (optional) (dictionary) Latitude, longitude and radius to search within.
         All values are float, Radius is in kilometers (km). E.g. `{"lat"=1.2345, "long"=54.321, "radius"=6.789}`. Note:
@@ -913,8 +909,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
         you the description of that object.
 
-        `lang` (optional) (string) The two-character ISO 639-1 language code for which labels, comments
-        and tags will be returned. This does not affect Values (i.e. when describing a Point).
+        `lang` (optional) (string) The two-character ISO 639-1 language code for which labels and comments will be
+        returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as
+        these are language neutral).
         """
         if isinstance(guid_or_thing, self.__guid_resources):
             guid = guid_or_thing.guid
@@ -1073,11 +1070,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_entity_meta_setpublic(self, lid, public):
         return self.__client.request_entity_meta_setpublic(lid, public)
 
-    def _request_entity_tag_create(self, lid, tags, lang, delete=False):
-        return self.__client.request_entity_tag_create(lid, tags, lang, delete)
-
-    def _request_entity_tag_delete(self, lid, tags, lang):
-        return self._request_entity_tag_create(lid, tags, lang, delete=True)
+    def _request_entity_tag_update(self, lid, tags, delete=False):
+        return self.__client.request_entity_tag_update(lid, tags, delete)
 
     def _request_entity_tag_list(self, lid, limit, offset):
         return self.__client.request_entity_tag_list(lid, limit, offset)
@@ -1109,11 +1103,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_point_meta_set(self, foc, lid, pid, rdf, fmt):
         return self.__client.request_point_meta_set(foc, lid, pid, rdf, fmt)
 
-    def _request_point_tag_create(self, foc, lid, pid, tags, lang, delete=False):
-        return self.__client.request_point_tag_create(foc, lid, pid, tags, lang, delete)
-
-    def _request_point_tag_delete(self, foc, lid, pid, tags, lang):
-        return self._request_point_tag_create(foc, lid, pid, tags, lang, delete=True)
+    def _request_point_tag_update(self, foc, lid, pid, tags, delete=False):
+        return self.__client.request_point_tag_update(foc, lid, pid, tags, delete)
 
     def _request_point_tag_list(self, foc, lid, pid, limit, offset):
         return self.__client.request_point_tag_list(foc, lid, pid, limit, offset)
@@ -1121,8 +1112,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_point_value_create(self, lid, pid, foc, label, vtype, lang, comment, unit):
         return self.__client.request_point_value_create(lid, pid, foc, label, vtype, lang, comment, unit)
 
-    def _request_point_value_delete(self, lid, pid, foc, label, lang):
-        return self.__client.request_point_value_delete(lid, pid, foc, label, lang)
+    def _request_point_value_delete(self, lid, pid, foc, label=None):
+        return self.__client.request_point_value_delete(lid, pid, foc, label=label)
 
     def _request_point_value_list(self, lid, pid, foc, limit, offset):
         return self.__client.request_point_value_list(lid, pid, foc, limit, offset)

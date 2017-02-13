@@ -162,8 +162,9 @@ except ImportError:
 
 def py_version_check():
     if not ((version_info[0] == 3 and version_info[1] >= 2) or
-            (version_info[0] == 2 and version_info[1] >= 7 and version_info[2] >= 9)):
-        raise Exception('At least Python v2.7.9 or v3.2 required (found %s)' %
+            (version_info[0] == 2 and version_info[1] >= 7 and version_info[2] >= 5)):
+        # Note: added >= 2.7.5 as SSL version can be upgraded
+        raise Exception('At least Python v2.7.5 or v3.2 required (found %s)' %
                         '.'.join(str(item) for item in version_info[:3]))
 
 

@@ -1,67 +1,86 @@
 # Overview
-py-IoticAgent is the Python language client for  [Iotic Space](https://iotic-labs.com/whatisit/concept/).  It enables a suitably authorised and authenticated Python program to connect to the space to share data - and to "find and bind" to receive data from other things.
 
-It's designed to work in parallel with the UI at the [Iotic Labs Developer Portal](https://developer.iotic-labs.com/)
+py-IoticAgent is the Python language client for [Iotic Space](https://iotic-labs.com/whatisit/concept/).  It enables a suitably authorised and authenticated Python program to connect to the space to share data - and to "find and bind" to receive data from other things.
+
+It's designed to work in parallel with the UI at the [Iotic Labs Developer Portal](https://developer.iotic-labs.com/), so you can instantly see results from your agent code.
 
 It provides two styles of interface:
 
 - **Synchronous** - where your code blocks until the system has done what you asked before returning.
-- **Asynchronous** - for the more advanced programmer, where you can issue commands and then wait on events until they complete.  Your code doesn't block.
+- **Asynchronous** - a more advanced style where your code doesn't block, since it issues commands and does other work before finally waiting on events that show the commands are complete.
 
-## Documentation
-Source-level documentation is part of the agent.  It requires [pdoc](https://pypi.python.org/pypi/pdoc) to generate.  Run the `make_docs.sh` script to generate it yourself, or it's available online [here](http://pythonhosted.org/py-IoticAgent/)
+# Getting started
+
+Once the agent's installed, the [Agent documentation](http://pythonhosted.org/py-IoticAgent/) should get you started.
+
+You will need a free [Iotic Space developer account](https://developer.iotic-labs.com/join/) to get credentials for the agent's .ini file.
+
+## Building the docs
+
+The online [Agent documentation](http://pythonhosted.org/py-IoticAgent/) can also be built locally if you prefer.
+
+1. This requires [pdoc](https://pypi.python.org/pypi/pdoc) so run `pip install pdoc` if needed.
+2. Run the `make_docs.sh` script to generate the docs.
 
 ## System requirements
-This agent requires Python 3.2+ or 2.7.9+.
 
-## Dependencies
-The agent has one mandatory and two optional dependencies:
+This agent requires Python 3.2+ or 2.7.5+ (with ssl module capable of TLS v1.2).
 
-- **Mandatory** [py-ubjson](https://pypi.python.org/pypi/py-ubjson) to enable universal binary JSON
-- **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression
-- **Optional** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling API
+## Security
 
+Our PyPI releases are signed with the [Iotic Labs software release signing key](https://iotic-labs.com/iotic-labs.com.asc)
 
 # Installing
-**Notes**
 
 - All examples use Python 3 commands but these should also work using the Python 2 equivalents.
-- PyPI releases are signed with the [Iotic Labs Software release signing key](https://iotic-labs.com/iotic-labs.com.asc)
 
-## Using pip
+## Quick install with pip
+
+This works on most Linux and BSD systems (see below for macOS), installing from [PyPI](https://pypi.python.org/pypi/py-IoticAgent). You may be able to omit the `sudo` if you have a user-installed `pip`.
+
 ```shell
-pip3 install py-IoticAgent
-# Optional: The agent can provide additional functionality if rdflib is available
-pip3 install rdflib
+sudo pip3 install py-IoticAgent
 ```
-**Notes**
+For Python 2, use ``sudo pip`` or ``pip2``.
+
+### Mac install
+
+Whatever your preferred version of Python on macOS, you must install it with Homebrew so it can use a recent version of OpenSSL - no `sudo` should be needed:
+
+```shell
+brew install python3
+pip3 install py-IoticAgent
+```
+- For Python 2, use `brew install python` and `pip`
+- To install `brew`, see the [Homebrew site](http://brew.sh)
+
+## Trying the agent
+
+Now you can head to our [getting started doc](http://pythonhosted.org/py-IoticAgent/),
+which provides a simple 3-line 'minimal script' to check everything's working.
+
+## Possible issues
 
 - If you do not have Python development headers and a C toolchain installed, this might produce warnings which can be safely ignored.
-- With certains versions of pip the dependency installation of py-ubjson can fail when using `-t` flag. (Symptom: py-IoticAgent is installed but py-ubsjon not. See also [this](https://github.com/pypa/pip/issues/3056) bug. In this case force non-extension installation as follows: `PYUBJSON_NO_EXTENSION=1 pip3 install py-IoticAgent`
+- With certain versions of pip, the installation of the py-ubjson dependency can fail when using `-t` flag. (Symptom: py-IoticAgent is installed but py-ubjson is not.)  See [this pip issue](https://github.com/pypa/pip/issues/3056). In this case, force non-extension installation: `PYUBJSON_NO_EXTENSION=1 pip3 install py-IoticAgent`
+- On macOS, non-Homebrew Python setups may encounter this error from the agent: _Exception: At least SSL v1.0.1 required for TLS v1.2_
 
-## Using repository
+## Advanced: install from Git
+This is an alternative to the pip install, if there's a specific change you need that's not in the pip version:
+
 ```shell
 git clone https://github.com/Iotic-Labs/py-IoticAgent.git
 cd py-IoticAgent
 mkdir 3rd
-# Direct dependency of agent
-pip3 install -t 3rd py-ubjson
-# Optional: The agent can provide additional functionality if rdflib is available
-pip3 install -t 3rd rdflib
+# Direct dependencies of agent
+pip3 install -t 3rd py-ubjson rdflib
 
 export PYTHONPATH=`pwd`/3rd:`pwd`/src
 ```
 
-## Running under Mac OS X
-Apple are not updating their bundled openssl lib, so to get a modern version you need to build one.
+### Dependencies
+The agent has one mandatory and two optional dependencies - this only matters for the from-Git install:
 
-1. Install the xcode command line tools
-
-2. Install [brew](http://brew.sh/)
-
-3. Install Python3
-  ```
-brew install python3
-```
-
-Now either pip or repository install methods from above should work.
+- **Mandatory** [py-ubjson](https://pypi.python.org/pypi/py-ubjson) to enable universal binary JSON
+- **Mandatory** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling API
+- **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression

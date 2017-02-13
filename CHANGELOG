@@ -1,3 +1,10 @@
+UNRELEASED
+- Updated for QAPI v1.0.0 support
+- Tags and Value labels are now language neutral
+- All point values can now be removed at once
+- Removed deprecated IOT.Client db parameter
+- Embedded documentation now points to README for installation
+
 v0.4.1
 - SSL version check allows for OpenSSL 1.1.x series
 - Expose additional callbacks in IOT module (from Core)

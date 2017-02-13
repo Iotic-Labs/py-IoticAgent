@@ -202,9 +202,9 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     def __get_ssl_context(cls, sslca=None):
         """Make an SSLConext for this Python version using public or sslca
         """
-        if ((version_info[0] == 2 and (version_info[1] >= 7 and version_info[2] >= 9)) or
+        if ((version_info[0] == 2 and (version_info[1] >= 7 and version_info[2] >= 5)) or
                 (version_info[0] == 3 and version_info[1] >= 4)):
-            logger.debug('SSL method for 2.7.9+ / 3.4+')
+            logger.debug('SSL method for 2.7.5+ / 3.4+')
             # pylint: disable=no-name-in-module
             from ssl import SSLContext, PROTOCOL_TLSv1_2, CERT_REQUIRED, OP_NO_COMPRESSION
             ctx = SSLContext(PROTOCOL_TLSv1_2)
@@ -353,7 +353,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__recv_exc = exc
         self.__end.wait(wait_seconds)
 
-    @profiled_thread
+    @profiled_thread  # noqa (complexity)
     def __send_run(self):
         """Send request thread
         """
@@ -389,8 +389,17 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                         with self.__send_lock:
                             self.__send_ready.clear()
 
+            except exceptions.AccessRefused as exc:
+                logger.error("Access Refused (Credentials already in use?)")
+                self.__send_set_exc_and_wait(exc, 2)
             except exceptions.ConnectionForced as exc:
                 logger.error('Disconnected by broker, will re-try: %s', exc)
+                self.__send_set_exc_and_wait(exc, 2)
+            except SocketTimeout as exc:
+                logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
+                self.__send_set_exc_and_wait(exc, 2)
+            except SSLError as exc:
+                logger.error("ssl.SSLError Bad Certificate?")
                 self.__send_set_exc_and_wait(exc, 2)
             except (exceptions.AMQPError, OSError) as exc:
                 logger.error('amqp/transport failure, sleeping before retry', exc_info=True)

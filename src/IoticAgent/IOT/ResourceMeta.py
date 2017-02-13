@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from rdflib import Graph, Literal, URIRef
-    from rdflib.namespace import Namespace, RDF, RDFS, DCTERMS
+    from rdflib.namespace import Namespace, RDFS
 except ImportError:
     logger.warning("rdflib not found.  ResourceMeta helper will not be available.")
     raise
@@ -62,12 +62,12 @@ class ResourceMeta(object):
 
     def _get_uuid(self):
         # note: always picks from first triple
-        for s, _, _ in self._graph.triples((None, None, None)):
+        for s, _, _ in self._graph:
             return uuid_to_hex(s)
 
     def _get_uuid_uriref(self):
         # note: always picks from first triple
-        for s, _, _ in self._graph.triples((None, None, None)):
+        for s, _, _ in self._graph:
             return URIRef(s)
 
     def _get_properties(self, predicate):
@@ -132,10 +132,6 @@ class ResourceMeta(object):
 
         Raises xml.sax._exceptions.`SAXParseException` if the RDF is badly formed `xml`
         """
-        self._graph.bind("rdf", RDF)
-        self._graph.bind("rdfs", RDFS)
-        self._graph.bind("dcterms", DCTERMS)
-        # todo - consider adding bind iotic namespace
         self.__parent.set_meta_rdf(self._graph.serialize(format=self.__fmt).decode('utf8'), fmt=self.__fmt)
 
     def update(self):

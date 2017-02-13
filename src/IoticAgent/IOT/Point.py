@@ -202,7 +202,7 @@ class Point(Resource):
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
-    def create_tag(self, tags, lang=None):
+    def create_tag(self, tags):
         """Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
         and the underscore. Tags will be stored lower-cased.
 
@@ -214,19 +214,15 @@ class Point(Resource):
 
         tags (mandatory) (list) - the list of tags you want to add to your Point, e.g.
         ["garden", "soil"]
-
-        `lang` (optional) (string) Default `None`.  The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self._client._request_point_tag_create(self._type, self.__lid, self.__pid, tags, lang, delete=False)
+        evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=False)
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
-    def delete_tag(self, tags, lang=None):
+    def delete_tag(self, tags):
         """Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
         will be deleted.
 
@@ -238,34 +234,26 @@ class Point(Resource):
 
         `tags` (mandatory) (list) - the list of tags you want to delete from your Point, e.g.
         ["garden", "soil"]
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
         """
         if isinstance(tags, str):
             tags = [tags]
 
-        evt = self._client._request_point_tag_delete(self._type, self.__lid, self.__pid, tags, lang)
+        evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=True)
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
     def list_tag(self, limit=50, offset=0):
         """List `all` the tags for this Point
 
-        Returns tag dictionary of lists of tags keyed by language. As below
+        Returns list of tags, as below
 
             #!python
-            {
-                "en": [
-                    "mytag1",
-                    "mytag2"
-                ],
-                "de": [
-                    "ein_name",
-                    "nochein_name"
-                ]
-            }
+            [
+                "mytag1",
+                "mytag2"
+                "ein_name",
+                "nochein_name"
+            ]
 
         - OR...
 
@@ -300,8 +288,8 @@ class Point(Resource):
         `label` (mandatory) (string) the label for this value e.g. "Temperature".  The label must be unique for this
         Point.  E.g. You can't have two data values called "Volts" but you can have "volts1" and "volts2".
 
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
+        `lang` (optional) (string) The two-character ISO 639-1 language code to use for the description. None means use
+        the default language for your agent.
         See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
 
         `vtype` (mandatory) (xsd:datatype) the datatype of the data you are describing, e.g. dateTime
@@ -334,8 +322,8 @@ class Point(Resource):
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
-    def delete_value(self, label, lang=None):
-        """Delete the labelled value on this Point
+    def delete_value(self, label=None):
+        """Delete the labelled value (or all values) on this Point
 
         Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
         containing the error if the infrastructure detects a problem
@@ -343,13 +331,10 @@ class Point(Resource):
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `label` (mandatory) (string) the label for the value you want to delete
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
+        `label` (optional) (string) the label for the value you want to delete. If not specified, all values for this
+        point will be removed.
         """
-        evt = self._client._request_point_value_delete(self.__lid, self.__pid, self._type, label, lang)
+        evt = self._client._request_point_value_delete(self.__lid, self.__pid, self._type, label=label)
         evt.wait(self._client.sync_timeout)
         self._client._except_if_failed(evt)
 
@@ -489,6 +474,10 @@ class PointDataObject(object):
         self.__values = _PointValueWrapper(values)
         self.__filter = value_filter
 
+    def __bool__(self):
+        """Short-hand for empty()"""
+        return not self.empty()
+
     @property
     def values(self):
         """List of all values"""
@@ -498,6 +487,11 @@ class PointDataObject(object):
         """Unsets all values"""
         for value in self.__values:
             del value.value
+
+    @property
+    def empty(self):
+        """Returns True if no values have been set yet."""
+        return all(value.unset for value in self.__values)
 
     @property
     def missing(self):
