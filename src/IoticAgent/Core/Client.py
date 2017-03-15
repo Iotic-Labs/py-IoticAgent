@@ -119,7 +119,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '1.0.0'
+    __qapi_version = '1.1.0'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -167,6 +167,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         #
         self.__epId = Validation.guid_check_convert(epId)
         self.__default_lang = Validation.lang_check_convert(lang, allow_none=True)
+        self.__local_meta = False
         #
         try:
             self.__token = a2b_hex(token.encode('ascii'))
@@ -253,6 +254,12 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         """Language in use when not explicitly specified (in meta related requests). Will be set to container default
         if was not set in constructor. Before calling start() this might be None."""
         return self.__default_lang
+
+    @property
+    def local_meta(self):
+        """Whether container-local metadata functionality (e.g. search) is available in this container. Before calling
+        start() this will always be False."""
+        return self.__local_meta
 
     @property
     def container_params(self):
@@ -459,6 +466,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 self.set_compression(payload['compression'])
             except ValueError as ex:
                 raise_from(Exception('Container compression method (%d) unsupported' % payload['compression']), ex)
+            self.__local_meta = payload['local_meta']
+
             self.__threadpool.start()
             self.__crud_threadpool.start()
         except:
@@ -987,20 +996,21 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         Validation.guid_check_convert(sub_id)
         return self._request(R_SUB, C_LIST, (sub_id, 'recent'), {'count': count})
 
-    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_='full'):
-        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s",
-                     text, lang, location, unit, limit, offset, type_)
-        action = (Validation.search_type_check_convert(type_),)
-        return self._request(R_SEARCH, C_UPDATE, action,
+    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_='full',
+                       local=False):
+        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s local=%s",
+                     text, lang, location, unit, limit, offset, type_, local)
+        type_ = Validation.search_type_check_convert(type_)
+        return self._request(R_SEARCH, C_UPDATE, ((type_, 'local') if local else (type_,)),
                              Validation.search_check_convert(text, lang, location, unit,
                                                              default_lang=self.__default_lang),
                              offset=offset, limit=limit)
 
-    def request_describe(self, guid, lang=None):
+    def request_describe(self, guid, lang=None, local=False):
         logger.debug("request_describe guid=%s lang=%s", guid, lang)
         guid = Validation.guid_check_convert(guid)
         lang = Validation.lang_check_convert(lang, default=self.__default_lang)
-        return self._request(R_DESCRIBE, C_LIST, (guid, lang))
+        return self._request(R_DESCRIBE, C_LIST, ((guid, lang, 'local') if local else (guid, lang)))
 
     @classmethod
     def __rnd_string(cls, length):

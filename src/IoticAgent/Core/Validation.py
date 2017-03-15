@@ -272,7 +272,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
             cls.search_location_check(location)
             payload.update(location)
             arg_count += 1
-            if location['radius'] > 25:
+            if location['radius'] > 25 and text is None:
                 raise ValueError('radius cannot exceed 25km when no search text supplied')
 
         if unit is not None:

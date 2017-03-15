@@ -37,12 +37,17 @@ class IOTSyncTimeout(IOTException):
 
 
 class IOTUnknown(IOTException):
-    """A request failed because of Unkown resource (EG Thing not found)"""
+    """Request FAILED because of Unkown resource (EG Thing not found)"""
     pass
 
 
 class IOTMalformed(IOTException):
-    """Any failed request FAILED (Not allowed resource, malformed request)"""
+    """Request FAILED due to invalid parameters (this might indicate agent incompatibility)"""
+    pass
+
+
+class IOTNotAllowed(IOTException):
+    """Request FAILED to unsupporter request (e.g. a feature is not enabled/available)"""
     pass
 
 

@@ -305,13 +305,13 @@ class Point(Resource):
 
             #!python
             # example with no units as time is unit-less
-            my_feed.value_create("timestamp",
+            my_feed.create_value("timestamp",
                                  Datatypes.DATETIME,
                                  "en",
                                  "time of reading")
 
             # example with a unit from the Units class
-            my_feed.value_create("temperature",
+            my_feed.create_value("temperature",
                                  Datatypes.DECIMAL,
                                  "en",
                                  "Fish-tank temperature in celsius",

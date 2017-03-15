@@ -35,7 +35,7 @@ from .Thing import Thing
 from .Config import Config
 from .utils import uuid_to_hex, version_string_to_tuple, bool_from, foc_to_str
 from .Exceptions import (IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError,
-                         IOTSyncTimeout)
+                         IOTSyncTimeout, IOTNotAllowed)
 from .Point import Point, _POINT_TYPES
 from .RemotePoint import RemoteFeed, RemoteControl
 from .PointValueHelper import PointDataObjectHandler
@@ -117,6 +117,12 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """Language in use when not explicitly specified (in meta related requests). Will be set to container default
         if was not set in configuration. Before client has started this might be None."""
         return self.__client.default_lang
+
+    @property
+    def local_meta(self):
+        """Whether container-local metadata functionality (e.g. search) is available in this container. Before calling
+        start() this will always be False."""
+        return self.__client.local_meta
 
     def start(self):
         """Open a connection to Iotic Space.  `start()` is called by `__enter__` which allows the python
@@ -614,8 +620,16 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         else:
             callback_parsed(data)
 
-    @staticmethod
-    def _except_if_failed(event):
+    __exception_mapping = {
+        E_FAILED_CODE_ACCESSDENIED: IOTAccessDenied,
+        E_FAILED_CODE_INTERNALERROR: IOTInternalError,
+        E_FAILED_CODE_MALFORMED: IOTMalformed,
+        E_FAILED_CODE_NOTALLOWED: IOTNotAllowed,
+        E_FAILED_CODE_UNKNOWN: IOTUnknown
+    }
+
+    @classmethod
+    def _except_if_failed(cls, event):
         """Raises an IOTException from the given event if it was not successful. Assumes timeout success flag on event
         has not been set yet."""
         if event.success is None:
@@ -625,16 +639,13 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             if isinstance(event.payload, Mapping):
                 if P_MESSAGE in event.payload:
                     msg = event.payload[P_MESSAGE]
-                if P_CODE in event.payload:
-                    code = event.payload[P_CODE]
-                    if code == E_FAILED_CODE_ACCESSDENIED:
-                        raise IOTAccessDenied(msg, event)
-                    if code == E_FAILED_CODE_INTERNALERROR:
-                        raise IOTInternalError(msg, event)
-                    if code in (E_FAILED_CODE_MALFORMED, E_FAILED_CODE_NOTALLOWED):
-                        raise IOTMalformed(msg, event)
-                    if code == E_FAILED_CODE_UNKNOWN:
-                        raise IOTUnknown(msg, event)
+                try:
+                    exc_class = cls.__exception_mapping[event.payload[P_CODE]]
+                except KeyError:
+                    pass
+                else:
+                    raise exc_class(msg, event)
+
             raise IOTException(msg, event)
 
     def list(self, all_my_agents=False, limit=500, offset=0):
@@ -728,7 +739,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info("delete_thing_async(lid=\"%s\")", lid)
         return self._request_entity_delete(lid)
 
-    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False):
+    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=False):
         """Search the Iotic Space for public Things with metadata matching the search parameters:
         text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can
         be found.
@@ -819,20 +830,23 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and
         their type.
+
+        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to
+        determine whether local metadata functionality is available.
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
-        evt = self._request_search(text, lang, location, unit, limit, offset, 'reduced' if reduced else 'full')
+        evt = self._request_search(text, lang, location, unit, limit, offset, 'reduced' if reduced else 'full', local)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
-    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0):
+    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False):
         """Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`"""
-        return self.search(text, lang, location, unit, limit, offset, reduced=True)
+        return self.search(text, lang, location, unit, limit, offset, reduced=True, local=local)
 
-    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0):
+    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False):
         """See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only
         result set comprised only of things which have a location set, e.g.:
 
@@ -854,7 +868,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
                     text, lang, location, unit, limit, offset)
-        evt = self._request_search(text, lang, location, unit, limit, offset, 'located')
+        evt = self._request_search(text, lang, location, unit, limit, offset, 'located', local)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
@@ -863,8 +877,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     # used by describe()
     __guid_resources = (Thing, Point, RemoteFeed, RemoteControl)
 
-    def describe(self, guid_or_thing, lang=None):
-        """Describe returns the public description of a Thing
+    def describe(self, guid_or_thing, lang=None, local=False):
+        """Describe returns the public (or local) description of a Thing
 
         Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`
 
@@ -912,6 +926,10 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         `lang` (optional) (string) The two-character ISO 639-1 language code for which labels and comments will be
         returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as
         these are language neutral).
+
+        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to
+        determine whether local metadata functionality is available. Note that the publicity status of a thing has no
+        effect on local describe functionality.
         """
         if isinstance(guid_or_thing, self.__guid_resources):
             guid = guid_or_thing.guid
@@ -921,7 +939,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             raise ValueError("describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance")
         logger.info('describe() [guid="%s"]', guid)
 
-        evt = self._request_describe(guid, lang)
+        evt = self._request_describe(guid, lang, local)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
@@ -1139,8 +1157,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_sub_recent(self, sub_id, count=None):
         return self.__client.request_sub_recent(sub_id, count)
 
-    def _request_search(self, text, lang, location, unit, limit, offset, type_='full'):
-        return self.__client.request_search(text, lang, location, unit, limit, offset, type_)
+    def _request_search(self, text, lang, location, unit, limit, offset, type_='full', local=False):
+        return self.__client.request_search(text, lang, location, unit, limit, offset, type_, local)
 
-    def _request_describe(self, guid, lang):
-        return self.__client.request_describe(guid, lang)
+    def _request_describe(self, guid, lang, local=False):
+        return self.__client.request_describe(guid, lang, local)
