@@ -18,12 +18,8 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-try:
-    from rdflib import Graph, Literal, URIRef
-    from rdflib.namespace import Namespace, RDFS
-except ImportError:
-    logger.warning("rdflib not found.  ResourceMeta helper will not be available.")
-    raise
+from rdflib import Graph, Literal, URIRef
+from rdflib.namespace import Namespace, RDFS
 
 from IoticAgent.Core import Validation
 

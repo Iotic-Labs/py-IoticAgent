@@ -124,16 +124,9 @@ class RemoteFeed(RemotePoint):
         self.__client._add_recent_cb_for(evt, callback)
         return evt
 
-    def simulate(self, data=None, mime=None):
+    def simulate(self, data, mime=None):
         """Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn't publish
-        very often.  Causes the callback function for this feed to be called with the last known value
-        from the feed, if there is one.
-
-        Raises `KeyError` - if there is no data to get.  Probably because you haven't received any and haven't
-        called [simulate_feeddata()](./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata)
-         with the data= and mime= parameters set
-
-        Raises `RuntimeError` - if the key-value store "database" is disabled
+        very often.
 
         `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data
 

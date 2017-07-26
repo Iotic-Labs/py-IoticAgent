@@ -1110,9 +1110,6 @@ table {
 <span class="sd">    https://docs.python.org/3/library/threading.html#event-objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_RequestEvent__event&#39;</span><span class="p">,</span> <span class="s1">&#39;id_&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span> <span class="s1">&#39;payload&#39;</span><span class="p">,</span> <span class="s1">&#39;is_crud&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">,</span> <span class="s1">&#39;_send_time&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_inner_msg_out&#39;</span><span class="p">,</span> <span class="s1">&#39;_messages&#39;</span><span class="p">,</span> <span class="s1">&#39;_complete_func&#39;</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">inner_msg_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">is_crud</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>  <span class="c1"># pylint: disable=assigning-non-slot</span>
         <span class="c1">#</span>
@@ -1230,9 +1227,6 @@ https://docs.python.org/3/library/threading.html#event-objects</p></div>
     <span class="sd">&quot;&quot;&quot;Request event object. Uses threading.Event (factory function).</span>
 <span class="sd">    https://docs.python.org/3/library/threading.html#event-objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_RequestEvent__event&#39;</span><span class="p">,</span> <span class="s1">&#39;id_&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span> <span class="s1">&#39;payload&#39;</span><span class="p">,</span> <span class="s1">&#39;is_crud&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">,</span> <span class="s1">&#39;_send_time&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_inner_msg_out&#39;</span><span class="p">,</span> <span class="s1">&#39;_messages&#39;</span><span class="p">,</span> <span class="s1">&#39;_complete_func&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">inner_msg_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">is_crud</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>  <span class="c1"># pylint: disable=assigning-non-slot</span>

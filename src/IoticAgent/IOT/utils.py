@@ -74,7 +74,7 @@ def private_name_for(var_name, cls):
        See https://docs.python.org/3/tutorial/classes.html#private-variables"""
     if not (isinstance(var_name, string_types) and var_name):
         raise TypeError('var_name must be non-empty string')
-    if not (isinstance(cls, type) or isinstance(cls, string_types)):
+    if not (isinstance(cls, type) or isinstance(cls, string_types)):  # pylint: disable=consider-merging-isinstance
         raise TypeError('cls not a class or string')
     if __PRIVATE_NAME_PATTERN.match(var_name):
         class_name = cls.__name__ if isinstance(cls, type) else cls

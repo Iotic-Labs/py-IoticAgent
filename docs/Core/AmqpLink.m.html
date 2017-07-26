@@ -1041,6 +1041,7 @@ table {
     <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
       
   <ul>
+    <li class="mono"><a href="#IoticAgent.Core.AmqpLink.DEBUG_ENABLED">DEBUG_ENABLED</a></li>
     <li class="mono"><a href="#IoticAgent.Core.AmqpLink.logger">logger</a></li>
     <li class="mono"><a href="#IoticAgent.Core.AmqpLink.version_info">version_info</a></li>
   </ul>
@@ -1118,6 +1119,9 @@ table {
 <span class="kn">from</span> <span class="nn">.Profiler</span> <span class="kn">import</span> <span class="n">profiled_thread</span>
 <span class="kn">from</span> <span class="nn">.compat</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">RLock</span><span class="p">,</span> <span class="n">monotonic</span>
 <span class="kn">from</span> <span class="nn">.Exceptions</span> <span class="kn">import</span> <span class="n">LinkException</span>
+
+
+<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">==</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">AmqpLink</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
@@ -1415,7 +1419,7 @@ table {
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
             <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
@@ -1424,7 +1428,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
@@ -1477,7 +1481,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker, will re-try: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
@@ -1486,7 +1490,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
@@ -1506,6 +1510,14 @@ table {
 
   <section id="section-items">
     <h2 class="section-title" id="header-variables">Module variables</h2>
+      <div class="item">
+      <p id="IoticAgent.Core.AmqpLink.DEBUG_ENABLED" class="name">var <span class="ident">DEBUG_ENABLED</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
       <div class="item">
       <p id="IoticAgent.Core.AmqpLink.logger" class="name">var <span class="ident">logger</span></p>
       
@@ -1829,7 +1841,7 @@ table {
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
             <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
@@ -1838,7 +1850,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
@@ -1891,7 +1903,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker, will re-try: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
@@ -1900,7 +1912,7 @@ table {
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>

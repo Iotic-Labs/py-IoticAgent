@@ -18,12 +18,8 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-try:
-    from rdflib import Literal
-    from rdflib.namespace import Namespace, XSD
-except ImportError:
-    # ResourceMeta (parent class) will log & raise so ignore here
-    pass
+from rdflib import Literal
+from rdflib.namespace import Namespace, XSD
 
 from IoticAgent.Core import Validation
 

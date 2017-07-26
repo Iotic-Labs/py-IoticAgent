@@ -130,10 +130,14 @@ class Config(object):
                 conf_stream = StringIO()
         #
         cpa = ConfigParser()
-        if PY3:
-            cpa.read_file(conf_stream, source=conf_name)  # pylint: disable=no-member
-        else:
-            cpa.readfp(conf_stream, conf_name)  # pylint: disable=deprecated-method
+        try:
+            if PY3:
+                cpa.read_file(conf_stream, source=conf_name)  # pylint: disable=no-member
+            else:
+                cpa.readfp(conf_stream, conf_name)  # pylint: disable=deprecated-method
+        finally:
+            conf_stream.close()
+
         for ese in cpa.sections():
             for eva in cpa.options(ese):
                 self.update(ese, eva, cpa.get(ese, eva))
@@ -219,7 +223,7 @@ class Config(object):
 def dict_to_cp(dic):
     ret = ConfigParser()
     for esc in dic:
-        if len(dic[esc]):
+        if dic[esc]:
             ret.add_section(esc)
         for eva in dic[esc]:
             ret.set(esc, eva, str(dic[esc][eva]))

@@ -1230,16 +1230,9 @@ table {
         <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">_add_recent_cb_for</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span>
 
-    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
-<span class="sd">        very often.  Causes the callback function for this feed to be called with the last known value</span>
-<span class="sd">        from the feed, if there is one.</span>
-
-<span class="sd">        Raises `KeyError` - if there is no data to get.  Probably because you haven&#39;t received any and haven&#39;t</span>
-<span class="sd">        called [simulate_feeddata()](./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata)</span>
-<span class="sd">         with the data= and mime= parameters set</span>
-
-<span class="sd">        Raises `RuntimeError` - if the key-value store &quot;database&quot; is disabled</span>
+<span class="sd">        very often.</span>
 
 <span class="sd">        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 
@@ -1830,16 +1823,9 @@ This helper object provides <code>simulate()</code> and <code>get_last()</code><
         <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">_add_recent_cb_for</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span>
 
-    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
-<span class="sd">        very often.  Causes the callback function for this feed to be called with the last known value</span>
-<span class="sd">        from the feed, if there is one.</span>
-
-<span class="sd">        Raises `KeyError` - if there is no data to get.  Probably because you haven&#39;t received any and haven&#39;t</span>
-<span class="sd">        called [simulate_feeddata()](./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata)</span>
-<span class="sd">         with the data= and mime= parameters set</span>
-
-<span class="sd">        Raises `RuntimeError` - if the key-value store &quot;database&quot; is disabled</span>
+<span class="sd">        very often.</span>
 
 <span class="sd">        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 
@@ -2015,33 +2001,23 @@ given function which must accept a single argument. Nothing is returned.</p></di
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.RemotePoint.RemoteFeed.simulate">
-    <p>def <span class="ident">simulate</span>(</p><p>self, data=None, mime=None)</p>
+    <p>def <span class="ident">simulate</span>(</p><p>self, data, mime=None)</p>
     </div>
     
 
     
   
     <div class="desc"><p>Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn't publish
-very often.  Causes the callback function for this feed to be called with the last known value
-from the feed, if there is one.</p>
-<p>Raises <code>KeyError</code> - if there is no data to get.  Probably because you haven't received any and haven't
-called <a href="./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata">simulate_feeddata()</a>
- with the data= and mime= parameters set</p>
-<p>Raises <code>RuntimeError</code> - if the key-value store "database" is disabled</p>
+very often.</p>
 <p><code>data</code> (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</p>
 <p><code>mime</code> (optional) (string) The mime type of your data.  See:
 <a href="./Point.m.html#IoticAgent.IOT.Point.Feed.share">share()</a></p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.simulate', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.simulate" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
-<span class="sd">    very often.  Causes the callback function for this feed to be called with the last known value</span>
-<span class="sd">    from the feed, if there is one.</span>
-<span class="sd">    Raises `KeyError` - if there is no data to get.  Probably because you haven&#39;t received any and haven&#39;t</span>
-<span class="sd">    called [simulate_feeddata()](./Client.m.html#IoticAgent.IOT.Client.Client.simulate_feeddata)</span>
-<span class="sd">     with the data= and mime= parameters set</span>
-<span class="sd">    Raises `RuntimeError` - if the key-value store &quot;database&quot; is disabled</span>
+<span class="sd">    very often.</span>
 <span class="sd">    `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 <span class="sd">    `mime` (optional) (string) The mime type of your data.  See:</span>
 <span class="sd">    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>

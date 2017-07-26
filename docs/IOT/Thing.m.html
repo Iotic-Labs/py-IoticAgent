@@ -1152,11 +1152,7 @@ table {
 <span class="kn">from</span> <span class="nn">.RemotePoint</span> <span class="kn">import</span> <span class="n">RemoteFeed</span><span class="p">,</span> <span class="n">RemoteControl</span>
 <span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">Control</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">foc_to_str</span><span class="p">,</span> <span class="n">uuid_to_hex</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.ThingMeta</span> <span class="kn">import</span> <span class="n">ThingMeta</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">ThingMeta</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="kn">from</span> <span class="nn">.ThingMeta</span> <span class="kn">import</span> <span class="n">ThingMeta</span>
 
 <span class="n">_POINT_TYPE_TO_CLASS</span> <span class="o">=</span> <span class="p">{</span><span class="n">cls</span><span class="o">.</span><span class="n">_type</span><span class="p">:</span> <span class="n">cls</span> <span class="k">for</span> <span class="n">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Feed</span><span class="p">,</span> <span class="n">Control</span><span class="p">)}</span>
 
@@ -1387,11 +1383,7 @@ table {
         <span class="sd">&quot;&quot;&quot;Get the metadata object for this Thing</span>
 
 <span class="sd">        Returns a [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) object</span>
-
-<span class="sd">        Raises `RuntimeError` if RDFLib is not installed or available</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ThingMeta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ThingMeta not available&quot;</span><span class="p">)</span>
         <span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meta_rdf</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ThingMeta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">default_lang</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
 
@@ -2221,11 +2213,7 @@ table {
         <span class="sd">&quot;&quot;&quot;Get the metadata object for this Thing</span>
 
 <span class="sd">        Returns a [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) object</span>
-
-<span class="sd">        Raises `RuntimeError` if RDFLib is not installed or available</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ThingMeta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ThingMeta not available&quot;</span><span class="p">)</span>
         <span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meta_rdf</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ThingMeta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">default_lang</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
 
@@ -3357,18 +3345,14 @@ which corresponds to the cached entry for this local feed id</p>
     
   
     <div class="desc"><p>Get the metadata object for this Thing</p>
-<p>Returns a <a href="ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta">ThingMeta</a> object</p>
-<p>Raises <code>RuntimeError</code> if RDFLib is not installed or available</p></div>
+<p>Returns a <a href="ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta">ThingMeta</a> object</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Thing.Thing.get_meta', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Thing.Thing.get_meta" class="source">
     <div class="codehilite"><pre><span class="k">def</span> <span class="nf">get_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get the metadata object for this Thing</span>
 <span class="sd">    Returns a [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) object</span>
-<span class="sd">    Raises `RuntimeError` if RDFLib is not installed or available</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ThingMeta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ThingMeta not available&quot;</span><span class="p">)</span>
     <span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meta_rdf</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ThingMeta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rdf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">default_lang</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;n3&#39;</span><span class="p">)</span>
 </pre></div>

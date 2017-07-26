@@ -34,7 +34,7 @@ else:
     READ_MD = lambda f: convert(f, 'rst')  # noqa: E731
 
 
-VERSION = '0.5.0'
+VERSION = '0.6.0'
 
 setup(
     name='py-IoticAgent',
@@ -49,7 +49,7 @@ setup(
     license='Apache License 2.0',
     packages=find_packages('src', exclude=['tests']),
     package_dir={'': 'src'},
-    install_requires=['py-ubjson>=0.8.5', 'rdflib>=4.2.1'],
+    install_requires=['py-ubjson>=0.8.5', 'rdflib>=4.2.1', 'enum34>=1.1.6'],
     zip_safe=True,
     keywords=['iotic', 'agent', 'labs', 'space', 'iot'],
     classifiers=[

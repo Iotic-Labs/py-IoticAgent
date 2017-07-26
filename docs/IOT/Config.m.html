@@ -1224,10 +1224,14 @@ table {
                 <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
         <span class="c1">#</span>
         <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
+                <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>
@@ -1313,7 +1317,7 @@ table {
 <span class="k">def</span> <span class="nf">dict_to_cp</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">esc</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">esc</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">esc</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">][</span><span class="n">eva</span><span class="p">]))</span>
@@ -1380,7 +1384,7 @@ table {
     <div class="codehilite"><pre><span class="k">def</span> <span class="nf">dict_to_cp</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">esc</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">esc</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">esc</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">][</span><span class="n">eva</span><span class="p">]))</span>
@@ -1532,10 +1536,14 @@ table {
                 <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
         <span class="c1">#</span>
         <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
+                <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>
@@ -1776,10 +1784,13 @@ a textual configuration can be specified using the <code>string</code> argument.
             <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
     <span class="c1">#</span>
     <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-        <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
+            <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>

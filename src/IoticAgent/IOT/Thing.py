@@ -31,11 +31,7 @@ from .Resource import Resource
 from .RemotePoint import RemoteFeed, RemoteControl
 from .Point import Feed, Control
 from .utils import foc_to_str, uuid_to_hex
-
-try:
-    from .ThingMeta import ThingMeta
-except ImportError:
-    ThingMeta = None
+from .ThingMeta import ThingMeta
 
 _POINT_TYPE_TO_CLASS = {cls._type: cls for cls in (Feed, Control)}
 
@@ -266,11 +262,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         """Get the metadata object for this Thing
 
         Returns a [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) object
-
-        Raises `RuntimeError` if RDFLib is not installed or available
         """
-        if ThingMeta is None:
-            raise RuntimeError("ThingMeta not available")
         rdf = self.get_meta_rdf(fmt='n3')
         return ThingMeta(self, rdf, self._client.default_lang, fmt='n3')
 

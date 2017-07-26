@@ -55,6 +55,7 @@ if you define `print_stats.py` as:
 
 from __future__ import unicode_literals
 
+from warnings import warn
 from cProfile import Profile
 from os import environ, getpid
 from threading import current_thread
@@ -83,6 +84,6 @@ def profiled_thread(func):
 
 
 if 'IOTICAGENT_PROFILE' in environ:
-    logger.warning('Profiling enabled')
+    warn('Profiling enabled', RuntimeWarning)
 else:
     profiled_thread = lambda func: func  # noqa pylint: disable=invalid-name

@@ -1138,7 +1138,7 @@ table {
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Const</span>
 <span class="kn">from</span> <span class="nn">.compat</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PY3</span><span class="p">,</span> <span class="n">string_types</span><span class="p">,</span> <span class="n">int_types</span><span class="p">,</span> <span class="n">arg_checker</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="p">,</span> <span class="n">ensure_unicode</span><span class="p">,</span> <span class="n">urlparse</span><span class="p">,</span> <span class="n">number_types</span><span class="p">,</span>
-                     <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span>
+                     <span class="n">raise_from</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span>
 
 
 <span class="n">VALIDATION_LID_LEN</span> <span class="o">=</span> <span class="mi">64</span>
@@ -1253,7 +1253,7 @@ table {
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1404,10 +1404,14 @@ table {
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
+        <span class="c1"># Allow for old behaviour, specified as string</span>
+        <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">type_</span>
         <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">type_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">type_</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">__search_text_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
@@ -1674,7 +1678,7 @@ table {
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1825,10 +1829,14 @@ table {
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
+        <span class="c1"># Allow for old behaviour, specified as string</span>
+        <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">type_</span>
         <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">type_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">type_</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">__search_text_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
@@ -2113,10 +2121,14 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div id="source-IoticAgent.Core.Validation.Validation.search_type_check_convert" class="source">
     <div class="codehilite"><pre><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
+    <span class="c1"># Allow for old behaviour, specified as string</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">type_</span>
     <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">type_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_SEARCH_TYPES</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">type_</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -2450,7 +2462,7 @@ Returns list (with tags in unicode form) or raises ValueError</p></div>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>

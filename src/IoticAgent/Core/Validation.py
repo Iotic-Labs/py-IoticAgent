@@ -20,7 +20,7 @@ from re import compile as re_compile
 
 from . import Const
 from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, ensure_unicode, urlparse, number_types,
-                     Sequence, Mapping)
+                     raise_from, Sequence, Mapping)
 
 
 VALIDATION_LID_LEN = 64
@@ -135,7 +135,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
         if isinstance(tags, string_types):
             return [cls.__tag_check_convert(tags)]
         elif isinstance(tags, Sequence):
-            if not len(tags):
+            if not tags:
                 raise ValueError("Tag list is empty")
             return [cls.__tag_check_convert(tag) for tag in tags]
         else:
@@ -286,10 +286,14 @@ class Validation(object):  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def search_type_check_convert(type_):
+        # Allow for old behaviour, specified as string
+        if type_ in Const.SearchType:
+            return type_
         type_ = ensure_ascii(type_, name='type_')
-        if type_ not in VALIDATION_SEARCH_TYPES:
-            raise ValueError('Search type must be one of: %s' % VALIDATION_SEARCH_TYPES)
-        return type_
+        try:
+            return Const.SearchType(type_)
+        except ValueError as ex:
+            raise_from(ValueError('Search type must be one of: %s' % ', '.join(str(x) for x in Const.SearchType)), ex)
 
     @classmethod
     def __search_text_check_convert(cls, text):

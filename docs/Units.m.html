@@ -1044,23 +1044,49 @@ table {
     <li class="mono"><a href="#IoticAgent.Units.AMPERE">AMPERE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.BECQUEREL">BECQUEREL</a></li>
     <li class="mono"><a href="#IoticAgent.Units.CELSIUS">CELSIUS</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.CENTIMETER">CENTIMETER</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.CENTIMETRE">CENTIMETRE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.CM">CM</a></li>
     <li class="mono"><a href="#IoticAgent.Units.COUNTS_PER_MIN">COUNTS_PER_MIN</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.DECIBEL">DECIBEL</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.DEGREE">DEGREE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.FAHRENHEIT">FAHRENHEIT</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.GRAM">GRAM</a></li>
     <li class="mono"><a href="#IoticAgent.Units.HERTZ">HERTZ</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.HOUR">HOUR</a></li>
     <li class="mono"><a href="#IoticAgent.Units.JOULE">JOULE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.KELVIN">KELVIN</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.KILOGRAM">KILOGRAM</a></li>
     <li class="mono"><a href="#IoticAgent.Units.KILOWATT_HOUR">KILOWATT_HOUR</a></li>
     <li class="mono"><a href="#IoticAgent.Units.LUX">LUX</a></li>
     <li class="mono"><a href="#IoticAgent.Units.MEGAHERTZ">MEGAHERTZ</a></li>
     <li class="mono"><a href="#IoticAgent.Units.METER">METER</a></li>
     <li class="mono"><a href="#IoticAgent.Units.METER_PER_SEC">METER_PER_SEC</a></li>
     <li class="mono"><a href="#IoticAgent.Units.METRE">METRE</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.MICROGRAM">MICROGRAM</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.MILLIGRAM">MILLIGRAM</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.MILLIMETER">MILLIMETER</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.MILLIMETRE">MILLIMETRE</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.MINUTE">MINUTE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.MM_MERCURY">MM_MERCURY</a></li>
     <li class="mono"><a href="#IoticAgent.Units.NEWTON">NEWTON</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_BILLION">PARTS_PER_BILLION</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_HUNDRED">PARTS_PER_HUNDRED</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_MILLION">PARTS_PER_MILLION</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_QUADRILLION">PARTS_PER_QUADRILLION</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_THOUSAND">PARTS_PER_THOUSAND</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PARTS_PER_TRILLION">PARTS_PER_TRILLION</a></li>
     <li class="mono"><a href="#IoticAgent.Units.PASCAL">PASCAL</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.PERCENT">PERCENT</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.RADIAN">RADIAN</a></li>
     <li class="mono"><a href="#IoticAgent.Units.ROENTGEN">ROENTGEN</a></li>
     <li class="mono"><a href="#IoticAgent.Units.SECOND">SECOND</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_CENTIMETER">SQUARE_CENTIMETER</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_CENTIMETRE">SQUARE_CENTIMETRE</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_METER">SQUARE_METER</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_METRE">SQUARE_METRE</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_MILLIMETER">SQUARE_MILLIMETER</a></li>
+    <li class="mono"><a href="#IoticAgent.Units.SQUARE_MILLIMETRE">SQUARE_MILLIMETRE</a></li>
     <li class="mono"><a href="#IoticAgent.Units.VOLT">VOLT</a></li>
     <li class="mono"><a href="#IoticAgent.Units.WATT">WATT</a></li>
     <li class="mono"><a href="#IoticAgent.Units.WATT_HOUR">WATT_HOUR</a></li>
@@ -1126,21 +1152,35 @@ table {
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">rdflib</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">rdflib</span> <span class="o">=</span> <span class="bp">None</span>
-
+<span class="kn">import</span> <span class="nn">rdflib</span>
 
 <span class="c1">#</span>
 <span class="c1"># Common units constants</span>
-<span class="c1"># - Base Units</span>
+<span class="c1">#</span>
+<span class="c1"># - Electric Current</span>
 <span class="n">AMPERE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000011&#39;</span>
 <span class="sd">&#39;&#39;&#39;Electric current unit&#39;&#39;&#39;</span>
-<span class="n">METRE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000008&#39;</span>
-<span class="sd">&#39;&#39;&#39;Metric distance unit = 100 cm&#39;&#39;&#39;</span>
+<span class="c1"># - Distance</span>
 <span class="n">METER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000008&#39;</span>
-<span class="sd">&#39;&#39;&#39;Metric distance unit = 100 cm - alternative spelling&#39;&#39;&#39;</span>
+<span class="sd">&#39;&#39;&#39;Metric distance unit = 100 cm&#39;&#39;&#39;</span>
+<span class="n">METRE</span> <span class="o">=</span> <span class="n">METER</span>
+<span class="n">MILLIMETER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000016&#39;</span>
+<span class="sd">&#39;&#39;&#39;Metric distance unit = 1/100 of a meter&#39;&#39;&#39;</span>
+<span class="n">MILLIMETRE</span> <span class="o">=</span> <span class="n">MILLIMETER</span>
+<span class="n">CENTIMETER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000015&#39;</span>
+<span class="sd">&#39;&#39;&#39;Metric distance unit = 1/100 of a meter&#39;&#39;&#39;</span>
+<span class="n">CENTIMETRE</span> <span class="o">=</span> <span class="n">CENTIMETER</span>
+<span class="n">CM</span> <span class="o">=</span> <span class="n">CENTIMETER</span>
+<span class="c1"># - Area</span>
+<span class="n">SQUARE_METER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000080&quot;</span>
+<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 meter long.&#39;&#39;&#39;</span>
+<span class="n">SQUARE_METRE</span> <span class="o">=</span> <span class="n">SQUARE_METER</span>
+<span class="n">SQUARE_CENTIMETER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000081&quot;</span>
+<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 centimeter long.&#39;&#39;&#39;</span>
+<span class="n">SQUARE_CENTIMETRE</span> <span class="o">=</span> <span class="n">SQUARE_CENTIMETER</span>
+<span class="n">SQUARE_MILLIMETER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000082&quot;</span>
+<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 millimeter long.&#39;&#39;&#39;</span>
+<span class="n">SQUARE_MILLIMETRE</span> <span class="o">=</span> <span class="n">SQUARE_MILLIMETER</span>
 <span class="c1"># - Temperature</span>
 <span class="n">CELSIUS</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000027&#39;</span>
 <span class="sd">&#39;&#39;&#39;Temperature units where the freezing point of water at 273.15 Kelvin is considered 0C and the boiling point 283.15K</span>
@@ -1158,12 +1198,22 @@ table {
 <span class="sd">&#39;&#39;&#39;A frequency unit which is equal to 1 complete cycle of a recurring phenomenon in 1 second.&#39;&#39;&#39;</span>
 <span class="n">MEGAHERTZ</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000325&#39;</span>
 <span class="sd">&#39;&#39;&#39;A frequency unit which is equal 1 Million Hz&#39;&#39;&#39;</span>
+<span class="c1"># - Angles</span>
+<span class="n">DEGREE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000185&#39;</span>
+<span class="sd">&#39;&#39;&#39; A plane angle unit which is equal to 1/360 of a full rotation or 1.7453310^[-2] rad&#39;&#39;&#39;</span>
+<span class="n">RADIAN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000123&#39;</span>
+<span class="sd">&#39;&#39;&#39; A plane angle unit which is equal to the angle subtended at the center of a circle by an arc equal in length</span>
+<span class="sd">to the radius of the circle, approximately 57 degrees 17 minutes and 44.6 seconds.&#39;&#39;&#39;</span>
 <span class="c1"># - Time</span>
 <span class="n">SECOND</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000010&#39;</span>
 <span class="sd">&#39;&#39;&#39; A time unit which is equal to the duration of 9,192,631,770 periods of the radiation</span>
 <span class="sd"> corresponding to the transition between the two hyperfine levels</span>
 <span class="sd"> of the ground state of the caesium 133 atom</span>
 <span class="sd">&#39;&#39;&#39;</span>
+<span class="n">HOUR</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000032&#39;</span>
+<span class="sd">&#39;&#39;&#39; A time unit which is equal to 3600 seconds or 60 minutes&#39;&#39;&#39;</span>
+<span class="n">MINUTE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000031&#39;</span>
+<span class="sd">&#39;&#39;&#39; A time unit which is equal to 60 seconds&#39;&#39;&#39;</span>
 <span class="c1"># - Energy</span>
 <span class="n">JOULE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000112&#39;</span>
 <span class="sd">&#39;&#39;&#39;An energy unit which is equal to the energy required when a force of 1 newton moves an object 1 meter&#39;&#39;&#39;</span>
@@ -1190,6 +1240,15 @@ table {
 <span class="n">PASCAL</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000110&#39;</span>
 <span class="sd">&#39;&#39;&#39; A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a</span>
 <span class="sd">surface of 1 m^[2]&#39;&#39;&#39;</span>
+<span class="c1"># - Weight</span>
+<span class="n">GRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000021&#39;</span>
+<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one thousandth of a kilogram or 10^[-3] kg&#39;&#39;&#39;</span>
+<span class="n">MILLIGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000022&#39;</span>
+<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one thousandth of a gram or 10^[-3] g&#39;&#39;&#39;</span>
+<span class="n">MICROGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000023&#39;</span>
+<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one millionth of a gram or 10^[-6] g&#39;&#39;&#39;</span>
+<span class="n">KILOGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000009&#39;</span>
+<span class="sd">&#39;&#39;&#39; A mass unit which is equal to the mass of the International Prototype Kilogram kept by the BIPM at Svres, France.&#39;&#39;&#39;</span>
 <span class="c1"># - Radiation</span>
 <span class="n">ROENTGEN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000136&#39;</span>
 <span class="sd">&#39;&#39;&#39;An exposure unit which is equal to the amount of radiation required to liberate positive</span>
@@ -1204,9 +1263,29 @@ table {
 <span class="sd">&#39;&#39;&#39;An activity (of a radionuclide) unit which is equal to the number of light</span>
 <span class="sd"> emissions produced by ionizing radiation in one minute.</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="c1"># - Distance</span>
-<span class="n">CM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000015&#39;</span>
-<span class="sd">&#39;&#39;&#39;A length unit which is equal to one hundredth of a meter&#39;&#39;&#39;</span>
+<span class="c1"># - Dimensionless</span>
+<span class="n">PERCENT</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000187&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless ratio unit which denotes numbers as fractions of 100.&#39;&#39;&#39;</span>
+<span class="n">DECIBEL</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000259&quot;</span>
+<span class="sd">&#39;&#39;&#39; A ratio unit which is an indicator of sound power per unit area.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_HUNDRED</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000167&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 100</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_THOUSAND</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000168&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1000</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_MILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000169&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1,000,000</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_BILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000170&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^9</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_TRILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000171&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^12</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
+<span class="n">PARTS_PER_QUADRILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000172&quot;</span>
+<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^15</span>
+<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
 
 
 <span class="k">class</span> <span class="nc">Units</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1236,13 +1315,11 @@ table {
 <span class="s2">            &quot;&quot;&quot;</span>
         <span class="c1">#</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">rdflib</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;rdflib module not available&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
         <span class="c1">#</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__build_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000000&#39;</span><span class="p">):</span>
@@ -1257,7 +1334,7 @@ table {
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
         <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -1324,10 +1401,26 @@ is 100C</p></div>
 
       </div>
       <div class="item">
+      <p id="IoticAgent.Units.CENTIMETER" class="name">var <span class="ident">CENTIMETER</span></p>
+      
+  
+    <div class="desc"><p>Metric distance unit = 1/100 of a meter</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.CENTIMETRE" class="name">var <span class="ident">CENTIMETRE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="IoticAgent.Units.CM" class="name">var <span class="ident">CM</span></p>
       
   
-    <div class="desc"><p>A length unit which is equal to one hundredth of a meter</p></div>
   <div class="source_cont">
 </div>
 
@@ -1343,6 +1436,24 @@ emissions produced by ionizing radiation in one minute.</p></div>
 
       </div>
       <div class="item">
+      <p id="IoticAgent.Units.DECIBEL" class="name">var <span class="ident">DECIBEL</span></p>
+      
+  
+    <div class="desc"><p>A ratio unit which is an indicator of sound power per unit area.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.DEGREE" class="name">var <span class="ident">DEGREE</span></p>
+      
+  
+    <div class="desc"><p>A plane angle unit which is equal to 1/360 of a full rotation or 1.7453310^[-2] rad</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="IoticAgent.Units.FAHRENHEIT" class="name">var <span class="ident">FAHRENHEIT</span></p>
       
   
@@ -1353,10 +1464,28 @@ degrees Celsius</p></div>
 
       </div>
       <div class="item">
+      <p id="IoticAgent.Units.GRAM" class="name">var <span class="ident">GRAM</span></p>
+      
+  
+    <div class="desc"><p>A mass unit which is equal to one thousandth of a kilogram or 10^[-3] kg</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="IoticAgent.Units.HERTZ" class="name">var <span class="ident">HERTZ</span></p>
       
   
     <div class="desc"><p>A frequency unit which is equal to 1 complete cycle of a recurring phenomenon in 1 second.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.HOUR" class="name">var <span class="ident">HOUR</span></p>
+      
+  
+    <div class="desc"><p>A time unit which is equal to 3600 seconds or 60 minutes</p></div>
   <div class="source_cont">
 </div>
 
@@ -1375,6 +1504,15 @@ degrees Celsius</p></div>
       
   
     <div class="desc"><p>A thermodynamic temperature unit. 0K is "absolute zero", ~293K is "room temperature", i.e. 20C</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.KILOGRAM" class="name">var <span class="ident">KILOGRAM</span></p>
+      
+  
+    <div class="desc"><p>A mass unit which is equal to the mass of the International Prototype Kilogram kept by the BIPM at Svres, France.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1410,7 +1548,7 @@ degrees Celsius</p></div>
       <p id="IoticAgent.Units.METER" class="name">var <span class="ident">METER</span></p>
       
   
-    <div class="desc"><p>Metric distance unit = 100 cm - alternative spelling</p></div>
+    <div class="desc"><p>Metric distance unit = 100 cm</p></div>
   <div class="source_cont">
 </div>
 
@@ -1428,7 +1566,50 @@ degrees Celsius</p></div>
       <p id="IoticAgent.Units.METRE" class="name">var <span class="ident">METRE</span></p>
       
   
-    <div class="desc"><p>Metric distance unit = 100 cm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.MICROGRAM" class="name">var <span class="ident">MICROGRAM</span></p>
+      
+  
+    <div class="desc"><p>A mass unit which is equal to one millionth of a gram or 10^[-6] g</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.MILLIGRAM" class="name">var <span class="ident">MILLIGRAM</span></p>
+      
+  
+    <div class="desc"><p>A mass unit which is equal to one thousandth of a gram or 10^[-3] g</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.MILLIMETER" class="name">var <span class="ident">MILLIMETER</span></p>
+      
+  
+    <div class="desc"><p>Metric distance unit = 1/100 of a meter</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.MILLIMETRE" class="name">var <span class="ident">MILLIMETRE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.MINUTE" class="name">var <span class="ident">MINUTE</span></p>
+      
+  
+    <div class="desc"><p>A time unit which is equal to 60 seconds</p></div>
   <div class="source_cont">
 </div>
 
@@ -1452,11 +1633,90 @@ degrees Celsius</p></div>
 
       </div>
       <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_BILLION" class="name">var <span class="ident">PARTS_PER_BILLION</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^9
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_HUNDRED" class="name">var <span class="ident">PARTS_PER_HUNDRED</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 100
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_MILLION" class="name">var <span class="ident">PARTS_PER_MILLION</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1,000,000
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_QUADRILLION" class="name">var <span class="ident">PARTS_PER_QUADRILLION</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^15
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_THOUSAND" class="name">var <span class="ident">PARTS_PER_THOUSAND</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1000
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PARTS_PER_TRILLION" class="name">var <span class="ident">PARTS_PER_TRILLION</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^12
+regardless of the units of measure as long as they are the same.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="IoticAgent.Units.PASCAL" class="name">var <span class="ident">PASCAL</span></p>
       
   
     <div class="desc"><p>A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a
 surface of 1 m^[2]</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.PERCENT" class="name">var <span class="ident">PERCENT</span></p>
+      
+  
+    <div class="desc"><p>A dimensionless ratio unit which denotes numbers as fractions of 100.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.RADIAN" class="name">var <span class="ident">RADIAN</span></p>
+      
+  
+    <div class="desc"><p>A plane angle unit which is equal to the angle subtended at the center of a circle by an arc equal in length
+to the radius of the circle, approximately 57 degrees 17 minutes and 44.6 seconds.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1478,6 +1738,57 @@ and negative charges of one electrostatic unit of charge in 1  cm^[3] of air</p>
     <div class="desc"><p>A time unit which is equal to the duration of 9,192,631,770 periods of the radiation
 corresponding to the transition between the two hyperfine levels
 of the ground state of the caesium 133 atom</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_CENTIMETER" class="name">var <span class="ident">SQUARE_CENTIMETER</span></p>
+      
+  
+    <div class="desc"><p>An area unit which is equal to an area enclosed by a square with sides each 1 centimeter long.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_CENTIMETRE" class="name">var <span class="ident">SQUARE_CENTIMETRE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_METER" class="name">var <span class="ident">SQUARE_METER</span></p>
+      
+  
+    <div class="desc"><p>An area unit which is equal to an area enclosed by a square with sides each 1 meter long.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_METRE" class="name">var <span class="ident">SQUARE_METRE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_MILLIMETER" class="name">var <span class="ident">SQUARE_MILLIMETER</span></p>
+      
+  
+    <div class="desc"><p>An area unit which is equal to an area enclosed by a square with sides each 1 millimeter long.</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="IoticAgent.Units.SQUARE_MILLIMETRE" class="name">var <span class="ident">SQUARE_MILLIMETRE</span></p>
+      
+  
   <div class="source_cont">
 </div>
 
@@ -1556,13 +1867,11 @@ hour</p></div>
 <span class="s2">            &quot;&quot;&quot;</span>
         <span class="c1">#</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">rdflib</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;rdflib module not available&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
         <span class="c1">#</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__build_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000000&#39;</span><span class="p">):</span>
@@ -1577,7 +1886,7 @@ hour</p></div>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
         <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -1650,13 +1959,11 @@ hour</p></div>
 <span class="s2">        &quot;&quot;&quot;</span>
     <span class="c1">#</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">rdflib</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;rdflib module not available&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
     <span class="c1">#</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
 </pre></div>
 
@@ -1682,7 +1989,7 @@ hour</p></div>
         <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
     <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
 </pre></div>
 

@@ -16,6 +16,7 @@
 
 from __future__ import unicode_literals
 
+from warnings import warn
 from datetime import datetime
 from hashlib import sha256 as hashfunc
 from re import compile as re_compile
@@ -39,22 +40,27 @@ from .ThreadSafeDict import ThreadSafeDict
 from .Validation import Validation, VALIDATION_MAX_ENCODED_LENGTH
 from .Compressors import COMPRESSORS, OversizeException
 from .PreparedMessage import PreparedMessage
-from .compat import (PY3, py_version_check, ssl_version_check, monotonic, Queue, Empty, Full, u, int_types,
-                     unicode_type, raise_from, Lock, Event)
+from .compat import (
+    PY3, py_version_check, ssl_version_check, monotonic, Queue, Empty, Full, u, int_types, unicode_type, raise_from,
+    Lock, Event
+)
 from .ThreadPool import ThreadPool
 from .Mime import valid_mimetype, expand_idx_mimetype
 from .RateLimiter import RateLimiter
 from .utils import version_string_to_tuple, validate_nonnegative_int, validate_int
-from .Const import (C_CREATE, C_UPDATE, C_DELETE, C_LIST, E_COMPLETE, E_FAILED, E_PROGRESS, E_FAILED_CODE_LOWSEQNUM,
-                    E_CREATED, E_DUPLICATED, E_DELETED, E_FEEDDATA, E_CONTROLREQ, E_SUBSCRIBED, E_RENAMED, E_REASSIGNED,
-                    E_RECENTDATA,
-                    R_PING, R_ENTITY, R_FEED, R_CONTROL, R_SUB, R_ENTITY_META, R_FEED_META, R_CONTROL_META,
-                    R_VALUE_META, R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE,
-                    W_SEQ, W_HASH, W_COMPRESSION, W_MESSAGE,
-                    M_RESOURCE, M_TYPE, M_CLIENTREF, M_ACTION, M_PAYLOAD, M_RANGE,
-                    P_CODE, P_RESOURCE, P_MESSAGE, P_LID, P_ENTITY_LID, P_FEED_ID, P_POINT_ID, P_DATA, P_MIME,
-                    P_POINT_TYPE, P_TIME, P_SAMPLES,
-                    COMP_NONE, COMP_DEFAULT, COMP_SIZE, COMP_LZ4F)
+from .Const import (
+    C_CREATE, C_UPDATE, C_DELETE, C_LIST,
+    E_COMPLETE, E_FAILED, E_PROGRESS, E_FAILED_CODE_LOWSEQNUM, E_CREATED, E_DUPLICATED, E_DELETED, E_FEEDDATA,
+    E_CONTROLREQ, E_SUBSCRIBED, E_RENAMED, E_REASSIGNED, E_RECENTDATA,
+    R_PING, R_ENTITY, R_FEED, R_CONTROL, R_SUB, R_ENTITY_META, R_FEED_META, R_CONTROL_META, R_VALUE_META,
+    R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE,
+    W_SEQ, W_HASH, W_COMPRESSION, W_MESSAGE,
+    M_RESOURCE, M_TYPE, M_CLIENTREF, M_ACTION, M_PAYLOAD, M_RANGE,
+    P_CODE, P_RESOURCE, P_MESSAGE, P_LID, P_ENTITY_LID, P_FEED_ID, P_POINT_ID, P_DATA, P_MIME, P_POINT_TYPE, P_TIME,
+    P_SAMPLES,
+    COMP_NONE, COMP_DEFAULT, COMP_SIZE, COMP_LZ4F,
+    SearchType, SearchScope, DescribeScope
+)
 
 py_version_check()
 ssl_version_check()
@@ -119,7 +125,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '1.1.0'
+    __qapi_version = '1.2.0'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -490,9 +496,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         elif qapi_version[1] < expected[1]:
             raise RuntimeError('QAPI minor version older: %s (%s known)' % (qapi_str, cls.__qapi_version))
         elif qapi_version[1] > expected[1]:
-            logger.warning('QAPI minor version difference: %s (%s known)', qapi_str, cls.__qapi_version)
+            warn('QAPI minor version difference: %s (%s known)' % (qapi_str, cls.__qapi_version), RuntimeWarning)
         elif qapi_version[2] > expected[2]:
-            logger.info('QAPI patch level change: %s (%s known)', qapi_str, cls.__qapi_version)
+            warn('QAPI patch level change: %s (%s known)' % (qapi_str, cls.__qapi_version), RuntimeWarning)
         else:
             logger.info('QAPI version: %s', qapi_str)
 
@@ -996,21 +1002,35 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         Validation.guid_check_convert(sub_id)
         return self._request(R_SUB, C_LIST, (sub_id, 'recent'), {'count': count})
 
-    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_='full',
-                       local=False):
-        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s local=%s",
-                     text, lang, location, unit, limit, offset, type_, local)
+    def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_=SearchType.FULL,
+                       local=None, scope=SearchScope.PUBLIC):
+        logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s scope=%s",
+                     text, lang, location, unit, limit, offset, type_, scope)
+        if local is not None:
+            warn('Use scope instead of local parameter', DeprecationWarning)
+            # Preserve old behaviour until local parameter removed
+            if local:
+                scope = SearchScope.LOCAL
+        elif scope not in SearchScope:
+            raise ValueError('scope not one of %s' % ', '.join(str(x) for x in SearchScope))
         type_ = Validation.search_type_check_convert(type_)
-        return self._request(R_SEARCH, C_UPDATE, ((type_, 'local') if local else (type_,)),
+        return self._request(R_SEARCH, C_UPDATE, (type_.value, scope.value),
                              Validation.search_check_convert(text, lang, location, unit,
                                                              default_lang=self.__default_lang),
                              offset=offset, limit=limit)
 
-    def request_describe(self, guid, lang=None, local=False):
+    def request_describe(self, guid, lang=None, local=None, scope=DescribeScope.AUTO):
         logger.debug("request_describe guid=%s lang=%s", guid, lang)
+        if local is not None:
+            warn('Use scope instead of local parameter', DeprecationWarning)
+            # Preserve old behaviour until local parameter removed
+            if local:
+                scope = DescribeScope.LOCAL
+        elif scope not in DescribeScope:
+            raise ValueError('scope not one of %s' % ', '.join(str(x) for x in DescribeScope))
         guid = Validation.guid_check_convert(guid)
         lang = Validation.lang_check_convert(lang, default=self.__default_lang)
-        return self._request(R_DESCRIBE, C_LIST, ((guid, lang, 'local') if local else (guid, lang)))
+        return self._request(R_DESCRIBE, C_LIST, (guid, lang, scope.value))
 
     @classmethod
     def __rnd_string(cls, length):

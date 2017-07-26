@@ -1142,6 +1142,7 @@ table {
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
@@ -1149,10 +1150,14 @@ table {
 
 <span class="kn">from</span> <span class="nn">IoticAgent.Core</span> <span class="kn">import</span> <span class="n">Client</span> <span class="k">as</span> <span class="n">Core_Client</span><span class="p">,</span> <span class="n">ThreadSafeDict</span><span class="p">,</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">Core_Version</span>
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.compat</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
-<span class="kn">from</span> <span class="nn">IoticAgent.Core.Const</span> <span class="kn">import</span> <span class="p">(</span><span class="n">E_FAILED_CODE_NOTALLOWED</span><span class="p">,</span> <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">,</span> <span class="n">E_FAILED_CODE_MALFORMED</span><span class="p">,</span>
-                                   <span class="n">E_FAILED_CODE_INTERNALERROR</span><span class="p">,</span> <span class="n">E_FAILED_CODE_ACCESSDENIED</span><span class="p">,</span> <span class="n">M_CLIENTREF</span><span class="p">,</span> <span class="n">M_PAYLOAD</span><span class="p">,</span>
-                                   <span class="n">R_ENTITY</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">,</span> <span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">R_SUB</span><span class="p">,</span> <span class="n">P_CODE</span><span class="p">,</span> <span class="n">P_ID</span><span class="p">,</span> <span class="n">P_LID</span><span class="p">,</span> <span class="n">P_ENTITY_LID</span><span class="p">,</span> <span class="n">P_EPID</span><span class="p">,</span>
-                                   <span class="n">P_RESOURCE</span><span class="p">,</span> <span class="n">P_MESSAGE</span><span class="p">,</span> <span class="n">P_POINT_TYPE</span><span class="p">,</span> <span class="n">P_POINT_ID</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">IoticAgent.Core.Const</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">E_FAILED_CODE_NOTALLOWED</span><span class="p">,</span> <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">,</span> <span class="n">E_FAILED_CODE_MALFORMED</span><span class="p">,</span> <span class="n">E_FAILED_CODE_INTERNALERROR</span><span class="p">,</span>
+    <span class="n">E_FAILED_CODE_ACCESSDENIED</span><span class="p">,</span>
+    <span class="n">M_CLIENTREF</span><span class="p">,</span> <span class="n">M_PAYLOAD</span><span class="p">,</span>
+    <span class="n">R_ENTITY</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">,</span> <span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">R_SUB</span><span class="p">,</span>
+    <span class="n">P_CODE</span><span class="p">,</span> <span class="n">P_ID</span><span class="p">,</span> <span class="n">P_LID</span><span class="p">,</span> <span class="n">P_ENTITY_LID</span><span class="p">,</span> <span class="n">P_EPID</span><span class="p">,</span> <span class="n">P_RESOURCE</span><span class="p">,</span> <span class="n">P_MESSAGE</span><span class="p">,</span> <span class="n">P_POINT_TYPE</span><span class="p">,</span> <span class="n">P_POINT_ID</span><span class="p">,</span>
+    <span class="n">SearchScope</span><span class="p">,</span> <span class="n">SearchType</span><span class="p">,</span> <span class="n">DescribeScope</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.utils</span> <span class="kn">import</span> <span class="n">validate_nonnegative_int</span>
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.Validation</span> <span class="kn">import</span> <span class="n">Validation</span>
 
@@ -1160,8 +1165,10 @@ table {
 <span class="kn">from</span> <span class="nn">.Thing</span> <span class="kn">import</span> <span class="n">Thing</span>
 <span class="kn">from</span> <span class="nn">.Config</span> <span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">uuid_to_hex</span><span class="p">,</span> <span class="n">version_string_to_tuple</span><span class="p">,</span> <span class="n">bool_from</span><span class="p">,</span> <span class="n">foc_to_str</span>
-<span class="kn">from</span> <span class="nn">.Exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">IOTException</span><span class="p">,</span> <span class="n">IOTUnknown</span><span class="p">,</span> <span class="n">IOTMalformed</span><span class="p">,</span> <span class="n">IOTInternalError</span><span class="p">,</span> <span class="n">IOTAccessDenied</span><span class="p">,</span> <span class="n">IOTClientError</span><span class="p">,</span>
-                         <span class="n">IOTSyncTimeout</span><span class="p">,</span> <span class="n">IOTNotAllowed</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.Exceptions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">IOTException</span><span class="p">,</span> <span class="n">IOTUnknown</span><span class="p">,</span> <span class="n">IOTMalformed</span><span class="p">,</span> <span class="n">IOTInternalError</span><span class="p">,</span> <span class="n">IOTAccessDenied</span><span class="p">,</span> <span class="n">IOTClientError</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span><span class="p">,</span>
+    <span class="n">IOTNotAllowed</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">_POINT_TYPES</span>
 <span class="kn">from</span> <span class="nn">.RemotePoint</span> <span class="kn">import</span> <span class="n">RemoteFeed</span><span class="p">,</span> <span class="n">RemoteControl</span>
 <span class="kn">from</span> <span class="nn">.PointValueHelper</span> <span class="kn">import</span> <span class="n">PointDataObjectHandler</span>
@@ -1170,7 +1177,7 @@ table {
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.5.0&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.0&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1339,9 +1346,11 @@ table {
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Core client minor version old: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Core client minor version difference: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Core client minor version difference: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">),</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core client patch level change: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Core client patch level change: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">),</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core version: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">)</span>
 
@@ -1649,8 +1658,6 @@ table {
 <span class="sd">        Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code</span>
 <span class="sd">        without having to wait for the remote thing to share again.</span>
 
-<span class="sd">        Raises RuntimeError - if the key-value store &quot;database&quot; is disabled</span>
-
 <span class="sd">        `feedid` (required) (string) local id of your Feed</span>
 
 <span class="sd">        `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
@@ -1865,7 +1872,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Search the Iotic Space for public Things with metadata matching the search parameters:</span>
 <span class="sd">        text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can</span>
 <span class="sd">        be found.</span>
@@ -1880,6 +1888,7 @@ table {
 <span class="sd">                    &quot;matches&quot;: 3.500,</span>
 <span class="sd">                    &quot;lat&quot;: 52.4539,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #2&quot;,</span>
+<span class="sd">                    &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: {</span>
 <span class="sd">                        &quot;a300cc90147f4e2990195639de0af201&quot;: {</span>
 <span class="sd">                            &quot;matches&quot;: 3.000,</span>
@@ -1900,6 +1909,7 @@ table {
 <span class="sd">                    &quot;matches&quot;: 2.000,</span>
 <span class="sd">                    &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                    &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: {</span>
 <span class="sd">                        &quot;fb1a4a4dbb2642ab9f836892da93f101&quot;: {</span>
 <span class="sd">                            &quot;matches&quot;: 1.000,</span>
@@ -1957,22 +1967,31 @@ table {
 <span class="sd">        `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and</span>
 <span class="sd">        their type.</span>
 
-<span class="sd">        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">        determine whether local metadata functionality is available.</span>
+<span class="sd">        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, perform search at container level.</span>
+<span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">        `scope`.)</span>
+
+<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.SearchScope)) Whether to perform</span>
+<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the</span>
+<span class="sd">        [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata functionality is</span>
+<span class="sd">        available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">, reduced=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;reduced&#39;</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                                   <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
-    <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only</span>
 <span class="sd">        result set comprised only of things which have a location set, e.g.:</span>
 
@@ -1994,7 +2013,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;located&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
@@ -2003,10 +2022,10 @@ table {
     <span class="c1"># used by describe()</span>
     <span class="n">__guid_resources</span> <span class="o">=</span> <span class="p">(</span><span class="n">Thing</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span> <span class="n">RemoteFeed</span><span class="p">,</span> <span class="n">RemoteControl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing</span>
+    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">DescribeScope</span><span class="o">.</span><span class="n">AUTO</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing or Point</span>
 
-<span class="sd">        Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`</span>
+<span class="sd">        Returns the description dict (see below for Thing example) if available, otherwise `None`</span>
 
 <span class="sd">            #!python</span>
 <span class="sd">            {</span>
@@ -2015,6 +2034,7 @@ table {
 <span class="sd">                    &quot;long&quot;: 0.716356,</span>
 <span class="sd">                    &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                    &quot;parent&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: [</span>
 <span class="sd">                        {</span>
 <span class="sd">                            &quot;type&quot;: &quot;Control&quot;,</span>
@@ -2043,7 +2063,7 @@ table {
 <span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
 <span class="sd">        if there is a communications problem between you and the infrastructure</span>
 
-<span class="sd">        `guid_or_thing` (mandatory) (string or object).</span>
+<span class="sd">        `guid_or_resource` (mandatory) (string or object).</span>
 <span class="sd">        If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12</span>
 <span class="sd">        (or undashed) format.</span>
 <span class="sd">        If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return</span>
@@ -2053,19 +2073,25 @@ table {
 <span class="sd">        returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as</span>
 <span class="sd">        these are language neutral).</span>
 
-<span class="sd">        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">        determine whether local metadata functionality is available. Note that the publicity status of a thing has no</span>
-<span class="sd">        effect on local describe functionality.</span>
+<span class="sd">        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.</span>
+<span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">        `scope`.)</span>
+
+<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
+<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
+<span class="sd">        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
+<span class="sd">        first attempts to look up private metadata, then public.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
-            <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_thing</span><span class="o">.</span><span class="n">guid</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
+            <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_resource</span><span class="o">.</span><span class="n">guid</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
@@ -2283,11 +2309,12 @@ table {
     <span class="k">def</span> <span class="nf">_request_sub_recent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_id</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_sub_recent</span><span class="p">(</span><span class="n">sub_id</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_request_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_request_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_request_describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_request_describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">DescribeScope</span><span class="o">.</span><span class="n">AUTO</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -2494,7 +2521,7 @@ table {
     <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.5.0&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.0&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2663,9 +2690,11 @@ table {
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Core client minor version old: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Core client minor version difference: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Core client minor version difference: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">),</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">core</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">expected</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core client patch level change: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Core client patch level change: </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1"> known)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">Core_Version</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__core_version</span><span class="p">),</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core version: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">Core_Version</span><span class="p">)</span>
 
@@ -2973,8 +3002,6 @@ table {
 <span class="sd">        Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code</span>
 <span class="sd">        without having to wait for the remote thing to share again.</span>
 
-<span class="sd">        Raises RuntimeError - if the key-value store &quot;database&quot; is disabled</span>
-
 <span class="sd">        `feedid` (required) (string) local id of your Feed</span>
 
 <span class="sd">        `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
@@ -3189,7 +3216,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Search the Iotic Space for public Things with metadata matching the search parameters:</span>
 <span class="sd">        text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can</span>
 <span class="sd">        be found.</span>
@@ -3204,6 +3232,7 @@ table {
 <span class="sd">                    &quot;matches&quot;: 3.500,</span>
 <span class="sd">                    &quot;lat&quot;: 52.4539,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #2&quot;,</span>
+<span class="sd">                    &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: {</span>
 <span class="sd">                        &quot;a300cc90147f4e2990195639de0af201&quot;: {</span>
 <span class="sd">                            &quot;matches&quot;: 3.000,</span>
@@ -3224,6 +3253,7 @@ table {
 <span class="sd">                    &quot;matches&quot;: 2.000,</span>
 <span class="sd">                    &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                    &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: {</span>
 <span class="sd">                        &quot;fb1a4a4dbb2642ab9f836892da93f101&quot;: {</span>
 <span class="sd">                            &quot;matches&quot;: 1.000,</span>
@@ -3281,22 +3311,31 @@ table {
 <span class="sd">        `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and</span>
 <span class="sd">        their type.</span>
 
-<span class="sd">        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">        determine whether local metadata functionality is available.</span>
+<span class="sd">        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, perform search at container level.</span>
+<span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">        `scope`.)</span>
+
+<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.SearchScope)) Whether to perform</span>
+<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the</span>
+<span class="sd">        [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata functionality is</span>
+<span class="sd">        available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">, reduced=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;reduced&#39;</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                                   <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
-    <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only</span>
 <span class="sd">        result set comprised only of things which have a location set, e.g.:</span>
 
@@ -3318,7 +3357,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;located&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
@@ -3327,10 +3366,10 @@ table {
     <span class="c1"># used by describe()</span>
     <span class="n">__guid_resources</span> <span class="o">=</span> <span class="p">(</span><span class="n">Thing</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span> <span class="n">RemoteFeed</span><span class="p">,</span> <span class="n">RemoteControl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing</span>
+    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">DescribeScope</span><span class="o">.</span><span class="n">AUTO</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing or Point</span>
 
-<span class="sd">        Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`</span>
+<span class="sd">        Returns the description dict (see below for Thing example) if available, otherwise `None`</span>
 
 <span class="sd">            #!python</span>
 <span class="sd">            {</span>
@@ -3339,6 +3378,7 @@ table {
 <span class="sd">                    &quot;long&quot;: 0.716356,</span>
 <span class="sd">                    &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                    &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                    &quot;parent&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                    &quot;points&quot;: [</span>
 <span class="sd">                        {</span>
 <span class="sd">                            &quot;type&quot;: &quot;Control&quot;,</span>
@@ -3367,7 +3407,7 @@ table {
 <span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
 <span class="sd">        if there is a communications problem between you and the infrastructure</span>
 
-<span class="sd">        `guid_or_thing` (mandatory) (string or object).</span>
+<span class="sd">        `guid_or_resource` (mandatory) (string or object).</span>
 <span class="sd">        If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12</span>
 <span class="sd">        (or undashed) format.</span>
 <span class="sd">        If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return</span>
@@ -3377,19 +3417,25 @@ table {
 <span class="sd">        returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as</span>
 <span class="sd">        these are language neutral).</span>
 
-<span class="sd">        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">        determine whether local metadata functionality is available. Note that the publicity status of a thing has no</span>
-<span class="sd">        effect on local describe functionality.</span>
+<span class="sd">        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.</span>
+<span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">        `scope`.)</span>
+
+<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
+<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
+<span class="sd">        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
+<span class="sd">        first attempts to look up private metadata, then public.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
-            <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_thing</span><span class="o">.</span><span class="n">guid</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
+            <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_resource</span><span class="o">.</span><span class="n">guid</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
         <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
@@ -3607,11 +3653,12 @@ table {
     <span class="k">def</span> <span class="nf">_request_sub_recent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_id</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_sub_recent</span><span class="p">(</span><span class="n">sub_id</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_request_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_request_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_request_describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_request_describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">DescribeScope</span><span class="o">.</span><span class="n">AUTO</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -3919,20 +3966,21 @@ if there is a communications problem between you and the infrastructure</p>
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.Client.Client.describe">
-    <p>def <span class="ident">describe</span>(</p><p>self, guid_or_thing, lang=None, local=False)</p>
+    <p>def <span class="ident">describe</span>(</p><p>self, guid_or_resource, lang=None, local=None, scope=&lt;DescribeScope.AUTO: &#39;auto&#39;&gt;)</p>
     </div>
     
 
     
   
-    <div class="desc"><p>Describe returns the public (or local) description of a Thing</p>
-<p>Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise <code>None</code></p>
+    <div class="desc"><p>Describe returns the public (or local) description of a Thing or Point</p>
+<p>Returns the description dict (see below for Thing example) if available, otherwise <code>None</code></p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Entity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;long&quot;</span><span class="p">:</span> <span class="mf">0.716356</span><span class="p">,</span>
         <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="mf">52.244384</span><span class="p">,</span>
         <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Weather Station #1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;3bbf307b43b1460289fe707619dece3d&quot;</span><span class="p">,</span>
         <span class="s2">&quot;points&quot;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Control&quot;</span><span class="p">,</span>
@@ -3961,7 +4009,7 @@ if there is a communications problem between you and the infrastructure</p>
 containing the error if the infrastructure detects a problem</p>
 <p>Raises <a href="../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException">LinkException</a>
 if there is a communications problem between you and the infrastructure</p>
-<p><code>guid_or_thing</code> (mandatory) (string or object).
+<p><code>guid_or_resource</code> (mandatory) (string or object).
 If a <code>string</code>, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12
 (or undashed) format.
 If an <code>object</code>, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
@@ -3969,15 +4017,20 @@ you the description of that object.</p>
 <p><code>lang</code> (optional) (string) The two-character ISO 639-1 language code for which labels and comments will be
 returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as
 these are language neutral).</p>
-<p><code>local</code> (optional) (boolean) If <code>true</code>, perform search at container level. Check the local_meta flag to
-determine whether local metadata functionality is available. Note that the publicity status of a thing has no
-effect on local describe functionality.</p></div>
+<p><code>local</code> (optional) (boolean) <strong>Deprecated</strong>, use <code>scope</code> instead. If <code>true</code>, lookup metadata at container level.
+Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
+<code>scope</code>.)</p>
+<p><code>scope</code> (optional) (<a href="../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope">SearchScope</a>) Whether to perform
+PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check
+the <a href="#IoticAgent.IOT.Client.Client.local_meta">local_meta</a> flag to determine whether local metadata
+functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode
+first attempts to look up private metadata, then public.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.describe', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.describe" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing</span>
-<span class="sd">    Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">DescribeScope</span><span class="o">.</span><span class="n">AUTO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describe returns the public (or local) description of a Thing or Point</span>
+<span class="sd">    Returns the description dict (see below for Thing example) if available, otherwise `None`</span>
 <span class="sd">        #!python</span>
 <span class="sd">        {</span>
 <span class="sd">            &quot;type&quot;: &quot;Entity&quot;,</span>
@@ -3985,6 +4038,7 @@ effect on local describe functionality.</p></div>
 <span class="sd">                &quot;long&quot;: 0.716356,</span>
 <span class="sd">                &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                &quot;parent&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                &quot;points&quot;: [</span>
 <span class="sd">                    {</span>
 <span class="sd">                        &quot;type&quot;: &quot;Control&quot;,</span>
@@ -4010,7 +4064,7 @@ effect on local describe functionality.</p></div>
 <span class="sd">    containing the error if the infrastructure detects a problem</span>
 <span class="sd">    Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
 <span class="sd">    if there is a communications problem between you and the infrastructure</span>
-<span class="sd">    `guid_or_thing` (mandatory) (string or object).</span>
+<span class="sd">    `guid_or_resource` (mandatory) (string or object).</span>
 <span class="sd">    If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12</span>
 <span class="sd">    (or undashed) format.</span>
 <span class="sd">    If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return</span>
@@ -4018,18 +4072,23 @@ effect on local describe functionality.</p></div>
 <span class="sd">    `lang` (optional) (string) The two-character ISO 639-1 language code for which labels and comments will be</span>
 <span class="sd">    returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as</span>
 <span class="sd">    these are language neutral).</span>
-<span class="sd">    `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">    determine whether local metadata functionality is available. Note that the publicity status of a thing has no</span>
-<span class="sd">    effect on local describe functionality.</span>
+<span class="sd">    `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.</span>
+<span class="sd">    Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">    `scope`.)</span>
+<span class="sd">    `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
+<span class="sd">    PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
+<span class="sd">    the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">    functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
+<span class="sd">    first attempts to look up private metadata, then public.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
-        <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_thing</span><span class="o">.</span><span class="n">guid</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_thing</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__guid_resources</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">guid_or_resource</span><span class="o">.</span><span class="n">guid</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+        <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid_to_hex</span><span class="p">(</span><span class="n">guid_or_resource</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
-    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
     <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
@@ -4741,7 +4800,7 @@ if the point data could not be parsed according to its current value description
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.Client.Client.search">
-    <p>def <span class="ident">search</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=False)</p>
+    <p>def <span class="ident">search</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=None, scope=&lt;SearchScope.PUBLIC: &#39;public&#39;&gt;)</p>
     </div>
     
 
@@ -4758,6 +4817,7 @@ be found.</p>
         <span class="s2">&quot;matches&quot;</span><span class="p">:</span> <span class="mf">3.500</span><span class="p">,</span>
         <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="mf">52.4539</span><span class="p">,</span>
         <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Weather Station #2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;3bbf307b43b1460289fe707619dece3d&quot;</span><span class="p">,</span>
         <span class="s2">&quot;points&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;a300cc90147f4e2990195639de0af201&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;matches&quot;</span><span class="p">:</span> <span class="mf">3.000</span><span class="p">,</span>
@@ -4778,6 +4838,7 @@ be found.</p>
         <span class="s2">&quot;matches&quot;</span><span class="p">:</span> <span class="mf">2.000</span><span class="p">,</span>
         <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="mf">52.244384</span><span class="p">,</span>
         <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Weather Station #1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;3bbf307b43b1460289fe707619dece3d&quot;</span><span class="p">,</span>
         <span class="s2">&quot;points&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;fb1a4a4dbb2642ab9f836892da93f101&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;matches&quot;</span><span class="p">:</span> <span class="mf">1.000</span><span class="p">,</span>
@@ -4828,12 +4889,18 @@ If <code>text</code> has not been specified, radius can at most be 25km.</p>
 <p><code>offset</code> (optional) (integer) Return results starting at this offset - good for paging.</p>
 <p><code>reduced</code> (optional) (boolean) If <code>true</code>, return the reduced results just containing points and
 their type.</p>
-<p><code>local</code> (optional) (boolean) If <code>true</code>, perform search at container level. Check the local_meta flag to
-determine whether local metadata functionality is available.</p></div>
+<p><code>local</code> (optional) (boolean) <strong>Deprecated</strong>, use <code>scope</code> instead. If <code>true</code>, perform search at container level.
+Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
+<code>scope</code>.)</p>
+<p><code>scope</code> (optional) (<a href="../Core/Const.m.html#IoticAgent.Core.Const.SearchScope">SearchScope</a>) Whether to perform
+PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the
+<a href="#IoticAgent.IOT.Client.Client.local_meta">local_meta</a> flag to determine whether local metadata functionality is
+available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.search', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.search" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+           <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Search the Iotic Space for public Things with metadata matching the search parameters:</span>
 <span class="sd">    text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can</span>
 <span class="sd">    be found.</span>
@@ -4846,6 +4913,7 @@ determine whether local metadata functionality is available.</p></div>
 <span class="sd">                &quot;matches&quot;: 3.500,</span>
 <span class="sd">                &quot;lat&quot;: 52.4539,</span>
 <span class="sd">                &quot;label&quot;: &quot;Weather Station #2&quot;,</span>
+<span class="sd">                &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                &quot;points&quot;: {</span>
 <span class="sd">                    &quot;a300cc90147f4e2990195639de0af201&quot;: {</span>
 <span class="sd">                        &quot;matches&quot;: 3.000,</span>
@@ -4866,6 +4934,7 @@ determine whether local metadata functionality is available.</p></div>
 <span class="sd">                &quot;matches&quot;: 2.000,</span>
 <span class="sd">                &quot;lat&quot;: 52.244384,</span>
 <span class="sd">                &quot;label&quot;: &quot;Weather Station #1&quot;,</span>
+<span class="sd">                &quot;owner&quot;: &quot;3bbf307b43b1460289fe707619dece3d&quot;,</span>
 <span class="sd">                &quot;points&quot;: {</span>
 <span class="sd">                    &quot;fb1a4a4dbb2642ab9f836892da93f101&quot;: {</span>
 <span class="sd">                        &quot;matches&quot;: 1.000,</span>
@@ -4912,12 +4981,18 @@ determine whether local metadata functionality is available.</p></div>
 <span class="sd">    `offset` (optional) (integer) Return results starting at this offset - good for paging.</span>
 <span class="sd">    `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and</span>
 <span class="sd">    their type.</span>
-<span class="sd">    `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to</span>
-<span class="sd">    determine whether local metadata functionality is available.</span>
+<span class="sd">    `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, perform search at container level.</span>
+<span class="sd">    Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
+<span class="sd">    `scope`.)</span>
+<span class="sd">    `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.SearchScope)) Whether to perform</span>
+<span class="sd">    PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the</span>
+<span class="sd">    [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata functionality is</span>
+<span class="sd">    available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">, reduced=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                 <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
-    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;reduced&#39;</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                               <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
     <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
@@ -4931,7 +5006,7 @@ determine whether local metadata functionality is available.</p></div>
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.Client.Client.search_located">
-    <p>def <span class="ident">search_located</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False)</p>
+    <p>def <span class="ident">search_located</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None, scope=&lt;SearchScope.PUBLIC: &#39;public&#39;&gt;)</p>
     </div>
     
 
@@ -4955,7 +5030,8 @@ result set comprised only of things which have a location set, e.g.:</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.search_located', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.search_located" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search_located</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only</span>
 <span class="sd">    result set comprised only of things which have a location set, e.g.:</span>
 <span class="sd">        #!python</span>
@@ -4974,7 +5050,7 @@ result set comprised only of things which have a location set, e.g.:</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                 <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
-    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;located&#39;</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
     <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
@@ -4988,7 +5064,7 @@ result set comprised only of things which have a location set, e.g.:</p>
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.Client.Client.search_reduced">
-    <p>def <span class="ident">search_reduced</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False)</p>
+    <p>def <span class="ident">search_reduced</span>(</p><p>self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None, scope=&lt;SearchScope.PUBLIC: &#39;public&#39;&gt;)</p>
     </div>
     
 
@@ -4998,9 +5074,10 @@ result set comprised only of things which have a location set, e.g.:</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.search_reduced', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.search_reduced" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">scope</span><span class="o">=</span><span class="n">SearchScope</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -5020,7 +5097,6 @@ result set comprised only of things which have a location set, e.g.:</p>
     <div class="desc"><p>Simulate the last feeddata received for given feedid
 Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code
 without having to wait for the remote thing to share again.</p>
-<p>Raises RuntimeError - if the key-value store "database" is disabled</p>
 <p><code>feedid</code> (required) (string) local id of your Feed</p>
 <p><code>data</code> (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data</p>
 <p><code>mime</code> (optional) (string) The mime type of your data. See also:
@@ -5034,7 +5110,6 @@ without having to wait for the remote thing to share again.</p>
     <span class="sd">&quot;&quot;&quot;Simulate the last feeddata received for given feedid</span>
 <span class="sd">    Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code</span>
 <span class="sd">    without having to wait for the remote thing to share again.</span>
-<span class="sd">    Raises RuntimeError - if the key-value store &quot;database&quot; is disabled</span>
 <span class="sd">    `feedid` (required) (string) local id of your Feed</span>
 <span class="sd">    `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 <span class="sd">    `mime` (optional) (string) The mime type of your data. See also:</span>

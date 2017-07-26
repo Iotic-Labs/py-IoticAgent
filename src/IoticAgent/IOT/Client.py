@@ -16,6 +16,7 @@
 
 from __future__ import unicode_literals
 
+from warnings import warn
 from functools import partial
 import logging
 logger = logging.getLogger(__name__)
@@ -23,10 +24,14 @@ DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
 
 from IoticAgent.Core import Client as Core_Client, ThreadSafeDict, __version__ as Core_Version
 from IoticAgent.Core.compat import Mapping, raise_from, string_types
-from IoticAgent.Core.Const import (E_FAILED_CODE_NOTALLOWED, E_FAILED_CODE_UNKNOWN, E_FAILED_CODE_MALFORMED,
-                                   E_FAILED_CODE_INTERNALERROR, E_FAILED_CODE_ACCESSDENIED, M_CLIENTREF, M_PAYLOAD,
-                                   R_ENTITY, R_FEED, R_CONTROL, R_SUB, P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID,
-                                   P_RESOURCE, P_MESSAGE, P_POINT_TYPE, P_POINT_ID)
+from IoticAgent.Core.Const import (
+    E_FAILED_CODE_NOTALLOWED, E_FAILED_CODE_UNKNOWN, E_FAILED_CODE_MALFORMED, E_FAILED_CODE_INTERNALERROR,
+    E_FAILED_CODE_ACCESSDENIED,
+    M_CLIENTREF, M_PAYLOAD,
+    R_ENTITY, R_FEED, R_CONTROL, R_SUB,
+    P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID, P_RESOURCE, P_MESSAGE, P_POINT_TYPE, P_POINT_ID,
+    SearchScope, SearchType, DescribeScope
+)
 from IoticAgent.Core.utils import validate_nonnegative_int
 from IoticAgent.Core.Validation import Validation
 
@@ -34,8 +39,10 @@ from . import __version__
 from .Thing import Thing
 from .Config import Config
 from .utils import uuid_to_hex, version_string_to_tuple, bool_from, foc_to_str
-from .Exceptions import (IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError,
-                         IOTSyncTimeout, IOTNotAllowed)
+from .Exceptions import (
+    IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError, IOTSyncTimeout,
+    IOTNotAllowed
+)
 from .Point import Point, _POINT_TYPES
 from .RemotePoint import RemoteFeed, RemoteControl
 from .PointValueHelper import PointDataObjectHandler
@@ -44,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.5.0'
+    __core_version = '0.6.0'
 
     def __init__(self, config=None):
         """
@@ -213,9 +220,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         elif core[1] < expected[1]:
             raise RuntimeError('Core client minor version old: %s (%s known)' % (Core_Version, cls.__core_version))
         elif core[1] > expected[1]:
-            logger.warning('Core client minor version difference: %s (%s known)', Core_Version, cls.__core_version)
+            warn('Core client minor version difference: %s (%s known)' % (Core_Version, cls.__core_version),
+                 RuntimeWarning)
         elif core[2] > expected[2]:
-            logger.info('Core client patch level change: %s (%s known)', Core_Version, cls.__core_version)
+            warn('Core client patch level change: %s (%s known)' % (Core_Version, cls.__core_version),
+                 RuntimeWarning)
         else:
             logger.info('Core version: %s', Core_Version)
 
@@ -523,8 +532,6 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code
         without having to wait for the remote thing to share again.
 
-        Raises RuntimeError - if the key-value store "database" is disabled
-
         `feedid` (required) (string) local id of your Feed
 
         `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data
@@ -739,7 +746,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info("delete_thing_async(lid=\"%s\")", lid)
         return self._request_entity_delete(lid)
 
-    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=False):
+    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=None,
+               scope=SearchScope.PUBLIC):
         """Search the Iotic Space for public Things with metadata matching the search parameters:
         text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can
         be found.
@@ -754,6 +762,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                     "matches": 3.500,
                     "lat": 52.4539,
                     "label": "Weather Station #2",
+                    "owner": "3bbf307b43b1460289fe707619dece3d",
                     "points": {
                         "a300cc90147f4e2990195639de0af201": {
                             "matches": 3.000,
@@ -774,6 +783,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                     "matches": 2.000,
                     "lat": 52.244384,
                     "label": "Weather Station #1",
+                    "owner": "3bbf307b43b1460289fe707619dece3d",
                     "points": {
                         "fb1a4a4dbb2642ab9f836892da93f101": {
                             "matches": 1.000,
@@ -831,22 +841,31 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and
         their type.
 
-        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to
-        determine whether local metadata functionality is available.
+        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, perform search at container level.
+        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
+        `scope`.)
+
+        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.SearchScope)) Whether to perform
+        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the
+        [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata functionality is
+        available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
-        evt = self._request_search(text, lang, location, unit, limit, offset, 'reduced' if reduced else 'full', local)
+        evt = self._request_search(text, lang, location, unit, limit, offset,
+                                   SearchType.REDUCED if reduced else SearchType.FULL, local, scope)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
-    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False):
+    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
+                       scope=SearchScope.PUBLIC):
         """Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`"""
-        return self.search(text, lang, location, unit, limit, offset, reduced=True, local=local)
+        return self.search(text, lang, location, unit, limit, offset, reduced=True, local=local, scope=scope)
 
-    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=False):
+    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
+                       scope=SearchScope.PUBLIC):
         """See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only
         result set comprised only of things which have a location set, e.g.:
 
@@ -868,7 +887,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
                     text, lang, location, unit, limit, offset)
-        evt = self._request_search(text, lang, location, unit, limit, offset, 'located', local)
+        evt = self._request_search(text, lang, location, unit, limit, offset, SearchType.LOCATED, local, scope)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
@@ -877,10 +896,10 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     # used by describe()
     __guid_resources = (Thing, Point, RemoteFeed, RemoteControl)
 
-    def describe(self, guid_or_thing, lang=None, local=False):
-        """Describe returns the public (or local) description of a Thing
+    def describe(self, guid_or_resource, lang=None, local=None, scope=DescribeScope.AUTO):
+        """Describe returns the public (or local) description of a Thing or Point
 
-        Returns the description dict (see below for Thing example) if Thing or Point is public, otherwise `None`
+        Returns the description dict (see below for Thing example) if available, otherwise `None`
 
             #!python
             {
@@ -889,6 +908,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                     "long": 0.716356,
                     "lat": 52.244384,
                     "label": "Weather Station #1",
+                    "parent": "3bbf307b43b1460289fe707619dece3d",
                     "points": [
                         {
                             "type": "Control",
@@ -917,7 +937,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
 
-        `guid_or_thing` (mandatory) (string or object).
+        `guid_or_resource` (mandatory) (string or object).
         If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12
         (or undashed) format.
         If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
@@ -927,19 +947,25 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as
         these are language neutral).
 
-        `local` (optional) (boolean) If `true`, perform search at container level. Check the local_meta flag to
-        determine whether local metadata functionality is available. Note that the publicity status of a thing has no
-        effect on local describe functionality.
+        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.
+        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
+        `scope`.)
+
+        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform
+        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check
+        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata
+        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode
+        first attempts to look up private metadata, then public.
         """
-        if isinstance(guid_or_thing, self.__guid_resources):
-            guid = guid_or_thing.guid
-        elif isinstance(guid_or_thing, string_types):
-            guid = uuid_to_hex(guid_or_thing)
+        if isinstance(guid_or_resource, self.__guid_resources):
+            guid = guid_or_resource.guid
+        elif isinstance(guid_or_resource, string_types):
+            guid = uuid_to_hex(guid_or_resource)
         else:
             raise ValueError("describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance")
         logger.info('describe() [guid="%s"]', guid)
 
-        evt = self._request_describe(guid, lang, local)
+        evt = self._request_describe(guid, lang, local, scope)
         evt.wait(self.__sync_timeout)
 
         self._except_if_failed(evt)
@@ -1157,8 +1183,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_sub_recent(self, sub_id, count=None):
         return self.__client.request_sub_recent(sub_id, count)
 
-    def _request_search(self, text, lang, location, unit, limit, offset, type_='full', local=False):
-        return self.__client.request_search(text, lang, location, unit, limit, offset, type_, local)
+    def _request_search(self, text, lang, location, unit, limit, offset, type_='full', local=None,
+                        scope=SearchScope.PUBLIC):
+        return self.__client.request_search(text, lang, location, unit, limit, offset, type_, local, scope)
 
-    def _request_describe(self, guid, lang, local=False):
-        return self.__client.request_describe(guid, lang, local)
+    def _request_describe(self, guid, lang, local=None, scope=DescribeScope.AUTO):
+        return self.__client.request_describe(guid, lang, local, scope)

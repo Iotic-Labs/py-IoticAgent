@@ -14,13 +14,12 @@
 
 from __future__ import unicode_literals
 
+from warnings import warn
 from functools import partial
 from abc import ABCMeta, abstractmethod
 from io import BytesIO
 from zlib import (compressobj as _zlib_compressobj, decompressobj as _zlib_decompressobj, DEFLATED as _zlib_DEFLATED,
                   Z_FINISH as _zlib_Z_FINISH)
-import logging
-logger = logging.getLogger(__name__)
 
 from .Const import COMP_NONE, COMP_ZLIB, COMP_LZ4F
 
@@ -33,7 +32,7 @@ try:
     from lz4framed import compress as _lz4f_compress, Decompressor as _lz4f_Decompressor
 except ImportError:
     _lz4f_compress = _lz4f_Decompressor = __dummy
-    # logger.warning("Unable to import lz4framed - COMP_LZ4F will not be available.")
+    warn('Unable to import lz4framed - COMP_LZ4F will not be available.', ImportWarning)
     LZ4F_AVAILABLE = False
 else:
     LZ4F_AVAILABLE = True
@@ -45,7 +44,7 @@ DEFAULT_MAX_SIZE = 1024 * 1024
 class OversizeException(Exception):
     """Raised when the decompressed result exceeds the associated size restriction"""
 
-    def __init__(self, max_length):
+    def __init__(self, max_length):  # pylint: disable=useless-super-delegation
         super(OversizeException, self).__init__(max_length)
 
     @property
@@ -93,7 +92,7 @@ try:
     _zlib_decompressobj(wbits=15)
     _zlib_compressobj(method=_zlib_DEFLATED, wbits=15)
 except TypeError:
-    logger.warning('zlib does not support setting of method & wbits')
+    warn('zlib module in use does not support setting of method & wbits', ImportWarning)
 else:
     _zlib_compressobj = partial(_zlib_compressobj, method=_zlib_DEFLATED, wbits=15)  # pylint: disable=invalid-name
     _zlib_decompressobj = partial(_zlib_decompressobj, wbits=15)  # pylint: disable=invalid-name

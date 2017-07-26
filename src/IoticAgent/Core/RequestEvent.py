@@ -28,9 +28,6 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
     https://docs.python.org/3/library/threading.html#event-objects
     """
 
-    __slots__ = ('_RequestEvent__event', 'id_', 'success', 'payload', 'is_crud', 'exception', '_send_time',
-                 '_inner_msg_out', '_messages', '_complete_func')
-
     def __init__(self, id_, inner_msg_out=None, is_crud=False):
         self.__event = Event()  # pylint: disable=assigning-non-slot
         #

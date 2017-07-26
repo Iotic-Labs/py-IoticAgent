@@ -1047,7 +1047,6 @@ table {
     <li class="mono"><a href="#IoticAgent.Core.Compressors.COMP_ZLIB">COMP_ZLIB</a></li>
     <li class="mono"><a href="#IoticAgent.Core.Compressors.DEFAULT_MAX_SIZE">DEFAULT_MAX_SIZE</a></li>
     <li class="mono"><a href="#IoticAgent.Core.Compressors.LZ4F_AVAILABLE">LZ4F_AVAILABLE</a></li>
-    <li class="mono"><a href="#IoticAgent.Core.Compressors.logger">logger</a></li>
   </ul>
 
     </li>
@@ -1143,13 +1142,12 @@ table {
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">zlib</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compressobj</span> <span class="k">as</span> <span class="n">_zlib_compressobj</span><span class="p">,</span> <span class="n">decompressobj</span> <span class="k">as</span> <span class="n">_zlib_decompressobj</span><span class="p">,</span> <span class="n">DEFLATED</span> <span class="k">as</span> <span class="n">_zlib_DEFLATED</span><span class="p">,</span>
                   <span class="n">Z_FINISH</span> <span class="k">as</span> <span class="n">_zlib_Z_FINISH</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.Const</span> <span class="kn">import</span> <span class="n">COMP_NONE</span><span class="p">,</span> <span class="n">COMP_ZLIB</span><span class="p">,</span> <span class="n">COMP_LZ4F</span>
 
@@ -1162,7 +1160,7 @@ table {
     <span class="kn">from</span> <span class="nn">lz4framed</span> <span class="kn">import</span> <span class="n">compress</span> <span class="k">as</span> <span class="n">_lz4f_compress</span><span class="p">,</span> <span class="n">Decompressor</span> <span class="k">as</span> <span class="n">_lz4f_Decompressor</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_lz4f_compress</span> <span class="o">=</span> <span class="n">_lz4f_Decompressor</span> <span class="o">=</span> <span class="n">__dummy</span>
-    <span class="c1"># logger.warning(&quot;Unable to import lz4framed - COMP_LZ4F will not be available.&quot;)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to import lz4framed - COMP_LZ4F will not be available.&#39;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
     <span class="n">LZ4F_AVAILABLE</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">LZ4F_AVAILABLE</span> <span class="o">=</span> <span class="bp">True</span>
@@ -1174,7 +1172,7 @@ table {
 <span class="k">class</span> <span class="nc">OversizeException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the decompressed result exceeds the associated size restriction&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>  <span class="c1"># pylint: disable=useless-super-delegation</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">OversizeException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">max_length</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -1222,7 +1220,7 @@ table {
     <span class="n">_zlib_decompressobj</span><span class="p">(</span><span class="n">wbits</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
     <span class="n">_zlib_compressobj</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">_zlib_DEFLATED</span><span class="p">,</span> <span class="n">wbits</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;zlib does not support setting of method &amp; wbits&#39;</span><span class="p">)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;zlib module in use does not support setting of method &amp; wbits&#39;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">_zlib_compressobj</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_zlib_compressobj</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">_zlib_DEFLATED</span><span class="p">,</span> <span class="n">wbits</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>  <span class="c1"># pylint: disable=invalid-name</span>
     <span class="n">_zlib_decompressobj</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_zlib_decompressobj</span><span class="p">,</span> <span class="n">wbits</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>  <span class="c1"># pylint: disable=invalid-name</span>
@@ -1328,14 +1326,6 @@ table {
       </div>
       <div class="item">
       <p id="IoticAgent.Core.Compressors.LZ4F_AVAILABLE" class="name">var <span class="ident">LZ4F_AVAILABLE</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-      </div>
-      <div class="item">
-      <p id="IoticAgent.Core.Compressors.logger" class="name">var <span class="ident">logger</span></p>
       
   
   <div class="source_cont">
@@ -1502,6 +1492,10 @@ table {
     <p>def <span class="ident">compress</span>(</p><p>data)</p>
     </div>
     
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.compress">compress</a></code>
+    </p>
 
     
   
@@ -1524,10 +1518,6 @@ table {
     <p>def <span class="ident">decompress</span>(</p><p>data, max_size=1048576)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.decompress">decompress</a></code>
-    </p>
 
     
   
@@ -1614,6 +1604,10 @@ table {
     <p>def <span class="ident">compress</span>(</p><p>data)</p>
     </div>
     
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.compress">compress</a></code>
+    </p>
 
     
   
@@ -1636,10 +1630,6 @@ table {
     <p>def <span class="ident">decompress</span>(</p><p>data, max_size=1048576)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.decompress">decompress</a></code>
-    </p>
 
     
   
@@ -1692,7 +1682,7 @@ table {
     <div class="codehilite"><pre><span class="k">class</span> <span class="nc">OversizeException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the decompressed result exceeds the associated size restriction&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>  <span class="c1"># pylint: disable=useless-super-delegation</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">OversizeException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">max_length</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -1737,7 +1727,7 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Compressors.OversizeException.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Compressors.OversizeException.__init__" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>  <span class="c1"># pylint: disable=useless-super-delegation</span>
     <span class="nb">super</span><span class="p">(</span><span class="n">OversizeException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">max_length</span><span class="p">)</span>
 </pre></div>
 
@@ -1812,6 +1802,10 @@ table {
     <p>def <span class="ident">compress</span>(</p><p>data)</p>
     </div>
     
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.compress">compress</a></code>
+    </p>
 
     
   
@@ -1839,10 +1833,6 @@ table {
     <p>def <span class="ident">decompress</span>(</p><p>data, max_size=1048576)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#IoticAgent.Core.Compressors.Compressor">Compressor</a></code>.<code><a href="#IoticAgent.Core.Compressors.Compressor.decompress">decompress</a></code>
-    </p>
 
     
   

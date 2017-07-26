@@ -29,12 +29,7 @@ from IoticAgent.Core.compat import Sequence, Mapping, raise_from, string_types, 
 
 from .Resource import Resource
 from .utils import private_names_for, foc_to_str
-
-try:
-    from .PointMeta import PointMeta
-except ImportError:
-    PointMeta = None
-
+from .PointMeta import PointMeta
 
 _POINT_TYPES = frozenset((R_FEED, R_CONTROL))
 
@@ -164,11 +159,7 @@ class Point(Resource):
 
         Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
         if there is a communications problem between you and the infrastructure
-
-        Raises `RuntimeError` if RDFLib is not installed or not available
         """
-        if PointMeta is None:
-            raise RuntimeError("PointMeta not available")
         rdf = self.get_meta_rdf(fmt='n3')
         return PointMeta(self, rdf, self._client.default_lang, fmt='n3')
 
@@ -476,7 +467,7 @@ class PointDataObject(object):
 
     def __bool__(self):
         """Short-hand for empty()"""
-        return not self.empty()
+        return not self.empty
 
     @property
     def values(self):

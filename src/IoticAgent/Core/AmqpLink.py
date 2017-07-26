@@ -36,6 +36,9 @@ from .compat import raise_from, Event, RLock, monotonic
 from .Exceptions import LinkException
 
 
+DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+
+
 class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
     """Helper class to deal with AMQP connection.
@@ -331,7 +334,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 self.__recv_set_exc_and_wait(exc, 2)
                 self.__recv_exc = exc
             except exceptions.ConnectionForced as exc:
-                logger.error('Disconnected by broker: %s', exc)
+                logger.error('Disconnected by broker (ConnectionForced)', exc_info=DEBUG_ENABLED)
                 self.__recv_set_exc_and_wait(exc, 2)
             except SocketTimeout as exc:
                 logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
@@ -340,7 +343,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 logger.error("ssl.SSLError Bad Certificate?")
                 self.__recv_set_exc_and_wait(exc, 2)
             except (exceptions.AMQPError, OSError) as exc:
-                logger.error('amqp/transport failure, sleeping before retry')
+                logger.error('amqp/transport failure, sleeping before retry', exc_info=DEBUG_ENABLED)
                 self.__recv_set_exc_and_wait(exc, 2)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')
@@ -393,7 +396,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 logger.error("Access Refused (Credentials already in use?)")
                 self.__send_set_exc_and_wait(exc, 2)
             except exceptions.ConnectionForced as exc:
-                logger.error('Disconnected by broker, will re-try: %s', exc)
+                logger.error('Disconnected by broker (ConnectionForced)')
                 self.__send_set_exc_and_wait(exc, 2)
             except SocketTimeout as exc:
                 logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
@@ -402,7 +405,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 logger.error("ssl.SSLError Bad Certificate?")
                 self.__send_set_exc_and_wait(exc, 2)
             except (exceptions.AMQPError, OSError) as exc:
-                logger.error('amqp/transport failure, sleeping before retry', exc_info=True)
+                logger.error('amqp/transport failure, sleeping before retry')
                 self.__send_set_exc_and_wait(exc, 2)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')

@@ -1121,6 +1121,22 @@ table {
     </li>
 
 
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.Core.Const.DescribeScope">DescribeScope</a></span>
+        
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.Core.Const.SearchScope">SearchScope</a></span>
+        
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.Core.Const.SearchType">SearchType</a></span>
+        
+        </li>
+      </ul>
+    </li>
 
     </ul>
   </div>
@@ -1155,6 +1171,8 @@ table {
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
 
 <span class="c1"># Action types the container accepts</span>
 <span class="n">C_CREATE</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1253,6 +1271,56 @@ table {
 
 <span class="c1"># comp_size when innerMsg is longer than this (selected) compression will be used</span>
 <span class="n">COMP_SIZE</span> <span class="o">=</span> <span class="mi">768</span>
+
+
+<span class="c1"># Request-specific enumerations</span>
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">SearchScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how search is performed</span>
+
+<span class="sd">    `PUBLIC` - Public metadata search</span>
+
+<span class="sd">    `LOCAL` - Container-local search (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local search for own things only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">SearchType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines what results a search returns</span>
+
+<span class="sd">    `FULL` - Provides most information</span>
+
+<span class="sd">    `REDUCED` - Limit output including only points and their type</span>
+
+<span class="sd">    `LOCATED` - Minimal location + label format (e.g. for display on a map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FULL</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span>
+    <span class="n">REDUCED</span> <span class="o">=</span> <span class="s1">&#39;reduced&#39;</span>
+    <span class="n">LOCATED</span> <span class="o">=</span> <span class="s1">&#39;located&#39;</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">DescribeScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how a resource is described</span>
+
+<span class="sd">    `AUTO` - Uses local meta if available, otherwise public</span>
+
+<span class="sd">    `PUBLIC` - Public metadata (public)</span>
+
+<span class="sd">    `LOCAL` - Container-local meta (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local meta for own resource only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
 </pre></div>
 
   </div>
@@ -1863,6 +1931,291 @@ table {
       </div>
 
 
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="IoticAgent.Core.Const.DescribeScope" class="name">class <span class="ident">DescribeScope</span></p>
+      
+  
+    <div class="desc"><p>Determines how a resource is described</p>
+<p><code>AUTO</code> - Uses local meta if available, otherwise public</p>
+<p><code>PUBLIC</code> - Public metadata (public)</p>
+<p><code>LOCAL</code> - Container-local meta (only available if container running in 'private' mode)</p>
+<p><code>LOCAL_OWN</code> - Container-local meta for own resource only</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.DescribeScope', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.Core.Const.DescribeScope" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">DescribeScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how a resource is described</span>
+
+<span class="sd">    `AUTO` - Uses local meta if available, otherwise public</span>
+
+<span class="sd">    `PUBLIC` - Public metadata (public)</span>
+
+<span class="sd">    `LOCAL` - Container-local meta (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local meta for own resource only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.Core.Const.DescribeScope">DescribeScope</a></li>
+          <li>enum.Enum</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.AUTO" class="name">var <span class="ident">AUTO</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.LOCAL" class="name">var <span class="ident">LOCAL</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.LOCAL_OWN" class="name">var <span class="ident">LOCAL_OWN</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.PUBLIC" class="name">var <span class="ident">PUBLIC</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.name" class="name">var <span class="ident">name</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.DescribeScope.value" class="name">var <span class="ident">value</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="IoticAgent.Core.Const.SearchScope" class="name">class <span class="ident">SearchScope</span></p>
+      
+  
+    <div class="desc"><p>Determines how search is performed</p>
+<p><code>PUBLIC</code> - Public metadata search</p>
+<p><code>LOCAL</code> - Container-local search (only available if container running in 'private' mode)</p>
+<p><code>LOCAL_OWN</code> - Container-local search for own things only</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.SearchScope', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.Core.Const.SearchScope" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">SearchScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how search is performed</span>
+
+<span class="sd">    `PUBLIC` - Public metadata search</span>
+
+<span class="sd">    `LOCAL` - Container-local search (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local search for own things only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.Core.Const.SearchScope">SearchScope</a></li>
+          <li>enum.Enum</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchScope.LOCAL" class="name">var <span class="ident">LOCAL</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchScope.LOCAL_OWN" class="name">var <span class="ident">LOCAL_OWN</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchScope.PUBLIC" class="name">var <span class="ident">PUBLIC</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchScope.name" class="name">var <span class="ident">name</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchScope.value" class="name">var <span class="ident">value</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="IoticAgent.Core.Const.SearchType" class="name">class <span class="ident">SearchType</span></p>
+      
+  
+    <div class="desc"><p>Determines what results a search returns</p>
+<p><code>FULL</code> - Provides most information</p>
+<p><code>REDUCED</code> - Limit output including only points and their type</p>
+<p><code>LOCATED</code> - Minimal location + label format (e.g. for display on a map)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.SearchType', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.Core.Const.SearchType" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">SearchType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines what results a search returns</span>
+
+<span class="sd">    `FULL` - Provides most information</span>
+
+<span class="sd">    `REDUCED` - Limit output including only points and their type</span>
+
+<span class="sd">    `LOCATED` - Minimal location + label format (e.g. for display on a map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FULL</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span>
+    <span class="n">REDUCED</span> <span class="o">=</span> <span class="s1">&#39;reduced&#39;</span>
+    <span class="n">LOCATED</span> <span class="o">=</span> <span class="s1">&#39;located&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.Core.Const.SearchType">SearchType</a></li>
+          <li>enum.Enum</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchType.FULL" class="name">var <span class="ident">FULL</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchType.LOCATED" class="name">var <span class="ident">LOCATED</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchType.REDUCED" class="name">var <span class="ident">REDUCED</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchType.name" class="name">var <span class="ident">name</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.Core.Const.SearchType.value" class="name">var <span class="ident">value</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
 
   </section>
 

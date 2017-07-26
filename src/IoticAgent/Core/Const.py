@@ -16,6 +16,8 @@
 
 from __future__ import unicode_literals
 
+from enum import Enum, unique
+
 # Action types the container accepts
 C_CREATE = 1
 C_UPDATE = 2
@@ -113,3 +115,53 @@ COMP_DEFAULT = COMP_ZLIB
 
 # comp_size when innerMsg is longer than this (selected) compression will be used
 COMP_SIZE = 768
+
+
+# Request-specific enumerations
+
+@unique
+class SearchScope(Enum):
+    """Determines how search is performed
+
+    `PUBLIC` - Public metadata search
+
+    `LOCAL` - Container-local search (only available if container running in 'private' mode)
+
+    `LOCAL_OWN` - Container-local search for own things only
+    """
+    PUBLIC = 'public'
+    LOCAL = 'local'
+    LOCAL_OWN = 'localOwn'
+
+
+@unique
+class SearchType(Enum):
+    """Determines what results a search returns
+
+    `FULL` - Provides most information
+
+    `REDUCED` - Limit output including only points and their type
+
+    `LOCATED` - Minimal location + label format (e.g. for display on a map)
+    """
+    FULL = 'full'
+    REDUCED = 'reduced'
+    LOCATED = 'located'
+
+
+@unique
+class DescribeScope(Enum):
+    """Determines how a resource is described
+
+    `AUTO` - Uses local meta if available, otherwise public
+
+    `PUBLIC` - Public metadata (public)
+
+    `LOCAL` - Container-local meta (only available if container running in 'private' mode)
+
+    `LOCAL_OWN` - Container-local meta for own resource only
+    """
+    AUTO = 'auto'
+    PUBLIC = 'public'
+    LOCAL = 'local'
+    LOCAL_OWN = 'localOwn'
