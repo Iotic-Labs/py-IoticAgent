@@ -1,3 +1,7 @@
+v0.6.1
+- Use regex module instead of builtin re one (if available)
+- Only install enum34 module for old Python versions
+
 v0.6.0
 - Updated for QAPI v1.2.0 support
 - Support for local_own search/describe scope

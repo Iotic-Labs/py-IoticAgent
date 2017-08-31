@@ -18,11 +18,10 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-from re import compile as re_compile
 from uuid import UUID
 
 from IoticAgent.Core.Const import R_FEED, R_CONTROL
-from IoticAgent.Core.compat import ensure_unicode, raise_from, unicode_type, string_types, Iterable
+from IoticAgent.Core.compat import ensure_unicode, raise_from, unicode_type, string_types, Iterable, re_compile
 
 __FOC_STR_MAPPING = {'feed': R_FEED,
                      'control': R_CONTROL}

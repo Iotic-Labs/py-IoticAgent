@@ -16,9 +16,7 @@
 
 from __future__ import unicode_literals
 
-from re import compile as re_compile
-
-from .compat import unicode_type, PY3
+from .compat import unicode_type, PY3, re_compile
 
 
 __all__ = ('valid_mimetype', 'expand_idx_mimetype')

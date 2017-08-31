@@ -73,14 +73,16 @@ git clone https://github.com/Iotic-Labs/py-IoticAgent.git
 cd py-IoticAgent
 mkdir 3rd
 # Direct dependencies of agent
-pip3 install -t 3rd py-ubjson rdflib
+pip3 install -t 3rd -r requirements.txt
 
 export PYTHONPATH=`pwd`/3rd:`pwd`/src
 ```
 
 ### Dependencies
-The agent has one mandatory and two optional dependencies - this only matters for the from-Git install:
+The agent has both mandatory and optional dependencies - this only matters for the from-Git install:
 
 - **Mandatory** [py-ubjson](https://pypi.python.org/pypi/py-ubjson) to enable universal binary JSON
 - **Mandatory** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling API
+- **Mandatory** [enum34](https://pypi.python.org/pypi/enum34) (only for Python versions < 3.4)
+- **Optional** [regex](https://pypi.python.org/pypi/regex) re module replacement (for more accurate unicode validation)
 - **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression

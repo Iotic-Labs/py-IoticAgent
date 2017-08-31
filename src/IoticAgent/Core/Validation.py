@@ -16,11 +16,10 @@
 from __future__ import unicode_literals
 from datetime import datetime, timedelta
 from uuid import UUID
-from re import compile as re_compile
 
 from . import Const
 from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, ensure_unicode, urlparse, number_types,
-                     raise_from, Sequence, Mapping)
+                     raise_from, Sequence, Mapping, re_compile)
 
 
 VALIDATION_LID_LEN = 64

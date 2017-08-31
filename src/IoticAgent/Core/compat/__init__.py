@@ -21,8 +21,19 @@ from __future__ import unicode_literals
 
 from sys import version_info
 from keyword import kwlist
+from warnings import warn
 
 PY3 = (version_info[0] == 3)
+
+
+try:
+    import regex as _regex
+    from regex import compile as re_compile  # noqa (unused import)
+    # Force re module compatible behaviour
+    _regex.DEFAULT_VERSION = _regex.V0
+except ImportError:
+    from re import compile as re_compile  # noqa (unused import)
+    warn('Unable to import regex - falling back to re module', ImportWarning)
 
 
 # PY3K

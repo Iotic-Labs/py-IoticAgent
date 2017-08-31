@@ -1177,7 +1177,7 @@ table {
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.0&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.1&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2077,9 +2077,9 @@ table {
 <span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
 <span class="sd">        `scope`.)</span>
 
-<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
-<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
-<span class="sd">        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">        `scope` (optional) ([DescribeScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to</span>
+<span class="sd">        perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.</span>
+<span class="sd">        Check the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
 <span class="sd">        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
 <span class="sd">        first attempts to look up private metadata, then public.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2521,7 +2521,7 @@ table {
     <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.0&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.1&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3421,9 +3421,9 @@ table {
 <span class="sd">        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
 <span class="sd">        `scope`.)</span>
 
-<span class="sd">        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
-<span class="sd">        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
-<span class="sd">        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">        `scope` (optional) ([DescribeScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to</span>
+<span class="sd">        perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.</span>
+<span class="sd">        Check the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
 <span class="sd">        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
 <span class="sd">        first attempts to look up private metadata, then public.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -4020,9 +4020,9 @@ these are language neutral).</p>
 <p><code>local</code> (optional) (boolean) <strong>Deprecated</strong>, use <code>scope</code> instead. If <code>true</code>, lookup metadata at container level.
 Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
 <code>scope</code>.)</p>
-<p><code>scope</code> (optional) (<a href="../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope">SearchScope</a>) Whether to perform
-PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check
-the <a href="#IoticAgent.IOT.Client.Client.local_meta">local_meta</a> flag to determine whether local metadata
+<p><code>scope</code> (optional) (<a href="../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope">DescribeScope</a>) Whether to
+perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.
+Check the <a href="#IoticAgent.IOT.Client.Client.local_meta">local_meta</a> flag to determine whether local metadata
 functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode
 first attempts to look up private metadata, then public.</p></div>
   <div class="source_cont">
@@ -4075,9 +4075,9 @@ first attempts to look up private metadata, then public.</p></div>
 <span class="sd">    `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.</span>
 <span class="sd">    Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over</span>
 <span class="sd">    `scope`.)</span>
-<span class="sd">    `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform</span>
-<span class="sd">    PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check</span>
-<span class="sd">    the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
+<span class="sd">    `scope` (optional) ([DescribeScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to</span>
+<span class="sd">    perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.</span>
+<span class="sd">    Check the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata</span>
 <span class="sd">    functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode</span>
 <span class="sd">    first attempts to look up private metadata, then public.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

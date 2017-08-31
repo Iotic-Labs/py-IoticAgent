@@ -19,7 +19,6 @@ from __future__ import unicode_literals
 from warnings import warn
 from datetime import datetime
 from hashlib import sha256 as hashfunc
-from re import compile as re_compile
 from hmac import new as hmacNew
 from binascii import a2b_hex
 from collections import OrderedDict
@@ -42,7 +41,7 @@ from .Compressors import COMPRESSORS, OversizeException
 from .PreparedMessage import PreparedMessage
 from .compat import (
     PY3, py_version_check, ssl_version_check, monotonic, Queue, Empty, Full, u, int_types, unicode_type, raise_from,
-    Lock, Event
+    Lock, Event, re_compile
 )
 from .ThreadPool import ThreadPool
 from .Mime import valid_mimetype, expand_idx_mimetype

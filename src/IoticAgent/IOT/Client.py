@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.0'
+    __core_version = '0.6.1'
 
     def __init__(self, config=None):
         """
@@ -951,9 +951,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
         `scope`.)
 
-        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to perform
-        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup. Check
-        the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata
+        `scope` (optional) ([DescribeScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to
+        perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.
+        Check the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata
         functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode
         first attempts to look up private metadata, then public.
         """

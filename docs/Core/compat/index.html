@@ -1110,8 +1110,19 @@ table {
 
 <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">version_info</span>
 <span class="kn">from</span> <span class="nn">keyword</span> <span class="kn">import</span> <span class="n">kwlist</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="n">PY3</span> <span class="o">=</span> <span class="p">(</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">regex</span> <span class="kn">as</span> <span class="nn">_regex</span>
+    <span class="kn">from</span> <span class="nn">regex</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="c1"># Force re module compatible behaviour</span>
+    <span class="n">_regex</span><span class="o">.</span><span class="n">DEFAULT_VERSION</span> <span class="o">=</span> <span class="n">_regex</span><span class="o">.</span><span class="n">V0</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to import regex - falling back to re module&#39;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
 
 
 <span class="c1"># PY3K</span>
