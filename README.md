@@ -61,6 +61,12 @@ which provides a simple 3-line 'minimal script' to check everything's working.
 
 ## Possible issues
 
+- For pip-related issues, first make sure pip and setuptools are up-to-date:
+```shell
+sudo pip install -U pip
+# Upgrade afterwards due to potential pip change
+sudo pip install -U setuptools
+```
 - If you do not have Python development headers and a C toolchain installed, this might produce warnings which can be safely ignored.
 - With certain versions of pip, the installation of the py-ubjson dependency can fail when using `-t` flag. (Symptom: py-IoticAgent is installed but py-ubjson is not.)  See [this pip issue](https://github.com/pypa/pip/issues/3056). In this case, force non-extension installation: `PYUBJSON_NO_EXTENSION=1 pip3 install py-IoticAgent`
 - On macOS, non-Homebrew Python setups may encounter this error from the agent: _Exception: At least SSL v1.0.1 required for TLS v1.2_
