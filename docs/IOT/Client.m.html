@@ -1146,7 +1146,7 @@ table {
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
-<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">==</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">IoticAgent.Core</span> <span class="kn">import</span> <span class="n">Client</span> <span class="k">as</span> <span class="n">Core_Client</span><span class="p">,</span> <span class="n">ThreadSafeDict</span><span class="p">,</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">Core_Version</span>
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.compat</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
@@ -1177,7 +1177,7 @@ table {
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.1&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.2&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2521,7 +2521,7 @@ table {
     <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.1&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.2&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -1130,6 +1130,7 @@ table {
     <span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Full</span>  <span class="c1"># noqa (unused import)</span>
     <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">RLock</span><span class="p">,</span> <span class="n">Event</span>  <span class="c1"># noqa (unsed import)</span>
     <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+    <span class="n">SocketError</span> <span class="o">=</span> <span class="ne">OSError</span>  <span class="c1"># noqa (unused import)</span>
 
     <span class="n">string_types</span> <span class="o">=</span> <span class="nb">str</span>
     <span class="n">unicode_type</span> <span class="o">=</span> <span class="nb">str</span>
@@ -1174,6 +1175,8 @@ table {
     <span class="kn">import</span> <span class="nn">ast</span> <span class="kn">as</span> <span class="nn">_ast</span>
     <span class="kn">from</span> <span class="nn">Queue</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Full</span>  <span class="c1"># noqa (unused import)</span>
     <span class="kn">from</span> <span class="nn">urlparse</span> <span class="kn">import</span> <span class="n">urlparse</span>  <span class="c1"># noqa (unsed import)</span>
+    <span class="c1"># Not subclass of OSError, unlike in PY3 (where socket.error is deprecated)</span>
+    <span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">error</span> <span class="k">as</span> <span class="n">SocketError</span>  <span class="c1"># noqa (unsed import)</span>
 
     <span class="kn">from</span> <span class="nn">.thread_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InterruptableLock</span> <span class="k">as</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">InterruptableRLock</span> <span class="k">as</span> <span class="n">RLock</span><span class="p">,</span>  <span class="c1"># noqa (unsed import)</span>
                                <span class="n">InterruptableEvent</span> <span class="k">as</span> <span class="n">Event</span><span class="p">)</span>

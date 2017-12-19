@@ -14,11 +14,22 @@
 
 from __future__ import unicode_literals
 
+from sys import exc_info as get_exc_info
+from enum import Enum, unique
 from threading import Event, Thread
 import logging
 logger = logging.getLogger(__name__)
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
-from IoticAgent import IOT
+from IoticAgent.IOT import Client
+from IoticAgent.IOT.Exceptions import LinkException, IOTSyncTimeout
+
+
+@unique
+class RunContext(Enum):
+    """Passed to `ThingRunner.on_exception`"""
+    ON_STARTUP = 'on_startup'
+    MAIN = 'main'
 
 
 class ThingRunner(object):
@@ -49,7 +60,7 @@ class ThingRunner(object):
 
     def __init__(self, config=None):
         """config: IOT.Client config file to use (or None to try to use default location"""
-        self.__client = IOT.Client(config=config)
+        self.__client = Client(config=config)
         self.__shutdown = Event()
         self.__bgthread = None
 
@@ -66,20 +77,66 @@ class ThingRunner(object):
             self.__run()
 
     def __run(self):
-        with self.__client:
-            logger.debug('Calling on_startup')
-            self.on_startup()
-            logger.debug('Calling main')
+        ctx = RunContext.ON_STARTUP
+
+        while True:
+            exc_occurred = False
             try:
-                self.main()
-            except Exception as ex:  # pylint: disable=broad-except
-                exception = ex
-                if not isinstance(ex, KeyboardInterrupt):
-                    logger.warning('Exception in main(): %s', ex)
-            else:
-                exception = None
+                with self.__client:
+                    if ctx == RunContext.ON_STARTUP:
+                        logger.debug('Calling on_startup')
+                        self.on_startup()
+                        ctx = RunContext.MAIN
+
+                    logger.debug('Calling main')
+                    self.main()
+            except KeyboardInterrupt:
+                # Enable on_shutdown to run normally
+                pass
+            except:
+                exc_occurred = True
+                if self.__handle_exception(ctx):
+                    logger.debug('Sleeping before retry')
+                    self.wait_for_shutdown(15)
+                    continue
+
+            # Normal run finished
+            break
+
+        # Shutdown not applicable if on_startup did not finish
+        if not (exc_occurred or ctx == RunContext.ON_STARTUP):
             logger.debug('Calling on_shutdown')
-            self.on_shutdown(exception)
+            try:
+                self.on_shutdown(None)
+            except:
+                logger.exception('Exception in on_shutdown callback')
+
+    # Will re-raise exception, where appropriate and also call relevant callbacks. A True response indicates the run
+    # should be re-tried.
+    def __handle_exception(self, ctx):
+        exc_info = get_exc_info()
+
+        try:
+            if self.on_exception(ctx, exc_info):
+                logger.debug('Will retry %s', ctx.value)
+                return True
+        except KeyboardInterrupt:
+            # Exit immediately without running on_shutdown hook as no different to being caught inside on_shutdown.
+            raise
+        except:
+            logger.exception('Exception in on_exception callback')
+
+        # Failure in on_startup should not result in shutdown callback
+        if ctx != RunContext.ON_STARTUP:
+            try:
+                if self.on_shutdown(exc_info):
+                    return False
+            except KeyboardInterrupt:
+                raise
+            except:
+                logger.exception('Exception in on_shutdown callback')
+
+        raise  # pylint: disable=misplaced-bare-raise
 
     def stop(self, timeout=None):
         """Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
@@ -116,11 +173,35 @@ class ThingRunner(object):
         `shutdown_requested` property is True an return if this is the case."""
         pass
 
-    def on_shutdown(self, exc):  # pylint: disable=no-self-use
-        """One-off tasks to perform on just before agent shutdown. exc is the exception which caused the shutdown (from
-        the `main()` function) or None if the shutdown was graceful. This is useful if one only wants to perform
-        certains tasks on success. This is not called if `on_startup()` was not successful. It is possible that due to
-        e.g. network problems the agent cannot be used at this point.
-        If not overriden, the exception will be re-raised."""
-        if exc is not None:
-            raise exc
+    def on_exception(self, ctx, exc_info):  # pylint: disable=no-self-use,unused-argument
+        """Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to
+        True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised
+        (the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a
+        shutdown.
+
+        `ctx` One of `RunContext`. Indicates at what point exception occurred.
+        `exc_info` Tuple (as for `sys.exc_info()`) of the exception
+        """
+        pass
+
+    def on_shutdown(self, exc_info):  # pylint: disable=no-self-use
+        """One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the
+        exception which caused the shutdown (from the `main()` function) or None if the shutdown was graceful. This is
+        useful if one only wants to perform certains tasks on success. This is not called if `on_startup()` was not
+        successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the
+        return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will
+        not be passed to this method (but will result in this method being called).
+        """
+        pass
+
+
+class RetryingThingRunner(ThingRunner):
+    """Automatically re-tries on_startup & on_main on network & timeout related failures only."""
+
+    def on_exception(self, ctx, exc_info):
+        if issubclass(exc_info[0], (LinkException, IOTSyncTimeout)):
+            logger.warning('LinkException/IOTSyncTimeout caught, will retry %s', ctx.value,
+                           exc_info=(exc_info if DEBUG_ENABLED else None))
+            return True
+
+        return False

@@ -41,6 +41,7 @@ if PY3:  # noqa (complexity)
     from queue import Queue, Empty, Full  # noqa (unused import)
     from threading import Lock, RLock, Event  # noqa (unsed import)
     from urllib.parse import urlparse
+    SocketError = OSError  # noqa (unused import)
 
     string_types = str
     unicode_type = str
@@ -85,6 +86,8 @@ else:
     import ast as _ast
     from Queue import Queue, Empty, Full  # noqa (unused import)
     from urlparse import urlparse  # noqa (unsed import)
+    # Not subclass of OSError, unlike in PY3 (where socket.error is deprecated)
+    from socket import error as SocketError  # noqa (unsed import)
 
     from .thread_utils import (InterruptableLock as Lock, InterruptableRLock as RLock,  # noqa (unsed import)
                                InterruptableEvent as Event)

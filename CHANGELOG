@@ -1,5 +1,9 @@
-UNRELEASED
+v0.6.2
 - Update to README to suggest pip & setuptools package update
+- Fix template filter-by-text case sensitivy (should be insensitive)
+- Fix template for local point handling (value descriptions)
+- Add ThingRunner retry options (via exception callback)
+- Fix socket.error handling in PY2 (as it not subclass of OSError)
 
 v0.6.1
 - Use regex module instead of builtin re one (if available)

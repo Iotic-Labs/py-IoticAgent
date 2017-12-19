@@ -1041,6 +1041,7 @@ table {
     <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
       
   <ul>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.DEBUG_ENABLED">DEBUG_ENABLED</a></li>
     <li class="mono"><a href="#IoticAgent.ThingRunner.logger">logger</a></li>
   </ul>
 
@@ -1050,12 +1051,33 @@ table {
     <li class="set"><h3><a href="#header-classes">Classes</a></h3>
       <ul>
         <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.ThingRunner.RetryingThingRunner">RetryingThingRunner</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.__init__">__init__</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.main">main</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.on_exception">on_exception</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.on_shutdown">on_shutdown</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.on_startup">on_startup</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.run">run</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.stop">stop</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.RetryingThingRunner.wait_for_shutdown">wait_for_shutdown</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.ThingRunner.RunContext">RunContext</a></span>
+        
+        </li>
+        <li class="mono">
         <span class="class_name"><a href="#IoticAgent.ThingRunner.ThingRunner">ThingRunner</a></span>
         
           
   <ul>
     <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.__init__">__init__</a></li>
     <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.main">main</a></li>
+    <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.on_exception">on_exception</a></li>
     <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.on_shutdown">on_shutdown</a></li>
     <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.on_startup">on_startup</a></li>
     <li class="mono"><a href="#IoticAgent.ThingRunner.ThingRunner.run">run</a></li>
@@ -1099,11 +1121,22 @@ table {
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">exc_info</span> <span class="k">as</span> <span class="n">get_exc_info</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Thread</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">IoticAgent</span> <span class="kn">import</span> <span class="n">IOT</span>
+<span class="kn">from</span> <span class="nn">IoticAgent.IOT</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">IoticAgent.IOT.Exceptions</span> <span class="kn">import</span> <span class="n">LinkException</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">RunContext</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Passed to `ThingRunner.on_exception`&quot;&quot;&quot;</span>
+    <span class="n">ON_STARTUP</span> <span class="o">=</span> <span class="s1">&#39;on_startup&#39;</span>
+    <span class="n">MAIN</span> <span class="o">=</span> <span class="s1">&#39;main&#39;</span>
 
 
 <span class="k">class</span> <span class="nc">ThingRunner</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1134,7 +1167,7 @@ table {
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;config: IOT.Client config file to use (or None to try to use default location&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">IOT</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -1151,20 +1184,66 @@ table {
             <span class="bp">self</span><span class="o">.</span><span class="n">__run</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_startup&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling main&#39;</span><span class="p">)</span>
+        <span class="n">ctx</span> <span class="o">=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">exception</span> <span class="o">=</span> <span class="n">ex</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="ne">KeyboardInterrupt</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception in main(): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">exception</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ctx</span> <span class="o">==</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_startup&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span>
+                        <span class="n">ctx</span> <span class="o">=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">MAIN</span>
+
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling main&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="c1"># Enable on_shutdown to run normally</span>
+                <span class="k">pass</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sleeping before retry&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># Normal run finished</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Shutdown not applicable if on_startup did not finish</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">exc_occurred</span> <span class="ow">or</span> <span class="n">ctx</span> <span class="o">==</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_shutdown&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_shutdown callback&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Will re-raise exception, where appropriate and also call relevant callbacks. A True response indicates the run</span>
+    <span class="c1"># should be re-tried.</span>
+    <span class="k">def</span> <span class="nf">__handle_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="n">exc_info</span> <span class="o">=</span> <span class="n">get_exc_info</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Will retry </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="c1"># Exit immediately without running on_shutdown hook as no different to being caught inside on_shutdown.</span>
+            <span class="k">raise</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_exception callback&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Failure in on_startup should not result in shutdown callback</span>
+        <span class="k">if</span> <span class="n">ctx</span> <span class="o">!=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="n">exc_info</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_shutdown callback&#39;</span><span class="p">)</span>
+
+        <span class="k">raise</span>  <span class="c1"># pylint: disable=misplaced-bare-raise</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
@@ -1201,14 +1280,38 @@ table {
 <span class="sd">        `shutdown_requested` property is True an return if this is the case.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-        <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc is the exception which caused the shutdown (from</span>
-<span class="sd">        the `main()` function) or None if the shutdown was graceful. This is useful if one only wants to perform</span>
-<span class="sd">        certains tasks on success. This is not called if `on_startup()` was not successful. It is possible that due to</span>
-<span class="sd">        e.g. network problems the agent cannot be used at this point.</span>
-<span class="sd">        If not overriden, the exception will be re-raised.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">exc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exc</span>
+    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use,unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to</span>
+<span class="sd">        True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised</span>
+<span class="sd">        (the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a</span>
+<span class="sd">        shutdown.</span>
+
+<span class="sd">        `ctx` One of `RunContext`. Indicates at what point exception occurred.</span>
+<span class="sd">        `exc_info` Tuple (as for `sys.exc_info()`) of the exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the</span>
+<span class="sd">        exception which caused the shutdown (from the `main()` function) or None if the shutdown was graceful. This is</span>
+<span class="sd">        useful if one only wants to perform certains tasks on success. This is not called if `on_startup()` was not</span>
+<span class="sd">        successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the</span>
+<span class="sd">        return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will</span>
+<span class="sd">        not be passed to this method (but will result in this method being called).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">RetryingThingRunner</span><span class="p">(</span><span class="n">ThingRunner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Automatically re-tries on_startup &amp; on_main on network &amp; timeout related failures only.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">LinkException</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span><span class="p">)):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;LinkException/IOTSyncTimeout caught, will retry </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                           <span class="n">exc_info</span><span class="o">=</span><span class="p">(</span><span class="n">exc_info</span> <span class="k">if</span> <span class="n">DEBUG_ENABLED</span> <span class="k">else</span> <span class="bp">None</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="bp">False</span>
 </pre></div>
 
   </div>
@@ -1217,6 +1320,14 @@ table {
 
   <section id="section-items">
     <h2 class="section-title" id="header-variables">Module variables</h2>
+      <div class="item">
+      <p id="IoticAgent.ThingRunner.DEBUG_ENABLED" class="name">var <span class="ident">DEBUG_ENABLED</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
       <div class="item">
       <p id="IoticAgent.ThingRunner.logger" class="name">var <span class="ident">logger</span></p>
       
@@ -1228,6 +1339,362 @@ table {
 
 
     <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="IoticAgent.ThingRunner.RetryingThingRunner" class="name">class <span class="ident">RetryingThingRunner</span></p>
+      
+  
+    <div class="desc"><p>Automatically re-tries on_startup &amp; on_main on network &amp; timeout related failures only.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">RetryingThingRunner</span><span class="p">(</span><span class="n">ThingRunner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Automatically re-tries on_startup &amp; on_main on network &amp; timeout related failures only.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">LinkException</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span><span class="p">)):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;LinkException/IOTSyncTimeout caught, will retry </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                           <span class="n">exc_info</span><span class="o">=</span><span class="p">(</span><span class="n">exc_info</span> <span class="k">if</span> <span class="n">DEBUG_ENABLED</span> <span class="k">else</span> <span class="bp">None</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.ThingRunner.RetryingThingRunner">RetryingThingRunner</a></li>
+          <li><a href="#IoticAgent.ThingRunner.ThingRunner">ThingRunner</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, config=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>config: IOT.Client config file to use (or None to try to use default location</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.__init__" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;config: IOT.Client config file to use (or None to try to use default location&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.main">
+    <p>def <span class="ident">main</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Application logic goes here. Should return (or raise exception) to end program run. Should check whether the
+<code>shutdown_requested</code> property is True an return if this is the case.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.main', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.main" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+    <span class="sd">&quot;&quot;&quot;Application logic goes here. Should return (or raise exception) to end program run. Should check whether the</span>
+<span class="sd">    `shutdown_requested` property is True an return if this is the case.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.on_exception">
+    <p>def <span class="ident">on_exception</span>(</p><p>self, ctx, exc_info)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to
+True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised
+(the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a
+shutdown.</p>
+<p><code>ctx</code> One of <code>RunContext</code>. Indicates at what point exception occurred.
+<code>exc_info</code> Tuple (as for <code>sys.exc_info()</code>) of the exception</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.on_exception', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.on_exception" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">LinkException</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span><span class="p">)):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;LinkException/IOTSyncTimeout caught, will retry </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                       <span class="n">exc_info</span><span class="o">=</span><span class="p">(</span><span class="n">exc_info</span> <span class="k">if</span> <span class="n">DEBUG_ENABLED</span> <span class="k">else</span> <span class="bp">None</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.on_shutdown">
+    <p>def <span class="ident">on_shutdown</span>(</p><p>self, exc_info)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for <code>sys.exc_info()</code>) of the
+exception which caused the shutdown (from the <code>main()</code> function) or None if the shutdown was graceful. This is
+useful if one only wants to perform certains tasks on success. This is not called if <code>on_startup()</code> was not
+successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the
+return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will
+not be passed to this method (but will result in this method being called).</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.on_shutdown', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.on_shutdown" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+    <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the</span>
+<span class="sd">    exception which caused the shutdown (from the `main()` function) or None if the shutdown was graceful. This is</span>
+<span class="sd">    useful if one only wants to perform certains tasks on success. This is not called if `on_startup()` was not</span>
+<span class="sd">    successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the</span>
+<span class="sd">    return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will</span>
+<span class="sd">    not be passed to this method (but will result in this method being called).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.on_startup">
+    <p>def <span class="ident">on_startup</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>One-off tasks to perform straight <strong>after</strong> agent startup.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.on_startup', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.on_startup" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;One-off tasks to perform straight **after** agent startup.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.run">
+    <p>def <span class="ident">run</span>(</p><p>self, background=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Runs <code>on_startup</code>, <code>main</code> and <code>on_shutdown</code>, blocking until finished, unless background is set.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.run', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.run" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runs `on_startup`, `main` and `on_shutdown`, blocking until finished, unless background is set.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;run has already been called (since last stop)&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">background</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__run</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;bg_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">agent_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__run</span><span class="p">()</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.stop">
+    <p>def <span class="ident">stop</span>(</p><p>self, timeout=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
+<code>run()</code> was not called with background=True set.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.stop', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.stop" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
+<span class="sd">    `run()` was not called with background=True set.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping bgthread&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;bgthread did not finish within timeout&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.RetryingThingRunner.wait_for_shutdown">
+    <p>def <span class="ident">wait_for_shutdown</span>(</p><p>self, timeout=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Blocks until shutdown has been requested (or the timeout has been reached, if specified). False is returned
+for the latter, True otherwise.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.wait_for_shutdown', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.wait_for_shutdown" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">wait_for_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Blocks until shutdown has been requested (or the timeout has been reached, if specified). False is returned</span>
+<span class="sd">    for the latter, True otherwise.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RetryingThingRunner.client" class="name">var <span class="ident">client</span></p>
+            
+
+            
+  
+    <div class="desc"><p><a href="./IOT/Client.m.html#IoticAgent.IOT.Client.Client">Client</a> instance in use by this runner</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RetryingThingRunner.shutdown_requested" class="name">var <span class="ident">shutdown_requested</span></p>
+            
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#IoticAgent.ThingRunner.ThingRunner">ThingRunner</a></code>.<code><a href="#IoticAgent.ThingRunner.ThingRunner.shutdown_requested">shutdown_requested</a></code>
+    </p>
+
+            
+  
+    <div class="desc inherited"><p>Whether <code>stop()</code> has been called and thus the device should be shutting down</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="IoticAgent.ThingRunner.RunContext" class="name">class <span class="ident">RunContext</span></p>
+      
+  
+    <div class="desc"><p>Passed to <code>ThingRunner.on_exception</code></p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RunContext', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.RunContext" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">RunContext</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Passed to `ThingRunner.on_exception`&quot;&quot;&quot;</span>
+    <span class="n">ON_STARTUP</span> <span class="o">=</span> <span class="s1">&#39;on_startup&#39;</span>
+    <span class="n">MAIN</span> <span class="o">=</span> <span class="s1">&#39;main&#39;</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.ThingRunner.RunContext">RunContext</a></li>
+          <li>enum.Enum</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RunContext.MAIN" class="name">var <span class="ident">MAIN</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RunContext.ON_STARTUP" class="name">var <span class="ident">ON_STARTUP</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RunContext.name" class="name">var <span class="ident">name</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="IoticAgent.ThingRunner.RunContext.value" class="name">var <span class="ident">value</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
       
       <div class="item">
       <p id="IoticAgent.ThingRunner.ThingRunner" class="name">class <span class="ident">ThingRunner</span></p>
@@ -1287,7 +1754,7 @@ run cycle.</p></div>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;config: IOT.Client config file to use (or None to try to use default location&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">IOT</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -1304,20 +1771,66 @@ run cycle.</p></div>
             <span class="bp">self</span><span class="o">.</span><span class="n">__run</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_startup&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling main&#39;</span><span class="p">)</span>
+        <span class="n">ctx</span> <span class="o">=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">exception</span> <span class="o">=</span> <span class="n">ex</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="ne">KeyboardInterrupt</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception in main(): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">exception</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ctx</span> <span class="o">==</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_startup&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span>
+                        <span class="n">ctx</span> <span class="o">=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">MAIN</span>
+
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling main&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="c1"># Enable on_shutdown to run normally</span>
+                <span class="k">pass</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sleeping before retry&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># Normal run finished</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Shutdown not applicable if on_startup did not finish</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">exc_occurred</span> <span class="ow">or</span> <span class="n">ctx</span> <span class="o">==</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calling on_shutdown&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_shutdown callback&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Will re-raise exception, where appropriate and also call relevant callbacks. A True response indicates the run</span>
+    <span class="c1"># should be re-tried.</span>
+    <span class="k">def</span> <span class="nf">__handle_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="n">exc_info</span> <span class="o">=</span> <span class="n">get_exc_info</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Will retry </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="c1"># Exit immediately without running on_shutdown hook as no different to being caught inside on_shutdown.</span>
+            <span class="k">raise</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_exception callback&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Failure in on_startup should not result in shutdown callback</span>
+        <span class="k">if</span> <span class="n">ctx</span> <span class="o">!=</span> <span class="n">RunContext</span><span class="o">.</span><span class="n">ON_STARTUP</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">(</span><span class="n">exc_info</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception in on_shutdown callback&#39;</span><span class="p">)</span>
+
+        <span class="k">raise</span>  <span class="c1"># pylint: disable=misplaced-bare-raise</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
@@ -1354,14 +1867,26 @@ run cycle.</p></div>
 <span class="sd">        `shutdown_requested` property is True an return if this is the case.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-        <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc is the exception which caused the shutdown (from</span>
-<span class="sd">        the `main()` function) or None if the shutdown was graceful. This is useful if one only wants to perform</span>
-<span class="sd">        certains tasks on success. This is not called if `on_startup()` was not successful. It is possible that due to</span>
-<span class="sd">        e.g. network problems the agent cannot be used at this point.</span>
-<span class="sd">        If not overriden, the exception will be re-raised.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">exc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exc</span>
+    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use,unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to</span>
+<span class="sd">        True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised</span>
+<span class="sd">        (the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a</span>
+<span class="sd">        shutdown.</span>
+
+<span class="sd">        `ctx` One of `RunContext`. Indicates at what point exception occurred.</span>
+<span class="sd">        `exc_info` Tuple (as for `sys.exc_info()`) of the exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the</span>
+<span class="sd">        exception which caused the shutdown (from the `main()` function) or None if the shutdown was graceful. This is</span>
+<span class="sd">        useful if one only wants to perform certains tasks on success. This is not called if `on_startup()` was not</span>
+<span class="sd">        successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the</span>
+<span class="sd">        return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will</span>
+<span class="sd">        not be passed to this method (but will result in this method being called).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 </pre></div>
 
   </div>
@@ -1390,7 +1915,7 @@ run cycle.</p></div>
   <div id="source-IoticAgent.ThingRunner.ThingRunner.__init__" class="source">
     <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;config: IOT.Client config file to use (or None to try to use default location&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">IOT</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
@@ -1427,29 +1952,65 @@ run cycle.</p></div>
   
             
   <div class="item">
-    <div class="name def" id="IoticAgent.ThingRunner.ThingRunner.on_shutdown">
-    <p>def <span class="ident">on_shutdown</span>(</p><p>self, exc)</p>
+    <div class="name def" id="IoticAgent.ThingRunner.ThingRunner.on_exception">
+    <p>def <span class="ident">on_exception</span>(</p><p>self, ctx, exc_info)</p>
     </div>
     
 
     
   
-    <div class="desc"><p>One-off tasks to perform on just before agent shutdown. exc is the exception which caused the shutdown (from
-the <code>main()</code> function) or None if the shutdown was graceful. This is useful if one only wants to perform
-certains tasks on success. This is not called if <code>on_startup()</code> was not successful. It is possible that due to
-e.g. network problems the agent cannot be used at this point.
-If not overriden, the exception will be re-raised.</p></div>
+    <div class="desc"><p>Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to
+True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised
+(the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a
+shutdown.</p>
+<p><code>ctx</code> One of <code>RunContext</code>. Indicates at what point exception occurred.
+<code>exc_info</code> Tuple (as for <code>sys.exc_info()</code>) of the exception</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.ThingRunner.on_exception', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.ThingRunner.ThingRunner.on_exception" class="source">
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use,unused-argument</span>
+    <span class="sd">&quot;&quot;&quot;Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to</span>
+<span class="sd">    True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised</span>
+<span class="sd">    (the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a</span>
+<span class="sd">    shutdown.</span>
+<span class="sd">    `ctx` One of `RunContext`. Indicates at what point exception occurred.</span>
+<span class="sd">    `exc_info` Tuple (as for `sys.exc_info()`) of the exception</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="IoticAgent.ThingRunner.ThingRunner.on_shutdown">
+    <p>def <span class="ident">on_shutdown</span>(</p><p>self, exc_info)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for <code>sys.exc_info()</code>) of the
+exception which caused the shutdown (from the <code>main()</code> function) or None if the shutdown was graceful. This is
+useful if one only wants to perform certains tasks on success. This is not called if <code>on_startup()</code> was not
+successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the
+return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will
+not be passed to this method (but will result in this method being called).</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.ThingRunner.on_shutdown', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.ThingRunner.ThingRunner.on_shutdown" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-    <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc is the exception which caused the shutdown (from</span>
-<span class="sd">    the `main()` function) or None if the shutdown was graceful. This is useful if one only wants to perform</span>
-<span class="sd">    certains tasks on success. This is not called if `on_startup()` was not successful. It is possible that due to</span>
-<span class="sd">    e.g. network problems the agent cannot be used at this point.</span>
-<span class="sd">    If not overriden, the exception will be re-raised.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">exc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">exc</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_info</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+    <span class="sd">&quot;&quot;&quot;One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the</span>
+<span class="sd">    exception which caused the shutdown (from the `main()` function) or None if the shutdown was graceful. This is</span>
+<span class="sd">    useful if one only wants to perform certains tasks on success. This is not called if `on_startup()` was not</span>
+<span class="sd">    successful. It is possible that due to e.g. network problems the agent cannot be used at this point. If the</span>
+<span class="sd">    return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will</span>
+<span class="sd">    not be passed to this method (but will result in this method being called).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
 </pre></div>
 
   </div>

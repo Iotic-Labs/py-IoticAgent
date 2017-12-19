@@ -1264,7 +1264,7 @@ table {
 <span class="n">ssl_version_check</span><span class="p">()</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
-<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">==</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 <span class="c1"># characters to use to generate random request id prefix</span>
 <span class="n">_REQ_PREFIX_CHARS</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span>
@@ -1646,13 +1646,13 @@ table {
                 <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
-                    <span class="n">raise_from</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
+                    <span class="n">raise_from</span><span class="p">(</span><span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unhandled startup error&quot;</span><span class="p">)</span>
                 <span class="k">raise</span>
 
             <span class="n">req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_ping</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
             <span class="c1"># (for req.payload) pylint: disable=unsubscriptable-object</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -3542,13 +3542,13 @@ table {
                 <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
-                    <span class="n">raise_from</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
+                    <span class="n">raise_from</span><span class="p">(</span><span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unhandled startup error&quot;</span><span class="p">)</span>
                 <span class="k">raise</span>
 
             <span class="n">req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_ping</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
             <span class="c1"># (for req.payload) pylint: disable=unsubscriptable-object</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -6229,12 +6229,12 @@ Note: This function waits for/blocks until amqplink connect(s) and the current
             <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__amqplink</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">raise_from</span><span class="p">(</span><span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;Core.AmqpLink: Failed to connect&quot;</span><span class="p">),</span> <span class="n">exc</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unhandled startup error&quot;</span><span class="p">)</span>
             <span class="k">raise</span>
         <span class="n">req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_ping</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LinkException</span><span class="p">(</span><span class="s2">&quot;No container response to ping within 5s&quot;</span><span class="p">)</span>
         <span class="c1"># (for req.payload) pylint: disable=unsubscriptable-object</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">req</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>

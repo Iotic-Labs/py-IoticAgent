@@ -503,8 +503,14 @@ class PointDataObject(object):
             if isinstance(text, string_types):
                 text = (ensure_unicode(text),)
             text = [phrase.lower() for phrase in text]
-            values = [value for value in values
-                      if any((phrase in value.label or phrase in value.description) for phrase in text)]
+            new_values = []
+            for value in values:
+                label = value.label.lower()
+                description = value.description.lower()
+                if any(phrase in label or (description and phrase in description) for phrase in text):
+                    new_values.append(value)
+            values = new_values
+
         return values
 
     def to_dict(self):

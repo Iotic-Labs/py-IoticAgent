@@ -21,8 +21,7 @@ logger = logging.getLogger(__name__)
 from .compat import Queue, Empty, Event, Lock
 from .Profiler import profiled_thread
 
-
-DEBUG_ENABLED = logger.getEffectiveLevel() == logging.DEBUG
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 
 @profiled_thread

@@ -20,7 +20,7 @@ from warnings import warn
 from functools import partial
 import logging
 logger = logging.getLogger(__name__)
-DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 from IoticAgent.Core import Client as Core_Client, ThreadSafeDict, __version__ as Core_Version
 from IoticAgent.Core.compat import Mapping, raise_from, string_types
@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.1'
+    __core_version = '0.6.2'
 
     def __init__(self, config=None):
         """

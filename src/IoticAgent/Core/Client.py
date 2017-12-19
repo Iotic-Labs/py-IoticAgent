@@ -65,7 +65,7 @@ py_version_check()
 ssl_version_check()
 
 logger = logging.getLogger(__name__)
-DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 # characters to use to generate random request id prefix
 _REQ_PREFIX_CHARS = string.ascii_uppercase + string.digits + string.ascii_lowercase
@@ -447,13 +447,13 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 self.__amqplink.start()
             except Exception as exc:  # pylint: disable=broad-except
                 if not self.__amqplink.is_alive():
-                    raise_from(Exception("Core.AmqpLink: Failed to connect"), exc)
+                    raise_from(LinkException("Core.AmqpLink: Failed to connect"), exc)
                 logger.exception("Unhandled startup error")
                 raise
 
             req = self.request_ping()
             if not req.wait(5):
-                raise Exception("No container response to ping within 5s")
+                raise LinkException("No container response to ping within 5s")
             # (for req.payload) pylint: disable=unsubscriptable-object
             if not req.success:
                 try:

@@ -32,11 +32,13 @@ from socket import timeout as SocketTimeout
 from ..third.amqp import Connection, Message, exceptions
 
 from .Profiler import profiled_thread
-from .compat import raise_from, Event, RLock, monotonic
+from .compat import raise_from, Event, RLock, monotonic, SocketError
 from .Exceptions import LinkException
 
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
-DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+# Currently this is not configurable
+CONN_RETRY_DELAY_SECONDS = 4
 
 
 class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
@@ -116,6 +118,9 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__send_ready.clear()
             self.__recv_ready.clear()
             timeout = self.__socket_timeout + 1
+            self.__send_exc_time = None
+            self.__send_exc = None
+            self.__recv_exc = None
 
             # start & await send thread success (unless timeout reached or an exception has occured)
             self.__send_thread = Thread(target=self.__send_run, name='amqplink_send')
@@ -181,7 +186,6 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         """timeout indicates amount of time to wait for receiving thread to be ready. set to larger
         than zero to wait (in seconds, fractional) or None to block.
         """
-        # logger.debug('sending: %s', body)
         if self.__send_ready.wait(timeout):
             try:
                 with self.__send_lock:
@@ -190,7 +194,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                                       exchange=self.__epid)
             except exceptions.AccessRefused as exc:
                 raise_from(LinkException('Access denied'), exc)
-            except (exceptions.AMQPError, OSError) as exc:
+            except (exceptions.AMQPError, SocketError) as exc:
                 raise_from(LinkException('amqp/transport failure'), exc)
             except Exception as exc:  # pylint: disable=broad-except
                 raise_from(LinkException('unexpected failure'), exc)
@@ -301,7 +305,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                                       callback=self.__recv_ka_cb)
                     self.__recv_exc = None
                     self.__ka_channel = channel_ka
-                    logger.debug('ready')
+                    logger.debug('ready, using cipher %s', conn.transport.sock.cipher()[0])
                     self.__recv_ready.set()
                     try:
                         #
@@ -331,20 +335,20 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
             except exceptions.AccessRefused as exc:
                 logger.error("Access Refused (Credentials already in use?)")
-                self.__recv_set_exc_and_wait(exc, 2)
+                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
                 self.__recv_exc = exc
             except exceptions.ConnectionForced as exc:
                 logger.error('Disconnected by broker (ConnectionForced)', exc_info=DEBUG_ENABLED)
-                self.__recv_set_exc_and_wait(exc, 2)
+                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except SocketTimeout as exc:
                 logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
-                self.__recv_set_exc_and_wait(exc, 2)
+                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except SSLError as exc:
                 logger.error("ssl.SSLError Bad Certificate?")
-                self.__recv_set_exc_and_wait(exc, 2)
-            except (exceptions.AMQPError, OSError) as exc:
+                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
+            except (exceptions.AMQPError, SocketError) as exc:
                 logger.error('amqp/transport failure, sleeping before retry', exc_info=DEBUG_ENABLED)
-                self.__recv_set_exc_and_wait(exc, 2)
+                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')
                 self.__recv_set_exc_and_wait(exc, 0)
@@ -394,19 +398,19 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
             except exceptions.AccessRefused as exc:
                 logger.error("Access Refused (Credentials already in use?)")
-                self.__send_set_exc_and_wait(exc, 2)
+                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except exceptions.ConnectionForced as exc:
                 logger.error('Disconnected by broker (ConnectionForced)')
-                self.__send_set_exc_and_wait(exc, 2)
+                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except SocketTimeout as exc:
                 logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
-                self.__send_set_exc_and_wait(exc, 2)
+                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except SSLError as exc:
                 logger.error("ssl.SSLError Bad Certificate?")
-                self.__send_set_exc_and_wait(exc, 2)
-            except (exceptions.AMQPError, OSError) as exc:
+                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
+            except (exceptions.AMQPError, SocketError) as exc:
                 logger.error('amqp/transport failure, sleeping before retry')
-                self.__send_set_exc_and_wait(exc, 2)
+                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.exception('unexpected failure, exiting')
                 self.__send_set_exc_and_wait(exc, 0)

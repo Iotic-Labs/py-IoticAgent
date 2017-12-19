@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 from functools import partial
 import logging
 logger = logging.getLogger(__name__)
-DEBUG_ENABLED = (logger.getEffectiveLevel() == logging.DEBUG)
+DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 from .compat import Event
 

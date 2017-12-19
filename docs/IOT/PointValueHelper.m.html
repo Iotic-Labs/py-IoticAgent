@@ -1331,6 +1331,12 @@ table {
                     <span class="k">break</span>
                 <span class="n">offset</span> <span class="o">+=</span> <span class="n">limit</span>
 
+            <span class="c1"># Unlike for describe, value comments are keyed by language here, so unwrap to have same layout as for</span>
+            <span class="c1"># describe call (default language only, if available).</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">default_lang</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">None</span>
+
         <span class="k">return</span> <span class="n">values</span>
 </pre></div>
 
@@ -1481,6 +1487,12 @@ with data from a share/ask/tell. Threadsafe.</p></div>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">:</span>
                     <span class="k">break</span>
                 <span class="n">offset</span> <span class="o">+=</span> <span class="n">limit</span>
+
+            <span class="c1"># Unlike for describe, value comments are keyed by language here, so unwrap to have same layout as for</span>
+            <span class="c1"># describe call (default language only, if available).</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">default_lang</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="bp">None</span>
 
         <span class="k">return</span> <span class="n">values</span>
 </pre></div>

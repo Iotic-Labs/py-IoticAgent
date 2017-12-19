@@ -241,4 +241,10 @@ class PointDataObjectHandler(object):
                     break
                 offset += limit
 
+            # Unlike for describe, value comments are keyed by language here, so unwrap to have same layout as for
+            # describe call (default language only, if available).
+            lang = self.__client.default_lang
+            for value in values:
+                value['comment'] = value['comment'].get(lang, None) if value['comment'] else None
+
         return values
