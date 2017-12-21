@@ -34,7 +34,7 @@ else:
     READ_MD = lambda f: convert(f, 'rst')  # noqa: E731
 
 
-VERSION = '0.6.2'
+VERSION = '0.6.3'
 
 setup(
     name='py-IoticAgent',

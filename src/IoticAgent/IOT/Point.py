@@ -506,7 +506,7 @@ class PointDataObject(object):
             new_values = []
             for value in values:
                 label = value.label.lower()
-                description = value.description.lower()
+                description = value.description.lower() if value.description else ''
                 if any(phrase in label or (description and phrase in description) for phrase in text):
                     new_values.append(value)
             values = new_values

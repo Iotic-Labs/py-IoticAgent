@@ -1,3 +1,7 @@
+v0.6.3
+- Fix parsed feed data by-text filter handling when no description exists for a
+  value.
+
 v0.6.2
 - Update to README to suggest pip & setuptools package update
 - Fix template filter-by-text case sensitivy (should be insensitive)
