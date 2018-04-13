@@ -1615,13 +1615,14 @@ table {
                     <span class="s1">&#39;mime&#39;</span><span class="p">:</span> <span class="n">mime</span><span class="p">})</span>
 
         <span class="c1"># general catch-all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fire_callback</span><span class="p">(</span><span class="n">_CB_CONTROLREQ</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+        <span class="n">have_general</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fire_callback</span><span class="p">(</span><span class="n">_CB_CONTROLREQ</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
         <span class="c1"># just for this control</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_CONTROL</span><span class="p">][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">]][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
-                           <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
+                               <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
@@ -3511,13 +3512,14 @@ table {
                     <span class="s1">&#39;mime&#39;</span><span class="p">:</span> <span class="n">mime</span><span class="p">})</span>
 
         <span class="c1"># general catch-all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fire_callback</span><span class="p">(</span><span class="n">_CB_CONTROLREQ</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+        <span class="n">have_general</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fire_callback</span><span class="p">(</span><span class="n">_CB_CONTROLREQ</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
         <span class="c1"># just for this control</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_CONTROL</span><span class="p">][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">]][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
-                           <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
+                               <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 

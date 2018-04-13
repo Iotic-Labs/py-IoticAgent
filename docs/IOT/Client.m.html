@@ -1051,6 +1051,7 @@ table {
     <li class="mono"><a href="#IoticAgent.IOT.Client.M_CLIENTREF">M_CLIENTREF</a></li>
     <li class="mono"><a href="#IoticAgent.IOT.Client.M_PAYLOAD">M_PAYLOAD</a></li>
     <li class="mono"><a href="#IoticAgent.IOT.Client.P_CODE">P_CODE</a></li>
+    <li class="mono"><a href="#IoticAgent.IOT.Client.P_DATA">P_DATA</a></li>
     <li class="mono"><a href="#IoticAgent.IOT.Client.P_ENTITY_LID">P_ENTITY_LID</a></li>
     <li class="mono"><a href="#IoticAgent.IOT.Client.P_EPID">P_EPID</a></li>
     <li class="mono"><a href="#IoticAgent.IOT.Client.P_ID">P_ID</a></li>
@@ -1155,7 +1156,7 @@ table {
     <span class="n">E_FAILED_CODE_ACCESSDENIED</span><span class="p">,</span>
     <span class="n">M_CLIENTREF</span><span class="p">,</span> <span class="n">M_PAYLOAD</span><span class="p">,</span>
     <span class="n">R_ENTITY</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">,</span> <span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">R_SUB</span><span class="p">,</span>
-    <span class="n">P_CODE</span><span class="p">,</span> <span class="n">P_ID</span><span class="p">,</span> <span class="n">P_LID</span><span class="p">,</span> <span class="n">P_ENTITY_LID</span><span class="p">,</span> <span class="n">P_EPID</span><span class="p">,</span> <span class="n">P_RESOURCE</span><span class="p">,</span> <span class="n">P_MESSAGE</span><span class="p">,</span> <span class="n">P_POINT_TYPE</span><span class="p">,</span> <span class="n">P_POINT_ID</span><span class="p">,</span>
+    <span class="n">P_CODE</span><span class="p">,</span> <span class="n">P_ID</span><span class="p">,</span> <span class="n">P_LID</span><span class="p">,</span> <span class="n">P_ENTITY_LID</span><span class="p">,</span> <span class="n">P_EPID</span><span class="p">,</span> <span class="n">P_RESOURCE</span><span class="p">,</span> <span class="n">P_MESSAGE</span><span class="p">,</span> <span class="n">P_POINT_TYPE</span><span class="p">,</span> <span class="n">P_POINT_ID</span><span class="p">,</span> <span class="n">P_DATA</span><span class="p">,</span>
     <span class="n">SearchScope</span><span class="p">,</span> <span class="n">SearchType</span><span class="p">,</span> <span class="n">DescribeScope</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.utils</span> <span class="kn">import</span> <span class="n">validate_nonnegative_int</span>
@@ -1169,15 +1170,15 @@ table {
     <span class="n">IOTException</span><span class="p">,</span> <span class="n">IOTUnknown</span><span class="p">,</span> <span class="n">IOTMalformed</span><span class="p">,</span> <span class="n">IOTInternalError</span><span class="p">,</span> <span class="n">IOTAccessDenied</span><span class="p">,</span> <span class="n">IOTClientError</span><span class="p">,</span> <span class="n">IOTSyncTimeout</span><span class="p">,</span>
     <span class="n">IOTNotAllowed</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">_POINT_TYPES</span>
+<span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">Control</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span> <span class="n">_POINT_TYPES</span>
 <span class="kn">from</span> <span class="nn">.RemotePoint</span> <span class="kn">import</span> <span class="n">RemoteFeed</span><span class="p">,</span> <span class="n">RemoteControl</span>
-<span class="kn">from</span> <span class="nn">.PointValueHelper</span> <span class="kn">import</span> <span class="n">PointDataObjectHandler</span>
+<span class="kn">from</span> <span class="nn">.PointValueHelper</span> <span class="kn">import</span> <span class="n">PointDataObjectHandler</span><span class="p">,</span> <span class="n">RefreshException</span>
 
 
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.2&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.4&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1404,7 +1405,7 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parsed_feed_callback</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">register_callback_feeddata</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Registers a callback that is called for all control requests received by your Thing</span>
 
@@ -1418,9 +1419,18 @@ table {
 
 <span class="sd">        `callback` (required) the function name that you want to be called on receipt of a new control request</span>
 
+
+<span class="sd">        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of a control ask/tell.</span>
+<span class="sd">        This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a</span>
+<span class="sd">        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both `callback_parsed` and</span>
+<span class="sd">        `callback` have been specified, the former takes precedence and `callback` is only called if the point data</span>
+<span class="sd">        could not be parsed according to its current value description.</span>
+
 <span class="sd">        More details on the contents of the `data` dictionary for controls see:</span>
 <span class="sd">        [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callback_parsed</span><span class="p">:</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parsed_control_callback</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">register_callback_controlreq</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">register_callback_subscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
@@ -1714,8 +1724,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;confirm_tell(success=</span><span class="si">%s</span><span class="s2">) [lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">,pid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_point_confirm_tell</span><span class="p">(</span><span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">],</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;requestId&#39;</span><span class="p">])</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save the config, update the seqnum &amp; default language</span>
@@ -1726,7 +1735,11 @@ table {
 
     <span class="k">def</span> <span class="nf">_get_parsed_feed_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_parsed_control_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_CONTROL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_point_data_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Used by point instances and data callbacks&quot;&quot;&quot;</span>
@@ -1736,18 +1749,25 @@ table {
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point_data_handlers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">PointDataObjectHandler</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_parsed_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback_plain</span><span class="p">,</span> <span class="n">foc</span><span class="p">,</span> <span class="n">point_ref</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Used to by register_catchall_feeddata() and Thing class (follow, create_point) to present point</span>
-<span class="sd">        data as an object.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_parsed_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback_plain</span><span class="p">,</span> <span class="n">foc</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Used to by register_catchall_*data() and Thing class (follow, create_point) to present point data as an</span>
+<span class="sd">        object.&quot;&quot;&quot;</span>
+        <span class="c1"># used by PointDataObjectHandler as reference</span>
         <span class="k">if</span> <span class="n">foc</span> <span class="o">==</span> <span class="n">R_FEED</span><span class="p">:</span>
             <span class="n">point_ref</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># R_CONTROL</span>
+            <span class="n">point_ref</span> <span class="o">=</span> <span class="n">Control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">],</span> <span class="s1">&#39;0&#39;</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;parsed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="n">point_ref</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;parsed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="n">point_ref</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">P_DATA</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
+            <span class="c1"># No metadata available, do not produce warning</span>
+            <span class="k">if</span> <span class="n">callback_plain</span><span class="p">:</span>
+                <span class="n">callback_plain</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to parse </span><span class="si">%s</span><span class="s1"> data for </span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">foc_to_str</span><span class="p">(</span><span class="n">foc</span><span class="p">),</span> <span class="n">point_ref</span><span class="p">,</span>
                            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">callback_plain</span> <span class="k">else</span> <span class="s1">&#39;, ignoring&#39;</span><span class="p">,</span>
-                           <span class="n">exc_info</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">))</span>
+                           <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">callback_plain</span><span class="p">:</span>
                 <span class="n">callback_plain</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1760,6 +1780,11 @@ table {
         <span class="n">E_FAILED_CODE_NOTALLOWED</span><span class="p">:</span> <span class="n">IOTNotAllowed</span><span class="p">,</span>
         <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">:</span> <span class="n">IOTUnknown</span>
     <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`.&quot;&quot;&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_except_if_failed</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -1802,8 +1827,7 @@ table {
         <span class="k">else</span><span class="p">:</span>
             <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_list</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
 
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_thing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
@@ -1838,10 +1862,8 @@ table {
 <span class="sd">        `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.</span>
 <span class="sd">        It&#39;s &quot;local&quot; in that it&#39;s only available to you on this container, not searchable and not visible to others.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
@@ -1849,7 +1871,7 @@ table {
             <span class="k">raise</span> <span class="n">raise_from</span><span class="p">(</span><span class="n">IOTClientError</span><span class="p">(</span><span class="s1">&#39;Thing </span><span class="si">%s</span><span class="s1"> not in cache (post-create)&#39;</span> <span class="o">%</span> <span class="n">lid</span><span class="p">),</span> <span class="n">ex</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">create_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">delete_thing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
@@ -1864,12 +1886,11 @@ table {
 <span class="sd">        `lid` (required) (string) local identifier of the Thing you want to delete</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">delete_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -1980,9 +2001,8 @@ table {
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
                                    <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -2014,9 +2034,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="c1"># used by describe()</span>
@@ -2092,9 +2111,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="k">def</span> <span class="nf">__cb_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">duplicated</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -2404,6 +2422,14 @@ table {
 
       </div>
       <div class="item">
+      <p id="IoticAgent.IOT.Client.P_DATA" class="name">var <span class="ident">P_DATA</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="IoticAgent.IOT.Client.P_ENTITY_LID" class="name">var <span class="ident">P_ENTITY_LID</span></p>
       
   
@@ -2521,7 +2547,7 @@ table {
     <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.2&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.4&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2748,7 +2774,7 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parsed_feed_callback</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">register_callback_feeddata</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Registers a callback that is called for all control requests received by your Thing</span>
 
@@ -2762,9 +2788,18 @@ table {
 
 <span class="sd">        `callback` (required) the function name that you want to be called on receipt of a new control request</span>
 
+
+<span class="sd">        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of a control ask/tell.</span>
+<span class="sd">        This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a</span>
+<span class="sd">        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both `callback_parsed` and</span>
+<span class="sd">        `callback` have been specified, the former takes precedence and `callback` is only called if the point data</span>
+<span class="sd">        could not be parsed according to its current value description.</span>
+
 <span class="sd">        More details on the contents of the `data` dictionary for controls see:</span>
 <span class="sd">        [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callback_parsed</span><span class="p">:</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parsed_control_callback</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">register_callback_controlreq</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">register_callback_subscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
@@ -3058,8 +3093,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;confirm_tell(success=</span><span class="si">%s</span><span class="s2">) [lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">,pid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_point_confirm_tell</span><span class="p">(</span><span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">],</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;requestId&#39;</span><span class="p">])</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save the config, update the seqnum &amp; default language</span>
@@ -3070,7 +3104,11 @@ table {
 
     <span class="k">def</span> <span class="nf">_get_parsed_feed_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_FEED</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_parsed_control_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsed_callback_wrapper</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">R_CONTROL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_point_data_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Used by point instances and data callbacks&quot;&quot;&quot;</span>
@@ -3080,18 +3118,25 @@ table {
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point_data_handlers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">PointDataObjectHandler</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_parsed_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback_plain</span><span class="p">,</span> <span class="n">foc</span><span class="p">,</span> <span class="n">point_ref</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Used to by register_catchall_feeddata() and Thing class (follow, create_point) to present point</span>
-<span class="sd">        data as an object.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_parsed_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback_plain</span><span class="p">,</span> <span class="n">foc</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Used to by register_catchall_*data() and Thing class (follow, create_point) to present point data as an</span>
+<span class="sd">        object.&quot;&quot;&quot;</span>
+        <span class="c1"># used by PointDataObjectHandler as reference</span>
         <span class="k">if</span> <span class="n">foc</span> <span class="o">==</span> <span class="n">R_FEED</span><span class="p">:</span>
             <span class="n">point_ref</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># R_CONTROL</span>
+            <span class="n">point_ref</span> <span class="o">=</span> <span class="n">Control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">],</span> <span class="s1">&#39;0&#39;</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;parsed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="n">point_ref</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;parsed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="n">point_ref</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">P_DATA</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
+            <span class="c1"># No metadata available, do not produce warning</span>
+            <span class="k">if</span> <span class="n">callback_plain</span><span class="p">:</span>
+                <span class="n">callback_plain</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to parse </span><span class="si">%s</span><span class="s1"> data for </span><span class="si">%s%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">foc_to_str</span><span class="p">(</span><span class="n">foc</span><span class="p">),</span> <span class="n">point_ref</span><span class="p">,</span>
                            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">callback_plain</span> <span class="k">else</span> <span class="s1">&#39;, ignoring&#39;</span><span class="p">,</span>
-                           <span class="n">exc_info</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">))</span>
+                           <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">callback_plain</span><span class="p">:</span>
                 <span class="n">callback_plain</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3104,6 +3149,11 @@ table {
         <span class="n">E_FAILED_CODE_NOTALLOWED</span><span class="p">:</span> <span class="n">IOTNotAllowed</span><span class="p">,</span>
         <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">:</span> <span class="n">IOTUnknown</span>
     <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`.&quot;&quot;&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_except_if_failed</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -3146,8 +3196,7 @@ table {
         <span class="k">else</span><span class="p">:</span>
             <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_list</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
 
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_thing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
@@ -3182,10 +3231,8 @@ table {
 <span class="sd">        `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.</span>
 <span class="sd">        It&#39;s &quot;local&quot; in that it&#39;s only available to you on this container, not searchable and not visible to others.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
@@ -3193,7 +3240,7 @@ table {
             <span class="k">raise</span> <span class="n">raise_from</span><span class="p">(</span><span class="n">IOTClientError</span><span class="p">(</span><span class="s1">&#39;Thing </span><span class="si">%s</span><span class="s1"> not in cache (post-create)&#39;</span> <span class="o">%</span> <span class="n">lid</span><span class="p">),</span> <span class="n">ex</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">create_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">delete_thing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
@@ -3208,12 +3255,11 @@ table {
 <span class="sd">        `lid` (required) (string) local identifier of the Thing you want to delete</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">delete_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -3324,9 +3370,8 @@ table {
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
                                    <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="k">def</span> <span class="nf">search_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -3358,9 +3403,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                     <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="c1"># used by describe()</span>
@@ -3436,9 +3480,8 @@ table {
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
 
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-        <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 
     <span class="k">def</span> <span class="nf">__cb_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">duplicated</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -3825,8 +3868,7 @@ sucessful.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;confirm_tell(success=</span><span class="si">%s</span><span class="s2">) [lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">,pid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
     <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_point_confirm_tell</span><span class="p">(</span><span class="n">R_CONTROL</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">P_LID</span><span class="p">],</span> <span class="n">success</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;requestId&#39;</span><span class="p">])</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -3866,10 +3908,8 @@ It's "local" in that it's only available to you on this container, not searchabl
 <span class="sd">    `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.</span>
 <span class="sd">    It&#39;s &quot;local&quot; in that it&#39;s only available to you on this container, not searchable and not visible to others.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_things</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
@@ -3895,7 +3935,7 @@ It's "local" in that it's only available to you on this container, not searchabl
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.create_thing_async', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.create_thing_async" class="source">
     <div class="codehilite"><pre><span class="k">def</span> <span class="nf">create_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;create_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_create</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 </pre></div>
 
@@ -3931,9 +3971,8 @@ if there is a communications problem between you and the infrastructure</p>
 <span class="sd">    `lid` (required) (string) local identifier of the Thing you want to delete</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
-    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_thing_async</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 </pre></div>
 
   </div>
@@ -3954,7 +3993,7 @@ if there is a communications problem between you and the infrastructure</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.delete_thing_async', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.delete_thing_async" class="source">
     <div class="codehilite"><pre><span class="k">def</span> <span class="nf">delete_thing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing_async(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;delete_thing(lid=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lid</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_delete</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 </pre></div>
 
@@ -4089,8 +4128,7 @@ first attempts to look up private metadata, then public.</p></div>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;describe() [guid=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="p">,</span> <span class="n">guid</span><span class="p">)</span>
     <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_describe</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 </pre></div>
 
@@ -4197,8 +4235,7 @@ if <code>True</code> return list of things belonging to all agents you own.</p>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_list_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity_list</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;entities&#39;</span><span class="p">]</span>
 </pre></div>
 
@@ -4670,7 +4707,7 @@ subscribes to your thing.</p>
             
   <div class="item">
     <div class="name def" id="IoticAgent.IOT.Client.Client.register_catchall_controlreq">
-    <p>def <span class="ident">register_catchall_controlreq</span>(</p><p>self, callback)</p>
+    <p>def <span class="ident">register_catchall_controlreq</span>(</p><p>self, callback, callback_parsed=None)</p>
     </div>
     
 
@@ -4686,12 +4723,17 @@ subscribes to your thing.</p>
 
 
 <p><code>callback</code> (required) the function name that you want to be called on receipt of a new control request</p>
+<p><code>callback_parsed</code> (optional) (function reference) callback function to invoke on receipt of a control ask/tell.
+This is equivalent to <code>callback</code> except the dict includes the <code>parsed</code> key which holds the set of values in a
+<a href="./Point.m.html#IoticAgent.IOT.Point.PointDataObject">PointDataObject</a> instance. If both <code>callback_parsed</code> and
+<code>callback</code> have been specified, the former takes precedence and <code>callback</code> is only called if the point data
+could not be parsed according to its current value description.</p>
 <p>More details on the contents of the <code>data</code> dictionary for controls see:
 <a href="./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control">create_control()</a></p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Client.Client.register_catchall_controlreq', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Client.Client.register_catchall_controlreq" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">register_catchall_controlreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">callback_parsed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Registers a callback that is called for all control requests received by your Thing</span>
 <span class="sd">    `Example`</span>
@@ -4701,9 +4743,16 @@ subscribes to your thing.</p>
 <span class="sd">        ...</span>
 <span class="sd">        client.register_catchall_controlreq(controlreq_callback)</span>
 <span class="sd">    `callback` (required) the function name that you want to be called on receipt of a new control request</span>
+<span class="sd">    `callback_parsed` (optional) (function reference) callback function to invoke on receipt of a control ask/tell.</span>
+<span class="sd">    This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a</span>
+<span class="sd">    [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both `callback_parsed` and</span>
+<span class="sd">    `callback` have been specified, the former takes precedence and `callback` is only called if the point data</span>
+<span class="sd">    could not be parsed according to its current value description.</span>
 <span class="sd">    More details on the contents of the `data` dictionary for controls see:</span>
 <span class="sd">    [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">callback_parsed</span><span class="p">:</span>
+        <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parsed_control_callback</span><span class="p">(</span><span class="n">callback_parsed</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">register_callback_controlreq</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
 </pre></div>
 
@@ -4993,8 +5042,7 @@ available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)</p></di
                 <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">reduced</span><span class="p">)</span>
     <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
                                <span class="n">SearchType</span><span class="o">.</span><span class="n">REDUCED</span> <span class="k">if</span> <span class="n">reduced</span> <span class="k">else</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 </pre></div>
 
@@ -5051,8 +5099,7 @@ result set comprised only of things which have a location set, e.g.:</p>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search_located(text=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, lang=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, location=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, unit=</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">, offset=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                 <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
     <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_search</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">SearchType</span><span class="o">.</span><span class="n">LOCATED</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span>
-    <span class="n">evt</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>  <span class="c1"># pylint: disable=unsubscriptable-object</span>
 </pre></div>
 

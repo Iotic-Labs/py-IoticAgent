@@ -1060,6 +1060,10 @@ table {
 
         </li>
         <li class="mono">
+        <span class="class_name"><a href="#IoticAgent.IOT.PointValueHelper.RefreshException">RefreshException</a></span>
+        
+        </li>
+        <li class="mono">
         <span class="class_name"><a href="#IoticAgent.IOT.PointValueHelper.Value">Value</a></span>
         
           
@@ -1210,13 +1214,14 @@ table {
         <span class="k">return</span> <span class="p">(</span><span class="n">type_names</span> <span class="o">&amp;</span> <span class="n">unit_names</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">types</span> <span class="ow">and</span> <span class="n">units</span><span class="p">)</span> <span class="k">else</span> <span class="n">empty</span>
 
 
+<span class="k">class</span> <span class="nc">RefreshException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by __refresh() to indicate metadata unsuitable for template usage.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
 <span class="k">class</span> <span class="nc">PointDataObjectHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Caches metadata for a point and produces skeletal represenation of a point&#39;s values, optionally populating it</span>
 <span class="sd">    with data from a share/ask/tell. Threadsafe.&quot;&quot;&quot;</span>
-
-    <span class="k">class</span> <span class="nc">_RefreshException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raised by __refresh() to indicate metadata unsuitable for template usage.&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">private_names_for</span><span class="p">(</span><span class="s1">&#39;PointDataObjectHandler&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;__remote&#39;</span><span class="p">,</span> <span class="s1">&#39;__point&#39;</span><span class="p">,</span> <span class="s1">&#39;__last_parse_ok&#39;</span><span class="p">,</span> <span class="s1">&#39;__client&#39;</span><span class="p">,</span>
                                                                    <span class="s1">&#39;__lock&#39;</span><span class="p">,</span> <span class="s1">&#39;__value_templates&#39;</span><span class="p">,</span> <span class="s1">&#39;__filter&#39;</span><span class="p">)))</span>
@@ -1251,7 +1256,7 @@ table {
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__value_templates</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-                <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+                <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                     <span class="c1"># Point has no (useable) values - don&#39;t try to refetch again</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                     <span class="k">raise</span>
@@ -1266,11 +1271,11 @@ table {
                     <span class="k">except</span><span class="p">:</span>
                         <span class="c1"># parsing has failed for first time since refresh so try again</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                             <span class="k">try</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-                            <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+                            <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                                 <span class="k">break</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span>
@@ -1284,7 +1289,7 @@ table {
 <span class="sd">        lock.&quot;&quot;&quot;</span>
         <span class="n">raw_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_values</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_values</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">(</span><span class="s1">&#39;Point has no values&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">RefreshException</span><span class="p">(</span><span class="s1">&#39;Point has no values&#39;</span><span class="p">)</span>
 
         <span class="c1"># individual templates</span>
         <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1295,7 +1300,7 @@ table {
         <span class="k">for</span> <span class="n">raw_value</span> <span class="ow">in</span> <span class="n">raw_values</span><span class="p">:</span>
             <span class="n">label</span> <span class="o">=</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_identifier</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="ow">or</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">(</span><span class="s1">&#39;Value &quot;</span><span class="si">%s</span><span class="s1">&quot; unsuitable for object wrapper&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">RefreshException</span><span class="p">(</span><span class="s1">&#39;Value &quot;</span><span class="si">%s</span><span class="s1">&quot; unsuitable for object wrapper&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">],</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">])</span>
             <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1371,10 +1376,6 @@ with data from a share/ask/tell. Threadsafe.</p></div>
     <span class="sd">&quot;&quot;&quot;Caches metadata for a point and produces skeletal represenation of a point&#39;s values, optionally populating it</span>
 <span class="sd">    with data from a share/ask/tell. Threadsafe.&quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">_RefreshException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raised by __refresh() to indicate metadata unsuitable for template usage.&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-
     <span class="n">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">private_names_for</span><span class="p">(</span><span class="s1">&#39;PointDataObjectHandler&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;__remote&#39;</span><span class="p">,</span> <span class="s1">&#39;__point&#39;</span><span class="p">,</span> <span class="s1">&#39;__last_parse_ok&#39;</span><span class="p">,</span> <span class="s1">&#39;__client&#39;</span><span class="p">,</span>
                                                                    <span class="s1">&#39;__lock&#39;</span><span class="p">,</span> <span class="s1">&#39;__value_templates&#39;</span><span class="p">,</span> <span class="s1">&#39;__filter&#39;</span><span class="p">)))</span>
 
@@ -1408,7 +1409,7 @@ with data from a share/ask/tell. Threadsafe.</p></div>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__value_templates</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-                <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+                <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                     <span class="c1"># Point has no (useable) values - don&#39;t try to refetch again</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                     <span class="k">raise</span>
@@ -1423,11 +1424,11 @@ with data from a share/ask/tell. Threadsafe.</p></div>
                     <span class="k">except</span><span class="p">:</span>
                         <span class="c1"># parsing has failed for first time since refresh so try again</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                             <span class="k">try</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-                            <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+                            <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                                 <span class="k">break</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span>
@@ -1441,7 +1442,7 @@ with data from a share/ask/tell. Threadsafe.</p></div>
 <span class="sd">        lock.&quot;&quot;&quot;</span>
         <span class="n">raw_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_values</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_values</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">(</span><span class="s1">&#39;Point has no values&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">RefreshException</span><span class="p">(</span><span class="s1">&#39;Point has no values&#39;</span><span class="p">)</span>
 
         <span class="c1"># individual templates</span>
         <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1452,7 +1453,7 @@ with data from a share/ask/tell. Threadsafe.</p></div>
         <span class="k">for</span> <span class="n">raw_value</span> <span class="ow">in</span> <span class="n">raw_values</span><span class="p">:</span>
             <span class="n">label</span> <span class="o">=</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_identifier</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="ow">or</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">(</span><span class="s1">&#39;Value &quot;</span><span class="si">%s</span><span class="s1">&quot; unsuitable for object wrapper&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">RefreshException</span><span class="p">(</span><span class="s1">&#39;Value &quot;</span><span class="si">%s</span><span class="s1">&quot; unsuitable for object wrapper&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">],</span> <span class="n">raw_value</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">])</span>
             <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1572,7 +1573,7 @@ this to populate the created template.</p></div>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__value_templates</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-            <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                 <span class="c1"># Point has no (useable) values - don&#39;t try to refetch again</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                 <span class="k">raise</span>
@@ -1587,11 +1588,11 @@ this to populate the created template.</p></div>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="c1"># parsing has failed for first time since refresh so try again</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Failed to parse data from for point </span><span class="si">%s</span><span class="s1">, refreshing&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__point</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__last_parse_ok</span> <span class="o">=</span> <span class="bp">False</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">__refresh</span><span class="p">()</span>
-                        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RefreshException</span><span class="p">:</span>
+                        <span class="k">except</span> <span class="n">RefreshException</span><span class="p">:</span>
                             <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span>
@@ -1606,6 +1607,45 @@ this to populate the created template.</p></div>
 
   </div>
   
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="IoticAgent.IOT.PointValueHelper.RefreshException" class="name">class <span class="ident">RefreshException</span></p>
+      
+  
+    <div class="desc"><p>Raised by __refresh() to indicate metadata unsuitable for template usage.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.PointValueHelper.RefreshException', this);">Show source &equiv;</a></p>
+  <div id="source-IoticAgent.IOT.PointValueHelper.RefreshException" class="source">
+    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">RefreshException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by __refresh() to indicate metadata unsuitable for template usage.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#IoticAgent.IOT.PointValueHelper.RefreshException">RefreshException</a></li>
+          <li>builtins.Exception</li>
+          <li>builtins.BaseException</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="IoticAgent.IOT.PointValueHelper.RefreshException.args" class="name">var <span class="ident">args</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
       </div>
       </div>
       

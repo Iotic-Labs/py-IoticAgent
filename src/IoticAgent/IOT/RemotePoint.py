@@ -96,11 +96,8 @@ class RemoteFeed(RemotePoint):
 
         Note: Feed data is iterable as soon as it arrives, rather than when the request completes.
         """
-        validate_nonnegative_int(count, 'count')
-        evt = self._client._request_sub_recent(self.subid, count=count)
-
         queue = Queue()
-        self._client._add_recent_cb_for(evt, queue.put)
+        evt = self.get_recent_async(count, queue.put)
         timeout_time = monotonic() + self._client.sync_timeout
 
         while True:
@@ -120,8 +117,8 @@ class RemoteFeed(RemotePoint):
         """
         validate_nonnegative_int(count, 'count')
         Validation.callable_check(callback, allow_none=True)
-        evt = self.__client._request_sub_recent(self.subid, count=count)
-        self.__client._add_recent_cb_for(evt, callback)
+        evt = self._client._request_sub_recent(self.subid, count=count)
+        self._client._add_recent_cb_for(evt, callback)
         return evt
 
     def simulate(self, data, mime=None):
@@ -170,15 +167,13 @@ class RemoteControl(RemotePoint):
         `mime` (optional) (string) The mime type of the data you're sharing.  See:
         [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
         """
+        evt = self.ask_async(data, mime=mime)
+        self._client._wait_and_except_if_failed(evt)
+
+    def ask_async(self, data, mime=None):
         logger.info("ask() [subid=%s]", self.subid)
         if mime is None and isinstance(data, PointDataObject):
             data = data.to_dict()
-        evt = self._client._request_sub_ask(self.subid, data, mime)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
-
-    def ask_async(self, data, mime=None):
-        logger.info("ask_async() [subid=%s]", self.subid)
         return self._client._request_sub_ask(self.subid, data, mime)
 
     def tell(self, data, timeout=10, mime=None):
@@ -215,12 +210,8 @@ class RemoteControl(RemotePoint):
         `mime` (optional) (string) See:
         [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
         """
-        logger.info("tell(timeout=%s) [subid=%s]", timeout, self.subid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        evt = self._client._request_sub_tell(self.subid, data, timeout, mime=mime)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        evt = self.tell_async(data, timeout=timeout, mime=mime)
+        self._client._wait_and_except_if_failed(evt)
         return True if evt.payload['success'] else evt.payload['reason']
 
     def tell_async(self, data, timeout=10, mime=None):
@@ -228,5 +219,7 @@ class RemoteControl(RemotePoint):
 
         `Note` payload contains the success and reason keys they are not separated out as in the synchronous version
         """
-        logger.info("tell_async(timeout=%s) [subid=%s]", timeout, self.subid)
+        logger.info("tell(timeout=%s) [subid=%s]", timeout, self.subid)
+        if mime is None and isinstance(data, PointDataObject):
+            data = data.to_dict()
         return self._client._request_sub_tell(self.subid, data, timeout, mime=mime)

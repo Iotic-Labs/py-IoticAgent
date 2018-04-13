@@ -96,8 +96,7 @@ class Point(Resource):
         """
         logger.info("rename(new_pid=\"%s\") [lid=%s, pid=%s]", new_pid, self.__lid, self.__pid)
         evt = self._client._request_point_rename(self._type, self.__lid, self.__pid, new_pid)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         self.__pid = new_pid
 
     def list(self, limit=50, offset=0):
@@ -117,9 +116,8 @@ class Point(Resource):
         """
         logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", limit, offset, self.__lid, self.__pid)
         evt = self._client._request_point_value_list(self.__lid, self.__pid, self._type, limit=limit, offset=offset)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload['values']
 
     def list_followers(self):
@@ -144,9 +142,8 @@ class Point(Resource):
         `offset` (optional) (integer) Return value details starting at this offset
         """
         evt = self._client._request_point_list_detailed(self._type, self.__lid, self.__pid)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload['subs']
 
     def get_meta(self):
@@ -181,17 +178,15 @@ class Point(Resource):
         Valid formats are: "xml", "n3", "turtle"
         """
         evt = self._client._request_point_meta_get(self._type, self.__lid, self.__pid, fmt=fmt)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload['meta']
 
     def set_meta_rdf(self, rdf, fmt='n3'):
         """Set the metadata for this Point in rdf fmt
         """
         evt = self._client._request_point_meta_set(self._type, self.__lid, self.__pid, rdf, fmt=fmt)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
 
     def create_tag(self, tags):
         """Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
@@ -210,8 +205,7 @@ class Point(Resource):
             tags = [tags]
 
         evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=False)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
 
     def delete_tag(self, tags):
         """Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
@@ -230,8 +224,7 @@ class Point(Resource):
             tags = [tags]
 
         evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=True)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
 
     def list_tag(self, limit=50, offset=0):
         """List `all` the tags for this Point
@@ -259,9 +252,8 @@ class Point(Resource):
         `offset` (optional) (integer) Return tags starting at this offset
         """
         evt = self._client._request_point_tag_list(self._type, self.__lid, self.__pid, limit=limit, offset=offset)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload['tags']
 
     def create_value(self, label, vtype, lang=None, description=None, unit=None):
@@ -310,8 +302,7 @@ class Point(Resource):
         """
         evt = self._client._request_point_value_create(self.__lid, self.__pid, self._type, label, vtype, lang,
                                                        description, unit)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
 
     def delete_value(self, label=None):
         """Delete the labelled value (or all values) on this Point
@@ -326,8 +317,7 @@ class Point(Resource):
         point will be removed.
         """
         evt = self._client._request_point_value_delete(self.__lid, self.__pid, self._type, label=label)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
 
 
 class Feed(Point):
@@ -381,15 +371,11 @@ class Feed(Point):
         share time does not correspond to the time to which the data applies, e.g. to populate recent storgage with
         historical data.
         """
-        logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.lid, self.pid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        evt = self._client._request_point_share(self.lid, self.pid, data, mime, time)
-        evt.wait(self._client.sync_timeout)
-        self._client._except_if_failed(evt)
+        evt = self.share_async(data, mime=mime, time=time)
+        self._client._wait_and_except_if_failed(evt)
 
     def share_async(self, data, mime=None, time=None):
-        logger.info("share_async() [lid=\"%s\",pid=\"%s\"]", self.lid, self.pid)
+        logger.info("share() [lid=\"%s\",pid=\"%s\"]", self.lid, self.pid)
         if mime is None and isinstance(data, PointDataObject):
             data = data.to_dict()
         return self._client._request_point_share(self.lid, self.pid, data, mime, time)
@@ -412,9 +398,8 @@ class Feed(Point):
         if there is a communications problem between you and the infrastructure
         """
         evt = self._client._request_point_recent_info(self._type, self.lid, self.pid)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload['recent']
 
     def set_recent_config(self, max_samples=0):
@@ -439,9 +424,8 @@ class Feed(Point):
         if there is a communications problem between you and the infrastructure
         """
         evt = self._client._request_point_recent_config(self._type, self.lid, self.pid, max_samples)
-        evt.wait(self._client.sync_timeout)
 
-        self._client._except_if_failed(evt)
+        self._client._wait_and_except_if_failed(evt)
         return evt.payload
 
 

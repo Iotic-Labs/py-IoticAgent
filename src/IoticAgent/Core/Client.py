@@ -416,13 +416,14 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                     'mime': mime})
 
         # general catch-all
-        self.__fire_callback(_CB_CONTROLREQ, arg)
+        have_general = self.__fire_callback(_CB_CONTROLREQ, arg)
         # just for this control
         try:
             callback = self.__callbacks[_CB_CONTROL][payload[P_ENTITY_LID]][payload[P_LID]]
         except KeyError:
-            logger.warning("Received Control Request for %s,%s but no callback registered.",
-                           payload[P_ENTITY_LID], payload[P_LID])
+            if not have_general:
+                logger.warning("Received Control Request for %s,%s but no callback registered.",
+                               payload[P_ENTITY_LID], payload[P_LID])
         else:
             self.__threadpool.submit(callback, arg)
 

@@ -29,7 +29,7 @@ from IoticAgent.Core.Const import (
     E_FAILED_CODE_ACCESSDENIED,
     M_CLIENTREF, M_PAYLOAD,
     R_ENTITY, R_FEED, R_CONTROL, R_SUB,
-    P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID, P_RESOURCE, P_MESSAGE, P_POINT_TYPE, P_POINT_ID,
+    P_CODE, P_ID, P_LID, P_ENTITY_LID, P_EPID, P_RESOURCE, P_MESSAGE, P_POINT_TYPE, P_POINT_ID, P_DATA,
     SearchScope, SearchType, DescribeScope
 )
 from IoticAgent.Core.utils import validate_nonnegative_int
@@ -43,15 +43,15 @@ from .Exceptions import (
     IOTException, IOTUnknown, IOTMalformed, IOTInternalError, IOTAccessDenied, IOTClientError, IOTSyncTimeout,
     IOTNotAllowed
 )
-from .Point import Point, _POINT_TYPES
+from .Point import Control, Point, _POINT_TYPES
 from .RemotePoint import RemoteFeed, RemoteControl
-from .PointValueHelper import PointDataObjectHandler
+from .PointValueHelper import PointDataObjectHandler, RefreshException
 
 
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.3'
+    __core_version = '0.6.4'
 
     def __init__(self, config=None):
         """
@@ -278,7 +278,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             callback = self._get_parsed_feed_callback(callback_parsed, callback)
         return self.__client.register_callback_feeddata(callback)
 
-    def register_catchall_controlreq(self, callback):
+    def register_catchall_controlreq(self, callback, callback_parsed=None):
         """
         Registers a callback that is called for all control requests received by your Thing
 
@@ -292,9 +292,18 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         `callback` (required) the function name that you want to be called on receipt of a new control request
 
+
+        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of a control ask/tell.
+        This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both `callback_parsed` and
+        `callback` have been specified, the former takes precedence and `callback` is only called if the point data
+        could not be parsed according to its current value description.
+
         More details on the contents of the `data` dictionary for controls see:
         [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)
         """
+        if callback_parsed:
+            callback = self._get_parsed_control_callback(callback_parsed, callback)
         return self.__client.register_callback_controlreq(callback)
 
     def register_callback_subscription(self, callback):
@@ -588,8 +597,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         logger.info("confirm_tell(success=%s) [lid=\"%s\",pid=\"%s\"]", success, data[P_ENTITY_LID], data[P_LID])
         evt = self._request_point_confirm_tell(R_CONTROL, data[P_ENTITY_LID], data[P_LID], success, data['requestId'])
-        evt.wait(self.__sync_timeout)
-        self._except_if_failed(evt)
+        self._wait_and_except_if_failed(evt)
 
     def save_config(self):
         """Save the config, update the seqnum & default language
@@ -600,7 +608,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def _get_parsed_feed_callback(self, callback_parsed, callback):
         Validation.callable_check(callback_parsed)
-        return partial(self._parsed_callback_wrapper, callback_parsed, callback, R_FEED, None)
+        return partial(self._parsed_callback_wrapper, callback_parsed, callback, R_FEED)
+
+    def _get_parsed_control_callback(self, callback_parsed, callback):
+        Validation.callable_check(callback_parsed)
+        return partial(self._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL)
 
     def _get_point_data_handler_for(self, point):
         """Used by point instances and data callbacks"""
@@ -610,18 +622,25 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             except KeyError:
                 return self.__point_data_handlers.setdefault(point, PointDataObjectHandler(point, self))
 
-    def _parsed_callback_wrapper(self, callback_parsed, callback_plain, foc, point_ref, data):
-        """Used to by register_catchall_feeddata() and Thing class (follow, create_point) to present point
-        data as an object."""
+    def _parsed_callback_wrapper(self, callback_parsed, callback_plain, foc, data):
+        """Used to by register_catchall_*data() and Thing class (follow, create_point) to present point data as an
+        object."""
+        # used by PointDataObjectHandler as reference
         if foc == R_FEED:
             point_ref = data['pid']
+        else:  # R_CONTROL
+            point_ref = Control(self, data[P_ENTITY_LID], data[P_LID], '0' * 32)
 
         try:
-            data['parsed'] = self._get_point_data_handler_for(point_ref).get_template(data=data['data'])
+            data['parsed'] = self._get_point_data_handler_for(point_ref).get_template(data=data[P_DATA])
+        except RefreshException:
+            # No metadata available, do not produce warning
+            if callback_plain:
+                callback_plain(data)
         except:
             logger.warning('Failed to parse %s data for %s%s', foc_to_str(foc), point_ref,
                            '' if callback_plain else ', ignoring',
-                           exc_info=logger.isEnabledFor(logging.DEBUG))
+                           exc_info=DEBUG_ENABLED)
             if callback_plain:
                 callback_plain(data)
         else:
@@ -634,6 +653,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         E_FAILED_CODE_NOTALLOWED: IOTNotAllowed,
         E_FAILED_CODE_UNKNOWN: IOTUnknown
     }
+
+    def _wait_and_except_if_failed(self, event):
+        """Combines waiting for event and call to `_except_if_failed`."""
+        event.wait(self.__sync_timeout)
+        self._except_if_failed(event)
 
     @classmethod
     def _except_if_failed(cls, event):
@@ -676,8 +700,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         else:
             evt = self._request_entity_list(limit=limit, offset=offset)
 
-        evt.wait(self.__sync_timeout)
-        self._except_if_failed(evt)
+        self._wait_and_except_if_failed(evt)
         return evt.payload['entities']
 
     def get_thing(self, lid):
@@ -712,10 +735,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.
         It's "local" in that it's only available to you on this container, not searchable and not visible to others.
         """
-        logger.info("create_thing(lid=\"%s\")", lid)
-        evt = self._request_entity_create(lid)
-        evt.wait(self.__sync_timeout)
-        self._except_if_failed(evt)
+        evt = self.create_thing_async(lid)
+        self._wait_and_except_if_failed(evt)
         try:
             with self.__new_things:
                 return self.__new_things.pop(lid)
@@ -723,7 +744,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             raise raise_from(IOTClientError('Thing %s not in cache (post-create)' % lid), ex)
 
     def create_thing_async(self, lid):
-        logger.info("create_thing_async(lid=\"%s\")", lid)
+        logger.info("create_thing(lid=\"%s\")", lid)
         return self._request_entity_create(lid)
 
     def delete_thing(self, lid):
@@ -738,12 +759,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         `lid` (required) (string) local identifier of the Thing you want to delete
         """
         logger.info("delete_thing(lid=\"%s\")", lid)
-        evt = self._request_entity_delete(lid)
-        evt.wait(self.__sync_timeout)
-        self._except_if_failed(evt)
+        evt = self.delete_thing_async(lid)
+        self._wait_and_except_if_failed(evt)
 
     def delete_thing_async(self, lid):
-        logger.info("delete_thing_async(lid=\"%s\")", lid)
+        logger.info("delete_thing(lid=\"%s\")", lid)
         return self._request_entity_delete(lid)
 
     def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=None,
@@ -854,9 +874,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                     text, lang, location, unit, limit, offset, reduced)
         evt = self._request_search(text, lang, location, unit, limit, offset,
                                    SearchType.REDUCED if reduced else SearchType.FULL, local, scope)
-        evt.wait(self.__sync_timeout)
 
-        self._except_if_failed(evt)
+        self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
@@ -888,9 +907,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
                     text, lang, location, unit, limit, offset)
         evt = self._request_search(text, lang, location, unit, limit, offset, SearchType.LOCATED, local, scope)
-        evt.wait(self.__sync_timeout)
 
-        self._except_if_failed(evt)
+        self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     # used by describe()
@@ -966,9 +984,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info('describe() [guid="%s"]', guid)
 
         evt = self._request_describe(guid, lang, local, scope)
-        evt.wait(self.__sync_timeout)
 
-        self._except_if_failed(evt)
+        self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
     def __cb_created(self, msg, duplicated=False):

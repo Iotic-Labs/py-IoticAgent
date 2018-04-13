@@ -120,13 +120,14 @@ class _ValueFilter(namedtuple('nt__ValueFilter', 'by_type by_unit')):
         return (type_names & unit_names) if (types and units) else empty
 
 
+class RefreshException(Exception):
+    """Raised by __refresh() to indicate metadata unsuitable for template usage."""
+    pass
+
+
 class PointDataObjectHandler(object):
     """Caches metadata for a point and produces skeletal represenation of a point's values, optionally populating it
     with data from a share/ask/tell. Threadsafe."""
-
-    class _RefreshException(Exception):
-        """Raised by __refresh() to indicate metadata unsuitable for template usage."""
-        pass
 
     __slots__ = tuple(private_names_for('PointDataObjectHandler', ('__remote', '__point', '__last_parse_ok', '__client',
                                                                    '__lock', '__value_templates', '__filter')))
@@ -161,7 +162,7 @@ class PointDataObjectHandler(object):
             if self.__value_templates is None and self.__last_parse_ok:
                 try:
                     self.__refresh()
-                except self._RefreshException:
+                except RefreshException:
                     # Point has no (useable) values - don't try to refetch again
                     self.__last_parse_ok = False
                     raise
@@ -176,11 +177,11 @@ class PointDataObjectHandler(object):
                     except:
                         # parsing has failed for first time since refresh so try again
                         if self.__last_parse_ok:
-                            logger.warning('Failed to parse data from for point %s, refreshing', self.__point)
+                            logger.debug('Failed to parse data from for point %s, refreshing', self.__point)
                             self.__last_parse_ok = False
                             try:
                                 self.__refresh()
-                            except self._RefreshException:
+                            except RefreshException:
                                 break
                         else:
                             raise
@@ -194,7 +195,7 @@ class PointDataObjectHandler(object):
         lock."""
         raw_values = self.__get_values()
         if not raw_values:
-            raise self._RefreshException('Point has no values')
+            raise RefreshException('Point has no values')
 
         # individual templates
         templates = []
@@ -205,7 +206,7 @@ class PointDataObjectHandler(object):
         for raw_value in raw_values:
             label = raw_value['label']
             if not valid_identifier(label) or label.startswith('__'):
-                raise self._RefreshException('Value "%s" unsuitable for object wrapper' % label)
+                raise RefreshException('Value "%s" unsuitable for object wrapper' % label)
             value = Value(label, raw_value['type'], raw_value['unit'], raw_value['comment'])
             templates.append(value)
             try:

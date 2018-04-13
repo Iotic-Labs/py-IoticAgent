@@ -1,3 +1,11 @@
+v0.6.4
+- Support parsed output for control catch-all
+- Don't warn about unparse-able feed/control data if no values specified for point
+  in question.
+- Make ask/tell async work with templating
+- Fix get recent data async invalid private var access
+- Minor refactoring to reduce code duplication
+
 v0.6.3
 - Fix parsed feed data by-text filter handling when no description exists for a
   value.
