@@ -3,6 +3,7 @@ v0.6.5
 - Add configurable retry delay for ThingRunner
 - Add Python 3.7 to classifiers list
 - Additional small fixes from static test warnings
+- Fix DeprecationWarning for regular expressions
 
 v0.6.4
 - Support parsed output for control catch-all
