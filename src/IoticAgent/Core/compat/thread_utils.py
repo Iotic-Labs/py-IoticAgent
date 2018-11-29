@@ -120,7 +120,5 @@ class InterruptableEvent(object):
                 pass
             return True
 
-        # finite
-        else:
-            # underlying Event will perform timeout argument validation
-            return self.__event.wait(timeout)
+        # finite - underlying Event will perform timeout argument validation
+        return self.__event.wait(timeout)

@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.4'
+    __core_version = '0.6.5'
 
     def __init__(self, config=None):
         """
@@ -92,7 +92,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                                         socket_timeout=self.__config.get('core', 'socket_timeout'),
                                         auto_encode_decode=bool_from(self.__config.get('core', 'auto_encode_decode')),
                                         send_queue_size=self.__config.get('core', 'queue_size'),
-                                        throttle_conf=self.__config.get('core', 'throttle'))
+                                        throttle_conf=self.__config.get('core', 'throttle'),
+                                        max_encoded_length=self.__config.get('core', 'max_encoded_length'))
         except ValueError as ex:
             raise_from(ValueError('Configuration error'), ex)
 
@@ -701,7 +702,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             evt = self._request_entity_list(limit=limit, offset=offset)
 
         self._wait_and_except_if_failed(evt)
-        return evt.payload['entities']
+        return evt.payload['entities']  # pylint:disable=unsubscriptable-object
 
     def get_thing(self, lid):
         """Get the details of a newly created Thing. This only applies to asynchronous creation of Things and the

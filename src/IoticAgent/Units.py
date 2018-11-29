@@ -185,7 +185,7 @@ class Units(object):
             """
         #
         if self.__owlfn.startswith('https://'):
-            logger.debug("Downloading: " + self.__owlfn)
+            logger.debug("Downloading: %s", self.__owlfn)
         self.__graph = rdflib.Graph()
         self.__graph.parse(self.__owlfn, format="xml")
         #

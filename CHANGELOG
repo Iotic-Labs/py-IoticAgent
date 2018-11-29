@@ -1,3 +1,9 @@
+v0.6.5
+- Fix on_shutdown event behaviour when ThingRunner running in foreground
+- Add configurable retry delay for ThingRunner
+- Add Python 3.7 to classifiers list
+- Additional small fixes from static test warnings
+
 v0.6.4
 - Support parsed output for control catch-all
 - Don't warn about unparse-able feed/control data if no values specified for point

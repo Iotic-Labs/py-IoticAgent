@@ -853,73 +853,6 @@ table {
 
   </style>
 
-  <style type="text/css">
-  .codehilite .hll { background-color: #ffffcc }
-.codehilite  { background: #f8f8f8; }
-.codehilite .c { color: #408080; font-style: italic } /* Comment */
-.codehilite .err { border: 1px solid #FF0000 } /* Error */
-.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
-.codehilite .o { color: #666666 } /* Operator */
-.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
-.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
-.codehilite .gd { color: #A00000 } /* Generic.Deleted */
-.codehilite .ge { font-style: italic } /* Generic.Emph */
-.codehilite .gr { color: #FF0000 } /* Generic.Error */
-.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.codehilite .gi { color: #00A000 } /* Generic.Inserted */
-.codehilite .go { color: #888888 } /* Generic.Output */
-.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.codehilite .gs { font-weight: bold } /* Generic.Strong */
-.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.codehilite .gt { color: #0044DD } /* Generic.Traceback */
-.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
-.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.codehilite .kt { color: #B00040 } /* Keyword.Type */
-.codehilite .m { color: #666666 } /* Literal.Number */
-.codehilite .s { color: #BA2121 } /* Literal.String */
-.codehilite .na { color: #7D9029 } /* Name.Attribute */
-.codehilite .nb { color: #008000 } /* Name.Builtin */
-.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.codehilite .no { color: #880000 } /* Name.Constant */
-.codehilite .nd { color: #AA22FF } /* Name.Decorator */
-.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.codehilite .nf { color: #0000FF } /* Name.Function */
-.codehilite .nl { color: #A0A000 } /* Name.Label */
-.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.codehilite .nv { color: #19177C } /* Name.Variable */
-.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
-.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
-.codehilite .mf { color: #666666 } /* Literal.Number.Float */
-.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
-.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
-.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
-.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
-.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
-.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
-.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.codehilite .sx { color: #008000 } /* Literal.String.Other */
-.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
-.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
-.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
-.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.codehilite .vc { color: #19177C } /* Name.Variable.Class */
-.codehilite .vg { color: #19177C } /* Name.Variable.Global */
-.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
-.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
-  </style>
 
   <style type="text/css">
   
@@ -1056,7 +989,6 @@ table {
           
   <ul>
     <li class="mono"><a href="#IoticAgent.Core.RateLimiter.RateLimiter.__init__">__init__</a></li>
-    <li class="mono"><a href="#IoticAgent.Core.RateLimiter.RateLimiter.sleep">sleep</a></li>
     <li class="mono"><a href="#IoticAgent.Core.RateLimiter.RateLimiter.throttle">throttle</a></li>
   </ul>
 
@@ -1080,98 +1012,92 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.RateLimiter', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.RateLimiter" class="source">
-    <div class="codehilite"><pre><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
-<span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
+    <pre><code># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
+from __future__ import division, unicode_literals
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+from collections import deque
+from threading import Lock
+from time import sleep
+import logging
+logger = logging.getLogger(__name__)
 
-<span class="kn">from</span> <span class="nn">.compat</span> <span class="kn">import</span> <span class="n">monotonic</span><span class="p">,</span> <span class="n">int_types</span><span class="p">,</span> <span class="n">raise_from</span>
+from .compat import monotonic, int_types, raise_from
 
 
-<span class="k">class</span> <span class="nc">RateLimiter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Allows an action to be automatically limited to at most N iterations over time interval T&quot;&quot;&quot;</span>
+class RateLimiter(object):
+    """Allows an action to be automatically limited to at most N iterations over time interval T"""
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">wait_cmd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        `interval` - (int) time period in seconds to which max_iterations applies</span>
+    def __init__(self, interval, max_iterations, wait_cmd=None):
+        """
+        `interval` - (int) time period in seconds to which max_iterations applies
 
-<span class="sd">        `max_iterations` - (int) absolute maximum number of iterations to allow in given interval</span>
+        `max_iterations` - (int) absolute maximum number of iterations to allow in given interval
 
-<span class="sd">        `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an</span>
-<span class="sd">                     automatically interruptable wait.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameters must be positive integers&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">wait_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">wait_cmd</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wait_cmd should be called taking one argument&#39;</span><span class="p">),</span> <span class="n">ex</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="n">wait_cmd</span>
+        `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
+                     automatically interruptable wait.
+        """
+        if not all(isinstance(param, int_types) and param > 0 for param in (interval, max_iterations)):
+            raise ValueError('Parameters must be positive integers')
+        if wait_cmd is None:
+            self.__wait_cmd = sleep
+        else:
+            try:
+                wait_cmd(0)
+            except Exception as ex:  # pylint: disable=broad-except
+                raise_from(ValueError('wait_cmd should be called taking one argument'), ex)
+            self.__wait_cmd = wait_cmd
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">=</span> <span class="n">interval</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        self.__interval = interval
+        self.__max_iterations = max_iterations
+        self.__iterations = deque()
+        self.__lock = Lock()
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">None</span>
+    def throttle(self):
+        """Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once
+        per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the
+        constructor in which case its return value is used if a wait was required.
+        """
+        iterations = self.__iterations
+        timestamp = monotonic()
+        outdated_threshold = timestamp - self.__interval
 
-    <span class="k">def</span> <span class="nf">throttle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once</span>
-<span class="sd">        per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the</span>
-<span class="sd">        constructor in which case its return value is used if a wait was required.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span>
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
-        <span class="n">outdated_threshold</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span>
+        with self.__lock:
+            # remove any iterations older than interval
+            try:
+                while iterations[0] < outdated_threshold:
+                    iterations.popleft()
+            except IndexError:
+                pass
+            # apply throttling if rate would be exceeded
+            if len(iterations) <= self.__max_iterations:
+                iterations.append(timestamp)
+                retval = None
+            else:
+                # wait until oldest sample is too old
+                delay = max(0, iterations[0] + self.__interval - timestamp)
+                # only notify user about longer delays
+                if delay > 1:
+                    logger.warning('Send throttling delay (interval=%d, max_iterations=%d): %.2fs', self.__interval,
+                                   self.__max_iterations, delay)
+                retval = self.__wait_cmd(delay)
+                # log actual addition time
+                iterations.append(monotonic())
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
-            <span class="c1"># remove any iterations older than interval</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">while</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">outdated_threshold</span><span class="p">:</span>
-                    <span class="n">iterations</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="c1"># apply throttling if rate would be exceeded</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterations</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">:</span>
-                <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-                <span class="n">retval</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># wait until oldest sample is too old</span>
-                <span class="n">delay</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">-</span> <span class="n">timestamp</span><span class="p">)</span>
-                <span class="c1"># only notify user about longer delays</span>
-                <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Send throttling delay (interval=</span><span class="si">%d</span><span class="s1">, max_iterations=</span><span class="si">%d</span><span class="s1">): </span><span class="si">%.2f</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
-                <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
-                <span class="c1"># log actual addition time</span>
-                <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">monotonic</span><span class="p">())</span>
-
-            <span class="k">return</span> <span class="n">retval</span>
-</pre></div>
-
+            return retval
+</code></pre>
   </div>
 
   </header>
@@ -1206,73 +1132,67 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.RateLimiter.RateLimiter', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.RateLimiter.RateLimiter" class="source">
-    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">RateLimiter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Allows an action to be automatically limited to at most N iterations over time interval T&quot;&quot;&quot;</span>
+    <pre><code>class RateLimiter(object):
+    """Allows an action to be automatically limited to at most N iterations over time interval T"""
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">wait_cmd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        `interval` - (int) time period in seconds to which max_iterations applies</span>
+    def __init__(self, interval, max_iterations, wait_cmd=None):
+        """
+        `interval` - (int) time period in seconds to which max_iterations applies
 
-<span class="sd">        `max_iterations` - (int) absolute maximum number of iterations to allow in given interval</span>
+        `max_iterations` - (int) absolute maximum number of iterations to allow in given interval
 
-<span class="sd">        `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an</span>
-<span class="sd">                     automatically interruptable wait.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameters must be positive integers&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">wait_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">wait_cmd</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wait_cmd should be called taking one argument&#39;</span><span class="p">),</span> <span class="n">ex</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="n">wait_cmd</span>
+        `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
+                     automatically interruptable wait.
+        """
+        if not all(isinstance(param, int_types) and param > 0 for param in (interval, max_iterations)):
+            raise ValueError('Parameters must be positive integers')
+        if wait_cmd is None:
+            self.__wait_cmd = sleep
+        else:
+            try:
+                wait_cmd(0)
+            except Exception as ex:  # pylint: disable=broad-except
+                raise_from(ValueError('wait_cmd should be called taking one argument'), ex)
+            self.__wait_cmd = wait_cmd
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">=</span> <span class="n">interval</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        self.__interval = interval
+        self.__max_iterations = max_iterations
+        self.__iterations = deque()
+        self.__lock = Lock()
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">None</span>
+    def throttle(self):
+        """Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once
+        per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the
+        constructor in which case its return value is used if a wait was required.
+        """
+        iterations = self.__iterations
+        timestamp = monotonic()
+        outdated_threshold = timestamp - self.__interval
 
-    <span class="k">def</span> <span class="nf">throttle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once</span>
-<span class="sd">        per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the</span>
-<span class="sd">        constructor in which case its return value is used if a wait was required.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span>
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
-        <span class="n">outdated_threshold</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span>
+        with self.__lock:
+            # remove any iterations older than interval
+            try:
+                while iterations[0] < outdated_threshold:
+                    iterations.popleft()
+            except IndexError:
+                pass
+            # apply throttling if rate would be exceeded
+            if len(iterations) <= self.__max_iterations:
+                iterations.append(timestamp)
+                retval = None
+            else:
+                # wait until oldest sample is too old
+                delay = max(0, iterations[0] + self.__interval - timestamp)
+                # only notify user about longer delays
+                if delay > 1:
+                    logger.warning('Send throttling delay (interval=%d, max_iterations=%d): %.2fs', self.__interval,
+                                   self.__max_iterations, delay)
+                retval = self.__wait_cmd(delay)
+                # log actual addition time
+                iterations.append(monotonic())
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
-            <span class="c1"># remove any iterations older than interval</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">while</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">outdated_threshold</span><span class="p">:</span>
-                    <span class="n">iterations</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="c1"># apply throttling if rate would be exceeded</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterations</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">:</span>
-                <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-                <span class="n">retval</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># wait until oldest sample is too old</span>
-                <span class="n">delay</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">-</span> <span class="n">timestamp</span><span class="p">)</span>
-                <span class="c1"># only notify user about longer delays</span>
-                <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Send throttling delay (interval=</span><span class="si">%d</span><span class="s1">, max_iterations=</span><span class="si">%d</span><span class="s1">): </span><span class="si">%.2f</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
-                <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
-                <span class="c1"># log actual addition time</span>
-                <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">monotonic</span><span class="p">())</span>
-
-            <span class="k">return</span> <span class="n">retval</span>
-</pre></div>
-
+            return retval
+</code></pre>
   </div>
 </div>
 
@@ -1300,52 +1220,28 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.RateLimiter.RateLimiter.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.RateLimiter.RateLimiter.__init__" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">wait_cmd</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    `interval` - (int) time period in seconds to which max_iterations applies</span>
-<span class="sd">    `max_iterations` - (int) absolute maximum number of iterations to allow in given interval</span>
-<span class="sd">    `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an</span>
-<span class="sd">                 automatically interruptable wait.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameters must be positive integers&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">wait_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">wait_cmd</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wait_cmd should be called taking one argument&#39;</span><span class="p">),</span> <span class="n">ex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span> <span class="o">=</span> <span class="n">wait_cmd</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">=</span> <span class="n">interval</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
-</pre></div>
-
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="IoticAgent.Core.RateLimiter.RateLimiter.sleep">
-    <p>def <span class="ident">sleep</span>(</p><p>amount)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.RateLimiter.RateLimiter.sleep', this);">Show source &equiv;</a></p>
-  <div id="source-IoticAgent.Core.RateLimiter.RateLimiter.sleep" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
-    <span class="n">sleep</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">None</span>
-</pre></div>
-
+    <pre><code>def __init__(self, interval, max_iterations, wait_cmd=None):
+    """
+    `interval` - (int) time period in seconds to which max_iterations applies
+    `max_iterations` - (int) absolute maximum number of iterations to allow in given interval
+    `wait_cmd` - (func) use a custom wait function instead of time.sleep. Can be used to e.g. supply an
+                 automatically interruptable wait.
+    """
+    if not all(isinstance(param, int_types) and param > 0 for param in (interval, max_iterations)):
+        raise ValueError('Parameters must be positive integers')
+    if wait_cmd is None:
+        self.__wait_cmd = sleep
+    else:
+        try:
+            wait_cmd(0)
+        except Exception as ex:  # pylint: disable=broad-except
+            raise_from(ValueError('wait_cmd should be called taking one argument'), ex)
+        self.__wait_cmd = wait_cmd
+    self.__interval = interval
+    self.__max_iterations = max_iterations
+    self.__iterations = deque()
+    self.__lock = Lock()
+</code></pre>
   </div>
 </div>
 
@@ -1366,38 +1262,37 @@ constructor in which case its return value is used if a wait was required.</p></
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.RateLimiter.RateLimiter.throttle', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.RateLimiter.RateLimiter.throttle" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">throttle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once</span>
-<span class="sd">    per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the</span>
-<span class="sd">    constructor in which case its return value is used if a wait was required.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__iterations</span>
-    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
-    <span class="n">outdated_threshold</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span>
-    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
-        <span class="c1"># remove any iterations older than interval</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">outdated_threshold</span><span class="p">:</span>
-                <span class="n">iterations</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="c1"># apply throttling if rate would be exceeded</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterations</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">:</span>
-            <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-            <span class="n">retval</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># wait until oldest sample is too old</span>
-            <span class="n">delay</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span> <span class="o">-</span> <span class="n">timestamp</span><span class="p">)</span>
-            <span class="c1"># only notify user about longer delays</span>
-            <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Send throttling delay (interval=</span><span class="si">%d</span><span class="s1">, max_iterations=</span><span class="si">%d</span><span class="s1">): </span><span class="si">%.2f</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">__max_iterations</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
-            <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_cmd</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
-            <span class="c1"># log actual addition time</span>
-            <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">monotonic</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">retval</span>
-</pre></div>
-
+    <pre><code>def throttle(self):
+    """Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once
+    per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the
+    constructor in which case its return value is used if a wait was required.
+    """
+    iterations = self.__iterations
+    timestamp = monotonic()
+    outdated_threshold = timestamp - self.__interval
+    with self.__lock:
+        # remove any iterations older than interval
+        try:
+            while iterations[0] < outdated_threshold:
+                iterations.popleft()
+        except IndexError:
+            pass
+        # apply throttling if rate would be exceeded
+        if len(iterations) <= self.__max_iterations:
+            iterations.append(timestamp)
+            retval = None
+        else:
+            # wait until oldest sample is too old
+            delay = max(0, iterations[0] + self.__interval - timestamp)
+            # only notify user about longer delays
+            if delay > 1:
+                logger.warning('Send throttling delay (interval=%d, max_iterations=%d): %.2fs', self.__interval,
+                               self.__max_iterations, delay)
+            retval = self.__wait_cmd(delay)
+            # log actual addition time
+            iterations.append(monotonic())
+        return retval
+</code></pre>
   </div>
 </div>
 

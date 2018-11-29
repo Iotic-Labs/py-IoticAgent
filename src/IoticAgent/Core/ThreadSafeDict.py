@@ -51,13 +51,13 @@ class ThreadSafeDict(dict):
 
     def __enter__(self):
         if self.__debug:
-            logger.debug("__enter__:" + inspect.stack()[1])
+            logger.debug("__enter__: %s", inspect.stack()[1])
         self.__lock.acquire()
         return self
 
     def __exit__(self, typ, value, traceback):
         if self.__debug:
-            logger.debug("__exit__:" + inspect.stack()[1])
+            logger.debug("__exit__: %s", inspect.stack()[1])
         self.__lock.release()
 
 

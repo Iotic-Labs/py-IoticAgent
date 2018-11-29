@@ -853,73 +853,6 @@ table {
 
   </style>
 
-  <style type="text/css">
-  .codehilite .hll { background-color: #ffffcc }
-.codehilite  { background: #f8f8f8; }
-.codehilite .c { color: #408080; font-style: italic } /* Comment */
-.codehilite .err { border: 1px solid #FF0000 } /* Error */
-.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
-.codehilite .o { color: #666666 } /* Operator */
-.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
-.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
-.codehilite .gd { color: #A00000 } /* Generic.Deleted */
-.codehilite .ge { font-style: italic } /* Generic.Emph */
-.codehilite .gr { color: #FF0000 } /* Generic.Error */
-.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.codehilite .gi { color: #00A000 } /* Generic.Inserted */
-.codehilite .go { color: #888888 } /* Generic.Output */
-.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.codehilite .gs { font-weight: bold } /* Generic.Strong */
-.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.codehilite .gt { color: #0044DD } /* Generic.Traceback */
-.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
-.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.codehilite .kt { color: #B00040 } /* Keyword.Type */
-.codehilite .m { color: #666666 } /* Literal.Number */
-.codehilite .s { color: #BA2121 } /* Literal.String */
-.codehilite .na { color: #7D9029 } /* Name.Attribute */
-.codehilite .nb { color: #008000 } /* Name.Builtin */
-.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.codehilite .no { color: #880000 } /* Name.Constant */
-.codehilite .nd { color: #AA22FF } /* Name.Decorator */
-.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.codehilite .nf { color: #0000FF } /* Name.Function */
-.codehilite .nl { color: #A0A000 } /* Name.Label */
-.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.codehilite .nv { color: #19177C } /* Name.Variable */
-.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
-.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
-.codehilite .mf { color: #666666 } /* Literal.Number.Float */
-.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
-.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
-.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
-.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
-.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
-.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
-.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.codehilite .sx { color: #008000 } /* Literal.String.Other */
-.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
-.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
-.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
-.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.codehilite .vc { color: #19177C } /* Name.Variable.Class */
-.codehilite .vg { color: #19177C } /* Name.Variable.Global */
-.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
-.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
-  </style>
 
   <style type="text/css">
   
@@ -1116,324 +1049,323 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation" class="source">
-    <div class="codehilite"><pre><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
-<span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
+    <pre><code>#!/usr/bin/env python3
+# Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+from __future__ import unicode_literals
+from datetime import datetime, timedelta
+from uuid import UUID
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Const</span>
-<span class="kn">from</span> <span class="nn">.compat</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PY3</span><span class="p">,</span> <span class="n">string_types</span><span class="p">,</span> <span class="n">int_types</span><span class="p">,</span> <span class="n">arg_checker</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="p">,</span> <span class="n">ensure_unicode</span><span class="p">,</span> <span class="n">urlparse</span><span class="p">,</span> <span class="n">number_types</span><span class="p">,</span>
-                     <span class="n">raise_from</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">re_compile</span><span class="p">)</span>
-
-
-<span class="n">VALIDATION_LID_LEN</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="n">VALIDATION_MIME_LEN</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="n">VALIDATION_TIME_FMT</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">Z&#39;</span>
-<span class="n">VALIDATION_META_FMT</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;n3&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">,</span> <span class="s1">&#39;turtle&#39;</span><span class="p">}</span>
-<span class="n">VALIDATION_META_LANGUAGE</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">VALIDATION_META_LABEL</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="n">VALIDATION_META_COMMENT</span> <span class="o">=</span> <span class="mi">256</span>
-<span class="n">VALIDATION_META_TAG_MIN</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">VALIDATION_META_TAG_MAX</span> <span class="o">=</span> <span class="mi">16</span>
-<span class="n">VALIDATION_META_VALUE_UNIT</span> <span class="o">=</span> <span class="mi">128</span>
-<span class="n">VALIDATION_META_VALUE_UNIT_MIN_URLBITS</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">VALIDATION_META_SEARCH_TEXT</span> <span class="o">=</span> <span class="mi">128</span>
-<span class="n">VALIDATION_MAX_ENCODED_LENGTH</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">64</span> <span class="o">*</span> <span class="mf">0.98</span><span class="p">))</span>  <span class="c1"># (64k is current hard AMQP message limit)</span>
-<span class="n">VALIDATION_FOC_TYPES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">Const</span><span class="o">.</span><span class="n">R_FEED</span><span class="p">,</span> <span class="n">Const</span><span class="o">.</span><span class="n">R_CONTROL</span><span class="p">))</span>
-<span class="n">VALIDATION_SEARCH_TYPES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="s1">&#39;reduced&#39;</span><span class="p">,</span> <span class="s1">&#39;located&#39;</span><span class="p">))</span>
-<span class="c1"># http://www.w3.org/TR/xmlschema-2/#built-in-datatypes</span>
-<span class="n">VALIDATION_META_VALUE_TYPES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;dateTime&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;gYearMonth&quot;</span><span class="p">,</span> <span class="s2">&quot;gYear&quot;</span><span class="p">,</span> <span class="s2">&quot;gMonthDay&quot;</span><span class="p">,</span> <span class="s2">&quot;gDay&quot;</span><span class="p">,</span> <span class="s2">&quot;gMonth&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;hexBinary&quot;</span><span class="p">,</span> <span class="s2">&quot;base64Binary&quot;</span><span class="p">,</span> <span class="s2">&quot;anyURI&quot;</span><span class="p">,</span> <span class="s2">&quot;QName&quot;</span><span class="p">,</span> <span class="s2">&quot;NOTATION&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;normalizedString&quot;</span><span class="p">,</span> <span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="s2">&quot;language&quot;</span><span class="p">,</span> <span class="s2">&quot;NMTOKEN&quot;</span><span class="p">,</span> <span class="s2">&quot;NMTOKENS&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;NCName&quot;</span><span class="p">,</span> <span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;IDREF&quot;</span><span class="p">,</span> <span class="s2">&quot;IDREFS&quot;</span><span class="p">,</span> <span class="s2">&quot;ENTITY&quot;</span><span class="p">,</span> <span class="s2">&quot;ENTITIES&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;nonPositiveInteger&quot;</span><span class="p">,</span> <span class="s2">&quot;negativeInteger&quot;</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">,</span> <span class="s2">&quot;byte&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;nonNegativeInteger&quot;</span><span class="p">,</span> <span class="s2">&quot;unsignedLong&quot;</span><span class="p">,</span> <span class="s2">&quot;unsignedInt&quot;</span><span class="p">,</span> <span class="s2">&quot;unsignedShort&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;unsignedByte&quot;</span><span class="p">,</span> <span class="s2">&quot;positiveInteger&quot;</span><span class="p">))</span>
-
-<span class="n">_PATTERN_ASCII</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?</span><span class="si">%s</span><span class="s1">)\S+$&#39;</span> <span class="o">%</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">PY3</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="n">_PATTERN_LEAD_TRAIL_WHITESPACE</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?u)\s.*|.*\s$&#39;</span><span class="p">)</span>
-<span class="n">_PATTERN_WHITESPACE</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?u).*\s.*$&#39;</span><span class="p">)</span>
-<span class="n">_PATTERN_LANGUAGE</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?</span><span class="si">%s</span><span class="s1">i)[a-z]{2}$&#39;</span> <span class="o">%</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">PY3</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="n">_PATTERN_WORD</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?u)\w+$&#39;</span><span class="p">)</span>
-<span class="c1"># For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters</span>
-<span class="n">_PATTERN_WORDS</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;(?u)(?&lt;!\S)\w+(?!\S)&#39;</span><span class="p">)</span>
-<span class="c1"># for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)</span>
-<span class="n">_PATTERN_URL_PART</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="s1">r&#39;^(?u)\S{3}\S*$&#39;</span><span class="p">)</span>
-
-<span class="n">_LOCATION_SEARCH_ARGS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;long&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">))</span>
+from . import Const
+from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, ensure_unicode, urlparse, number_types,
+                     raise_from, Sequence, Mapping, re_compile)
 
 
-<span class="k">class</span> <span class="nc">Validation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
+VALIDATION_LID_LEN = 64
+VALIDATION_MIME_LEN = 64
+VALIDATION_TIME_FMT = '%Y-%m-%dT%H:%M:%S.%fZ'
+VALIDATION_META_FMT = {'n3', 'xml', 'turtle'}
+VALIDATION_META_LANGUAGE = 2
+VALIDATION_META_LABEL = 64
+VALIDATION_META_COMMENT = 256
+VALIDATION_META_TAG_MIN = 3
+VALIDATION_META_TAG_MAX = 16
+VALIDATION_META_VALUE_UNIT = 128
+VALIDATION_META_VALUE_UNIT_MIN_URLBITS = 3
+VALIDATION_META_SEARCH_TEXT = 128
+VALIDATION_MAX_ENCODED_LENGTH = int(round(1024 * 64 * 0.98))  # (64k is current hard AMQP message limit)
+VALIDATION_FOC_TYPES = frozenset((Const.R_FEED, Const.R_CONTROL))
+VALIDATION_SEARCH_TYPES = frozenset(('full', 'reduced', 'located'))
+# http://www.w3.org/TR/xmlschema-2/#built-in-datatypes
+VALIDATION_META_VALUE_TYPES = frozenset(("string", "boolean", "decimal", "float", "double", "duration", "dateTime",
+                                         "time", "date", "gYearMonth", "gYear", "gMonthDay", "gDay", "gMonth",
+                                         "hexBinary", "base64Binary", "anyURI", "QName", "NOTATION",
+                                         "normalizedString", "token", "language", "NMTOKEN", "NMTOKENS", "Name",
+                                         "NCName", "ID", "IDREF", "IDREFS", "ENTITY", "ENTITIES", "integer",
+                                         "nonPositiveInteger", "negativeInteger", "long", "int", "short", "byte",
+                                         "nonNegativeInteger", "unsignedLong", "unsignedInt", "unsignedShort",
+                                         "unsignedByte", "positiveInteger"))
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">check_convert_string</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                             <span class="n">no_leading_trailing_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                             <span class="n">no_whitespace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                             <span class="n">no_newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                             <span class="n">whole_word</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                             <span class="n">min_len</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                             <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Ensures the provided object can be interpreted as a unicode string, optionally with</span>
-<span class="sd">           additional restrictions imposed. By default this means a non-zero length string</span>
-<span class="sd">           which does not begin or end in whitespace.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Argument&#39;</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">no_whitespace</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">_PATTERN_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">no_leading_trailing_whitespace</span> <span class="ow">and</span> <span class="n">_PATTERN_LEAD_TRAIL_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> contains leading/trailing whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">min_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_len</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> too short/long (</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">min_len</span><span class="p">,</span> <span class="n">max_len</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">whole_word</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_WORD</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> can only contain alphanumeric (unicode) characters, numbers and the underscore&#39;</span>
-                                 <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="c1"># whole words cannot contain newline so additional check not required</span>
-        <span class="k">elif</span> <span class="n">no_newline</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain line breaks&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">obj</span>
+_PATTERN_ASCII = re_compile(r'^(?%s)\S+$' % 'a' if PY3 else '')
+_PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'^(?u)\s.*|.*\s$')
+_PATTERN_WHITESPACE = re_compile(r'^(?u).*\s.*$')
+_PATTERN_LANGUAGE = re_compile(r'^(?%si)[a-z]{2}$' % 'a' if PY3 else '')
+_PATTERN_WORD = re_compile(r'^(?u)\w+$')
+# For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters
+_PATTERN_WORDS = re_compile(r'(?u)(?<!\S)\w+(?!\S)')
+# for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)
+_PATTERN_URL_PART = re_compile(r'^(?u)\S{3}\S*$')
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">lid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;lid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
+_LOCATION_SEARCH_ARGS = frozenset(('lat', 'long', 'radius'))
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">guid_check_convert</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Take a GUID in the form of hex string &quot;32&quot; or &quot;8-4-4-4-12&quot;.</span>
-<span class="sd">        Returns hex string &quot;32&quot; or raises ValueError: badly formed hexadecimal UUID string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">guid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;guid must be a string&#39;</span><span class="p">)</span>
+class Validation(object):  # pylint: disable=too-many-public-methods
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">limit_offset_check</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">limit</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;limit/offset invalid&quot;</span><span class="p">)</span>
+    @staticmethod
+    def check_convert_string(obj, name=None,
+                             no_leading_trailing_whitespace=True,
+                             no_whitespace=False,
+                             no_newline=True,
+                             whole_word=False,
+                             min_len=1,
+                             max_len=0):
+        """Ensures the provided object can be interpreted as a unicode string, optionally with
+           additional restrictions imposed. By default this means a non-zero length string
+           which does not begin or end in whitespace."""
+        if not name:
+            name = 'Argument'
+        obj = ensure_unicode(obj, name=name)
+        if no_whitespace:
+            if _PATTERN_WHITESPACE.match(obj):
+                raise ValueError('%s cannot contain whitespace' % name)
+        elif no_leading_trailing_whitespace and _PATTERN_LEAD_TRAIL_WHITESPACE.match(obj):
+            raise ValueError('%s contains leading/trailing whitespace' % name)
+        if (min_len and len(obj) < min_len) or (max_len and len(obj) > max_len):
+            raise ValueError('%s too short/long (%d/%d)' % (name, min_len, max_len))
+        if whole_word:
+            if not _PATTERN_WORD.match(obj):
+                raise ValueError('%s can only contain alphanumeric (unicode) characters, numbers and the underscore'
+                                 % name)
+        # whole words cannot contain newline so additional check not required
+        elif no_newline and '\n' in obj:
+            raise ValueError('%s cannot contain line breaks' % name)
+        return obj
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">metafmt_check_convert</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmt&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_FMT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;metadata fmt must be one of of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_META_FMT</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fmt</span>
+    @classmethod
+    def lid_check_convert(cls, lid):
+        return cls.check_convert_string(lid, 'lid', max_len=VALIDATION_LID_LEN)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">tags_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Accept one tag as string or multiple tags in list of strings.</span>
-<span class="sd">        Returns list (with tags in unicode form) or raises ValueError</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># single string check comes first since string is also a Sequence</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tags must be a single string or list of sequence of strings&quot;</span><span class="p">)</span>
+    @classmethod
+    def pid_check_convert(cls, lid):
+        return cls.check_convert_string(lid, 'pid', max_len=VALIDATION_LID_LEN)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__tag_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="n">no_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">whole_word</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                        <span class="n">min_len</span><span class="o">=</span><span class="n">VALIDATION_META_TAG_MIN</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_TAG_MAX</span><span class="p">)</span>
+    @staticmethod
+    def guid_check_convert(guid, allow_none=False):
+        """Take a GUID in the form of hex string "32" or "8-4-4-4-12".
+        Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID string
+        """
+        if isinstance(guid, string_types):
+            return ensure_unicode(UUID(guid).hex)
+        elif guid is None and allow_none:
+            return None
+        else:
+            raise ValueError('guid must be a string')
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">bool_check_convert</span><span class="p">(</span><span class="n">bname</span><span class="p">,</span> <span class="n">barg</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Currently does no checking - passthrough for now in case people change their minds&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">barg</span><span class="p">)</span>
+    @staticmethod
+    def limit_offset_check(limit, offset):
+        if not (isinstance(limit, int_types) and limit >= 0 and
+                isinstance(offset, int_types) and offset >= 0):
+            raise ValueError("limit/offset invalid")
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">lang_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">lang</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">allow_none</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">lang</span> <span class="o">=</span> <span class="n">default</span>
-        <span class="n">lang</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lang&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_LANGUAGE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lang</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Language should only contain a-z characters&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lang</span>
+    @staticmethod
+    def metafmt_check_convert(fmt):
+        fmt = ensure_unicode(fmt, name='fmt')
+        if fmt not in VALIDATION_META_FMT:
+            raise ValueError("metadata fmt must be one of of %s" % VALIDATION_META_FMT)
+        return fmt
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mime</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mime</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mime&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mime</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">mime</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mime too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">)</span>
+    @classmethod
+    def tags_check_convert(cls, tags):
+        """Accept one tag as string or multiple tags in list of strings.
+        Returns list (with tags in unicode form) or raises ValueError
+        """
+        # single string check comes first since string is also a Sequence
+        if isinstance(tags, string_types):
+            return [cls.__tag_check_convert(tags)]
+        elif isinstance(tags, Sequence):
+            if not tags:
+                raise ValueError("Tag list is empty")
+            return [cls.__tag_check_convert(tag) for tag in tags]
+        else:
+            raise ValueError("tags must be a single string or list of sequence of strings")
 
-    <span class="n">__zeroOffsetOrNone</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">None</span><span class="p">))</span>
+    @classmethod
+    def __tag_check_convert(cls, tag):
+        return cls.check_convert_string(tag, 'tags', no_whitespace=True, whole_word=True,
+                                        min_len=VALIDATION_META_TAG_MIN, max_len=VALIDATION_META_TAG_MAX)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">datetime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">require_utc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">to_iso8601</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance required&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">require_utc</span><span class="p">:</span>
-            <span class="n">offset</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">offset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">__zeroOffsetOrNone</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance must be naive or have zero UTC offset&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">VALIDATION_TIME_FMT</span><span class="p">))</span> <span class="k">if</span> <span class="n">to_iso8601</span> <span class="k">else</span> <span class="n">time</span>
+    @staticmethod
+    def bool_check_convert(bname, barg):  # pylint: disable=unused-argument
+        """Currently does no checking - passthrough for now in case people change their minds"""
+        return bool(barg)
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">foc_check</span><span class="p">(</span><span class="n">foc</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">foc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resource type invalid expected one of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">)</span>
+    @classmethod
+    def lang_check_convert(cls, lang, allow_none=False, default=None):
+        if lang is None:
+            if allow_none:
+                return None
+            else:
+                lang = default
+        lang = ensure_unicode(lang, name='lang')
+        if not _PATTERN_LANGUAGE.match(lang):
+            raise ValueError('Language should only contain a-z characters')
+        return lang
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">label_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_LABEL</span><span class="p">)</span>
+    @classmethod
+    def mime_check_convert(cls, mime, allow_none=False):
+        if mime is None and allow_none:
+            return None
+        else:
+            mime = ensure_ascii(mime, name='mime')
+            if 1 < len(mime) < VALIDATION_MIME_LEN:
+                return mime
+            else:
+                raise ValueError('mime too long (%d)' % VALIDATION_MIME_LEN)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">comment_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_COMMENT</span><span class="p">,</span> <span class="n">no_newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    __zeroOffsetOrNone = frozenset((timedelta(0), None))
 
-    <span class="n">description_check_convert</span> <span class="o">=</span> <span class="n">comment_check_convert</span>
+    @classmethod
+    def datetime_check_convert(cls, time, allow_none=False, require_utc=True, to_iso8601=True):
+        if time is None and allow_none:
+            return None
+        if not isinstance(time, datetime):
+            raise ValueError('datetime instance required')
+        if require_utc:
+            offset = time.utcoffset()
+            if offset not in cls.__zeroOffsetOrNone:
+                raise ValueError('datetime instance must be naive or have zero UTC offset')
+        return ensure_unicode(time.strftime(VALIDATION_TIME_FMT)) if to_iso8601 else time
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">value_type_check_convert</span><span class="p">(</span><span class="n">vtype</span><span class="p">):</span>
-        <span class="n">vtype</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">vtype</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;vtype&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">vtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_VALUE_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value type not a valid xsd primitive (or derived) type name&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">vtype</span>
+    @staticmethod
+    def foc_check(foc):
+        if foc not in VALIDATION_FOC_TYPES:
+            raise ValueError("Resource type invalid expected one of %s" % VALIDATION_FOC_TYPES)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">value_unit_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;unit&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">__valid_url</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">unit</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit does not resemble valid http(s) url&#39;</span><span class="p">)</span>
+    @classmethod
+    def label_check_convert(cls, label, allow_none=False):
+        if label is None and allow_none:
+            return None
+        else:
+            return cls.check_convert_string(label, 'label', max_len=VALIDATION_META_LABEL)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__valid_url</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Expects input to already be a valid string&quot;&quot;&quot;</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">((</span><span class="n">bits</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;http&quot;</span> <span class="ow">or</span> <span class="n">bits</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;https&quot;</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">_PATTERN_URL_PART</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">netloc</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">_PATTERN_URL_PART</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+    @classmethod
+    def comment_check_convert(cls, comment, allow_none=False):
+        if comment is None and allow_none:
+            return None
+        else:
+            return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT, no_newline=False)
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">location_check</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For use by Core client wrappers&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">90</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude: &#39;{latitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">))</span>
+    description_check_convert = comment_check_convert
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">180</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude: &#39;{longitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">))</span>
+    @staticmethod
+    def value_type_check_convert(vtype):
+        vtype = ensure_unicode(vtype, name='vtype')
+        if vtype not in VALIDATION_META_VALUE_TYPES:
+            raise ValueError("value type not a valid xsd primitive (or derived) type name")
+        return vtype
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">search_location_check</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search location should be mapping with keys: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">)</span>
+    @classmethod
+    def value_unit_check_convert(cls, unit):
+        if unit is None:
+            return None
+        unit = ensure_unicode(unit, name='unit')
+        if len(unit) > VALIDATION_META_VALUE_UNIT:
+            raise ValueError('unit too long (%d)' % VALIDATION_META_VALUE_UNIT)
+        if cls.__valid_url(unit):
+            return unit
+        else:
+            raise ValueError('unit does not resemble valid http(s) url')
 
-        <span class="n">cls</span><span class="o">.</span><span class="n">location_check</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;long&#39;</span><span class="p">])</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="mi">20038</span><span class="p">):</span>  <span class="c1"># half circumference</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Radius: &#39;{radius}&#39; is invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span>
+    @classmethod
+    def __valid_url(cls, url):
+        """Expects input to already be a valid string"""
+        bits = urlparse(url)
+        return ((bits.scheme == "http" or bits.scheme == "https") and
+                _PATTERN_URL_PART.match(bits.netloc) and
+                _PATTERN_URL_PART.match(bits.path))
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">search_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">default_lang</span><span class="p">):</span>
-        <span class="n">arg_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+    @staticmethod
+    def location_check(lat, lon):
+        """For use by Core client wrappers"""
+        if not (isinstance(lat, number_types) and -90 <= lat <= 90):
+            raise ValueError("Latitude: '{latitude}' invalid".format(latitude=lat))
 
-        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__search_text_check_convert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        if not (isinstance(lon, number_types) and -180 <= lon <= 180):
+            raise ValueError("Longitude: '{longitude}' invalid".format(longitude=lon))
 
-        <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;lang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">lang_check_convert</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default_lang</span><span class="p">)</span>
+    @classmethod
+    def search_location_check(cls, location):
+        """Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats
+        """
+        if not (isinstance(location, Mapping) and set(location.keys()) == _LOCATION_SEARCH_ARGS):
+            raise ValueError('Search location should be mapping with keys: %s' % _LOCATION_SEARCH_ARGS)
 
-        <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">search_location_check</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-            <span class="n">payload</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">25</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;radius cannot exceed 25km when no search text supplied&#39;</span><span class="p">)</span>
+        cls.location_check(location['lat'], location['long'])
+        radius = location['radius']
+        if not (isinstance(radius, number_types) and 0 < radius <= 20038):  # half circumference
+            raise ValueError("Radius: '{radius}' is invalid".format(radius=radius))
 
-        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">value_unit_check_convert</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    @classmethod
+    def search_check_convert(cls, text, lang, location, unit, default_lang):
+        arg_count = 0
+        payload = {}
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_count</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of text, location and unit must be specified&#39;</span><span class="p">)</span>
+        if text is not None:
+            payload['text'] = cls.__search_text_check_convert(text)
+            arg_count += 1
 
-        <span class="k">return</span> <span class="n">payload</span>
+        payload['lang'] = cls.lang_check_convert(lang, default=default_lang)
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-        <span class="c1"># Allow for old behaviour, specified as string</span>
-        <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">type_</span>
-        <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
+        if location is not None:
+            cls.search_location_check(location)
+            payload.update(location)
+            arg_count += 1
+            if location['radius'] > 25 and text is None:
+                raise ValueError('radius cannot exceed 25km when no search text supplied')
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__search_text_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts and keeps only words in text deemed to be valid&quot;&quot;&quot;</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">no_leading_trailing_whitespace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">VALIDATION_META_SEARCH_TEXT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Search text can contain at most </span><span class="si">%d</span><span class="s2"> characters&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_META_SEARCH_TEXT</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_PATTERN_WORDS</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search text must contain at least one non-whitespace term (word)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">text</span>
+        if unit is not None:
+            payload['unit'] = cls.value_unit_check_convert(unit)
+            arg_count += 1
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">callable_check</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arg_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check whether func is callable, with the given number of positional arguments. Returns True if check</span>
-<span class="sd">           succeeded, False otherwise.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_none</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable cannot be None&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">arg_value</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg_count</span><span class="p">)]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable </span><span class="si">%s</span><span class="s1"> invalid (for </span><span class="si">%d</span><span class="s1"> arguments)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">))</span>
-</pre></div>
+        if not arg_count:
+            raise ValueError('At least one of text, location and unit must be specified')
 
+        return payload
+
+    @staticmethod
+    def search_type_check_convert(type_):
+        # Allow for old behaviour, specified as string
+        if type_ in Const.SearchType:
+            return type_
+        type_ = ensure_ascii(type_, name='type_')
+        try:
+            return Const.SearchType(type_)
+        except ValueError as ex:
+            raise_from(ValueError('Search type must be one of: %s' % ', '.join(str(x) for x in Const.SearchType)), ex)
+
+    @classmethod
+    def __search_text_check_convert(cls, text):
+        """Converts and keeps only words in text deemed to be valid"""
+        text = cls.check_convert_string(text, name='text', no_leading_trailing_whitespace=False)
+        if len(text) > VALIDATION_META_SEARCH_TEXT:
+            raise ValueError("Search text can contain at most %d characters" % VALIDATION_META_SEARCH_TEXT)
+        text = ' '.join(_PATTERN_WORDS.findall(text))
+        if not text:
+            raise ValueError('Search text must contain at least one non-whitespace term (word)')
+        return text
+
+    @staticmethod
+    def callable_check(func, arg_count=1, arg_value=None, allow_none=False):
+        """Check whether func is callable, with the given number of positional arguments. Returns True if check
+           succeeded, False otherwise."""
+        if func is None:
+            if not allow_none:
+                raise ValueError('callable cannot be None')
+        elif not arg_checker(func, *[arg_value for _ in range(arg_count)]):
+            raise ValueError('callable %s invalid (for %d arguments)' % (func, arg_count))
+</code></pre>
   </div>
 
   </header>
@@ -1603,262 +1535,261 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation" class="source">
-    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Validation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
+    <pre><code>class Validation(object):  # pylint: disable=too-many-public-methods
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">check_convert_string</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                             <span class="n">no_leading_trailing_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                             <span class="n">no_whitespace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                             <span class="n">no_newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                             <span class="n">whole_word</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                             <span class="n">min_len</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                             <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Ensures the provided object can be interpreted as a unicode string, optionally with</span>
-<span class="sd">           additional restrictions imposed. By default this means a non-zero length string</span>
-<span class="sd">           which does not begin or end in whitespace.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Argument&#39;</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">no_whitespace</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">_PATTERN_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">no_leading_trailing_whitespace</span> <span class="ow">and</span> <span class="n">_PATTERN_LEAD_TRAIL_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> contains leading/trailing whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">min_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_len</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> too short/long (</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">min_len</span><span class="p">,</span> <span class="n">max_len</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">whole_word</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_WORD</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> can only contain alphanumeric (unicode) characters, numbers and the underscore&#39;</span>
-                                 <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="c1"># whole words cannot contain newline so additional check not required</span>
-        <span class="k">elif</span> <span class="n">no_newline</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain line breaks&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">obj</span>
+    @staticmethod
+    def check_convert_string(obj, name=None,
+                             no_leading_trailing_whitespace=True,
+                             no_whitespace=False,
+                             no_newline=True,
+                             whole_word=False,
+                             min_len=1,
+                             max_len=0):
+        """Ensures the provided object can be interpreted as a unicode string, optionally with
+           additional restrictions imposed. By default this means a non-zero length string
+           which does not begin or end in whitespace."""
+        if not name:
+            name = 'Argument'
+        obj = ensure_unicode(obj, name=name)
+        if no_whitespace:
+            if _PATTERN_WHITESPACE.match(obj):
+                raise ValueError('%s cannot contain whitespace' % name)
+        elif no_leading_trailing_whitespace and _PATTERN_LEAD_TRAIL_WHITESPACE.match(obj):
+            raise ValueError('%s contains leading/trailing whitespace' % name)
+        if (min_len and len(obj) < min_len) or (max_len and len(obj) > max_len):
+            raise ValueError('%s too short/long (%d/%d)' % (name, min_len, max_len))
+        if whole_word:
+            if not _PATTERN_WORD.match(obj):
+                raise ValueError('%s can only contain alphanumeric (unicode) characters, numbers and the underscore'
+                                 % name)
+        # whole words cannot contain newline so additional check not required
+        elif no_newline and '\n' in obj:
+            raise ValueError('%s cannot contain line breaks' % name)
+        return obj
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">lid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;lid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
+    @classmethod
+    def lid_check_convert(cls, lid):
+        return cls.check_convert_string(lid, 'lid', max_len=VALIDATION_LID_LEN)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">pid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
+    @classmethod
+    def pid_check_convert(cls, lid):
+        return cls.check_convert_string(lid, 'pid', max_len=VALIDATION_LID_LEN)
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">guid_check_convert</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Take a GUID in the form of hex string &quot;32&quot; or &quot;8-4-4-4-12&quot;.</span>
-<span class="sd">        Returns hex string &quot;32&quot; or raises ValueError: badly formed hexadecimal UUID string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">guid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;guid must be a string&#39;</span><span class="p">)</span>
+    @staticmethod
+    def guid_check_convert(guid, allow_none=False):
+        """Take a GUID in the form of hex string "32" or "8-4-4-4-12".
+        Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID string
+        """
+        if isinstance(guid, string_types):
+            return ensure_unicode(UUID(guid).hex)
+        elif guid is None and allow_none:
+            return None
+        else:
+            raise ValueError('guid must be a string')
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">limit_offset_check</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">limit</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;limit/offset invalid&quot;</span><span class="p">)</span>
+    @staticmethod
+    def limit_offset_check(limit, offset):
+        if not (isinstance(limit, int_types) and limit >= 0 and
+                isinstance(offset, int_types) and offset >= 0):
+            raise ValueError("limit/offset invalid")
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">metafmt_check_convert</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmt&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_FMT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;metadata fmt must be one of of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_META_FMT</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fmt</span>
+    @staticmethod
+    def metafmt_check_convert(fmt):
+        fmt = ensure_unicode(fmt, name='fmt')
+        if fmt not in VALIDATION_META_FMT:
+            raise ValueError("metadata fmt must be one of of %s" % VALIDATION_META_FMT)
+        return fmt
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">tags_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Accept one tag as string or multiple tags in list of strings.</span>
-<span class="sd">        Returns list (with tags in unicode form) or raises ValueError</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># single string check comes first since string is also a Sequence</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tags must be a single string or list of sequence of strings&quot;</span><span class="p">)</span>
+    @classmethod
+    def tags_check_convert(cls, tags):
+        """Accept one tag as string or multiple tags in list of strings.
+        Returns list (with tags in unicode form) or raises ValueError
+        """
+        # single string check comes first since string is also a Sequence
+        if isinstance(tags, string_types):
+            return [cls.__tag_check_convert(tags)]
+        elif isinstance(tags, Sequence):
+            if not tags:
+                raise ValueError("Tag list is empty")
+            return [cls.__tag_check_convert(tag) for tag in tags]
+        else:
+            raise ValueError("tags must be a single string or list of sequence of strings")
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__tag_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="n">no_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">whole_word</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                        <span class="n">min_len</span><span class="o">=</span><span class="n">VALIDATION_META_TAG_MIN</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_TAG_MAX</span><span class="p">)</span>
+    @classmethod
+    def __tag_check_convert(cls, tag):
+        return cls.check_convert_string(tag, 'tags', no_whitespace=True, whole_word=True,
+                                        min_len=VALIDATION_META_TAG_MIN, max_len=VALIDATION_META_TAG_MAX)
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">bool_check_convert</span><span class="p">(</span><span class="n">bname</span><span class="p">,</span> <span class="n">barg</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="sd">&quot;&quot;&quot;Currently does no checking - passthrough for now in case people change their minds&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">barg</span><span class="p">)</span>
+    @staticmethod
+    def bool_check_convert(bname, barg):  # pylint: disable=unused-argument
+        """Currently does no checking - passthrough for now in case people change their minds"""
+        return bool(barg)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">lang_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">lang</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">allow_none</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">lang</span> <span class="o">=</span> <span class="n">default</span>
-        <span class="n">lang</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lang&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_LANGUAGE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lang</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Language should only contain a-z characters&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lang</span>
+    @classmethod
+    def lang_check_convert(cls, lang, allow_none=False, default=None):
+        if lang is None:
+            if allow_none:
+                return None
+            else:
+                lang = default
+        lang = ensure_unicode(lang, name='lang')
+        if not _PATTERN_LANGUAGE.match(lang):
+            raise ValueError('Language should only contain a-z characters')
+        return lang
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mime</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mime</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mime&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mime</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">mime</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mime too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">)</span>
+    @classmethod
+    def mime_check_convert(cls, mime, allow_none=False):
+        if mime is None and allow_none:
+            return None
+        else:
+            mime = ensure_ascii(mime, name='mime')
+            if 1 < len(mime) < VALIDATION_MIME_LEN:
+                return mime
+            else:
+                raise ValueError('mime too long (%d)' % VALIDATION_MIME_LEN)
 
-    <span class="n">__zeroOffsetOrNone</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">None</span><span class="p">))</span>
+    __zeroOffsetOrNone = frozenset((timedelta(0), None))
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">datetime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">require_utc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">to_iso8601</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance required&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">require_utc</span><span class="p">:</span>
-            <span class="n">offset</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">offset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">__zeroOffsetOrNone</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance must be naive or have zero UTC offset&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">VALIDATION_TIME_FMT</span><span class="p">))</span> <span class="k">if</span> <span class="n">to_iso8601</span> <span class="k">else</span> <span class="n">time</span>
+    @classmethod
+    def datetime_check_convert(cls, time, allow_none=False, require_utc=True, to_iso8601=True):
+        if time is None and allow_none:
+            return None
+        if not isinstance(time, datetime):
+            raise ValueError('datetime instance required')
+        if require_utc:
+            offset = time.utcoffset()
+            if offset not in cls.__zeroOffsetOrNone:
+                raise ValueError('datetime instance must be naive or have zero UTC offset')
+        return ensure_unicode(time.strftime(VALIDATION_TIME_FMT)) if to_iso8601 else time
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">foc_check</span><span class="p">(</span><span class="n">foc</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">foc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resource type invalid expected one of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">)</span>
+    @staticmethod
+    def foc_check(foc):
+        if foc not in VALIDATION_FOC_TYPES:
+            raise ValueError("Resource type invalid expected one of %s" % VALIDATION_FOC_TYPES)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">label_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_LABEL</span><span class="p">)</span>
+    @classmethod
+    def label_check_convert(cls, label, allow_none=False):
+        if label is None and allow_none:
+            return None
+        else:
+            return cls.check_convert_string(label, 'label', max_len=VALIDATION_META_LABEL)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">comment_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_COMMENT</span><span class="p">,</span> <span class="n">no_newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    @classmethod
+    def comment_check_convert(cls, comment, allow_none=False):
+        if comment is None and allow_none:
+            return None
+        else:
+            return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT, no_newline=False)
 
-    <span class="n">description_check_convert</span> <span class="o">=</span> <span class="n">comment_check_convert</span>
+    description_check_convert = comment_check_convert
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">value_type_check_convert</span><span class="p">(</span><span class="n">vtype</span><span class="p">):</span>
-        <span class="n">vtype</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">vtype</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;vtype&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">vtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_VALUE_TYPES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value type not a valid xsd primitive (or derived) type name&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">vtype</span>
+    @staticmethod
+    def value_type_check_convert(vtype):
+        vtype = ensure_unicode(vtype, name='vtype')
+        if vtype not in VALIDATION_META_VALUE_TYPES:
+            raise ValueError("value type not a valid xsd primitive (or derived) type name")
+        return vtype
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">value_unit_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;unit&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">__valid_url</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">unit</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit does not resemble valid http(s) url&#39;</span><span class="p">)</span>
+    @classmethod
+    def value_unit_check_convert(cls, unit):
+        if unit is None:
+            return None
+        unit = ensure_unicode(unit, name='unit')
+        if len(unit) > VALIDATION_META_VALUE_UNIT:
+            raise ValueError('unit too long (%d)' % VALIDATION_META_VALUE_UNIT)
+        if cls.__valid_url(unit):
+            return unit
+        else:
+            raise ValueError('unit does not resemble valid http(s) url')
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__valid_url</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Expects input to already be a valid string&quot;&quot;&quot;</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">((</span><span class="n">bits</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;http&quot;</span> <span class="ow">or</span> <span class="n">bits</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;https&quot;</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">_PATTERN_URL_PART</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">netloc</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">_PATTERN_URL_PART</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+    @classmethod
+    def __valid_url(cls, url):
+        """Expects input to already be a valid string"""
+        bits = urlparse(url)
+        return ((bits.scheme == "http" or bits.scheme == "https") and
+                _PATTERN_URL_PART.match(bits.netloc) and
+                _PATTERN_URL_PART.match(bits.path))
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">location_check</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;For use by Core client wrappers&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">90</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude: &#39;{latitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">))</span>
+    @staticmethod
+    def location_check(lat, lon):
+        """For use by Core client wrappers"""
+        if not (isinstance(lat, number_types) and -90 <= lat <= 90):
+            raise ValueError("Latitude: '{latitude}' invalid".format(latitude=lat))
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">180</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude: &#39;{longitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">))</span>
+        if not (isinstance(lon, number_types) and -180 <= lon <= 180):
+            raise ValueError("Longitude: '{longitude}' invalid".format(longitude=lon))
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">search_location_check</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search location should be mapping with keys: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">)</span>
+    @classmethod
+    def search_location_check(cls, location):
+        """Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats
+        """
+        if not (isinstance(location, Mapping) and set(location.keys()) == _LOCATION_SEARCH_ARGS):
+            raise ValueError('Search location should be mapping with keys: %s' % _LOCATION_SEARCH_ARGS)
 
-        <span class="n">cls</span><span class="o">.</span><span class="n">location_check</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;long&#39;</span><span class="p">])</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="mi">20038</span><span class="p">):</span>  <span class="c1"># half circumference</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Radius: &#39;{radius}&#39; is invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span>
+        cls.location_check(location['lat'], location['long'])
+        radius = location['radius']
+        if not (isinstance(radius, number_types) and 0 < radius <= 20038):  # half circumference
+            raise ValueError("Radius: '{radius}' is invalid".format(radius=radius))
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">search_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">default_lang</span><span class="p">):</span>
-        <span class="n">arg_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+    @classmethod
+    def search_check_convert(cls, text, lang, location, unit, default_lang):
+        arg_count = 0
+        payload = {}
 
-        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__search_text_check_convert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        if text is not None:
+            payload['text'] = cls.__search_text_check_convert(text)
+            arg_count += 1
 
-        <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;lang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">lang_check_convert</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default_lang</span><span class="p">)</span>
+        payload['lang'] = cls.lang_check_convert(lang, default=default_lang)
 
-        <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">cls</span><span class="o">.</span><span class="n">search_location_check</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-            <span class="n">payload</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">25</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;radius cannot exceed 25km when no search text supplied&#39;</span><span class="p">)</span>
+        if location is not None:
+            cls.search_location_check(location)
+            payload.update(location)
+            arg_count += 1
+            if location['radius'] > 25 and text is None:
+                raise ValueError('radius cannot exceed 25km when no search text supplied')
 
-        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">value_unit_check_convert</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-            <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        if unit is not None:
+            payload['unit'] = cls.value_unit_check_convert(unit)
+            arg_count += 1
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_count</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of text, location and unit must be specified&#39;</span><span class="p">)</span>
+        if not arg_count:
+            raise ValueError('At least one of text, location and unit must be specified')
 
-        <span class="k">return</span> <span class="n">payload</span>
+        return payload
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-        <span class="c1"># Allow for old behaviour, specified as string</span>
-        <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">type_</span>
-        <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
+    @staticmethod
+    def search_type_check_convert(type_):
+        # Allow for old behaviour, specified as string
+        if type_ in Const.SearchType:
+            return type_
+        type_ = ensure_ascii(type_, name='type_')
+        try:
+            return Const.SearchType(type_)
+        except ValueError as ex:
+            raise_from(ValueError('Search type must be one of: %s' % ', '.join(str(x) for x in Const.SearchType)), ex)
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__search_text_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts and keeps only words in text deemed to be valid&quot;&quot;&quot;</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">no_leading_trailing_whitespace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">VALIDATION_META_SEARCH_TEXT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Search text can contain at most </span><span class="si">%d</span><span class="s2"> characters&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_META_SEARCH_TEXT</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_PATTERN_WORDS</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search text must contain at least one non-whitespace term (word)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">text</span>
+    @classmethod
+    def __search_text_check_convert(cls, text):
+        """Converts and keeps only words in text deemed to be valid"""
+        text = cls.check_convert_string(text, name='text', no_leading_trailing_whitespace=False)
+        if len(text) > VALIDATION_META_SEARCH_TEXT:
+            raise ValueError("Search text can contain at most %d characters" % VALIDATION_META_SEARCH_TEXT)
+        text = ' '.join(_PATTERN_WORDS.findall(text))
+        if not text:
+            raise ValueError('Search text must contain at least one non-whitespace term (word)')
+        return text
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">callable_check</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arg_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check whether func is callable, with the given number of positional arguments. Returns True if check</span>
-<span class="sd">           succeeded, False otherwise.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_none</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable cannot be None&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">arg_value</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg_count</span><span class="p">)]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable </span><span class="si">%s</span><span class="s1"> invalid (for </span><span class="si">%d</span><span class="s1"> arguments)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">))</span>
-</pre></div>
-
+    @staticmethod
+    def callable_check(func, arg_count=1, arg_value=None, allow_none=False):
+        """Check whether func is callable, with the given number of positional arguments. Returns True if check
+           succeeded, False otherwise."""
+        if func is None:
+            if not allow_none:
+                raise ValueError('callable cannot be None')
+        elif not arg_checker(func, *[arg_value for _ in range(arg_count)]):
+            raise ValueError('callable %s invalid (for %d arguments)' % (func, arg_count))
+</code></pre>
   </div>
 </div>
 
@@ -1883,12 +1814,11 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.bool_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.bool_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">bool_check_convert</span><span class="p">(</span><span class="n">bname</span><span class="p">,</span> <span class="n">barg</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-    <span class="sd">&quot;&quot;&quot;Currently does no checking - passthrough for now in case people change their minds&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">barg</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def bool_check_convert(bname, barg):  # pylint: disable=unused-argument
+    """Currently does no checking - passthrough for now in case people change their minds"""
+    return bool(barg)
+</code></pre>
   </div>
 </div>
 
@@ -1908,17 +1838,16 @@ succeeded, False otherwise.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.callable_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.callable_check" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">callable_check</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arg_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether func is callable, with the given number of positional arguments. Returns True if check</span>
-<span class="sd">       succeeded, False otherwise.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable cannot be None&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="n">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">arg_value</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg_count</span><span class="p">)]):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;callable </span><span class="si">%s</span><span class="s1"> invalid (for </span><span class="si">%d</span><span class="s1"> arguments)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">))</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def callable_check(func, arg_count=1, arg_value=None, allow_none=False):
+    """Check whether func is callable, with the given number of positional arguments. Returns True if check
+       succeeded, False otherwise."""
+    if func is None:
+        if not allow_none:
+            raise ValueError('callable cannot be None')
+    elif not arg_checker(func, *[arg_value for _ in range(arg_count)]):
+        raise ValueError('callable %s invalid (for %d arguments)' % (func, arg_count))
+</code></pre>
   </div>
 </div>
 
@@ -1939,37 +1868,36 @@ which does not begin or end in whitespace.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.check_convert_string', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.check_convert_string" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">check_convert_string</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                         <span class="n">no_leading_trailing_whitespace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                         <span class="n">no_whitespace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                         <span class="n">no_newline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                         <span class="n">whole_word</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                         <span class="n">min_len</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                         <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ensures the provided object can be interpreted as a unicode string, optionally with</span>
-<span class="sd">       additional restrictions imposed. By default this means a non-zero length string</span>
-<span class="sd">       which does not begin or end in whitespace.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Argument&#39;</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">no_whitespace</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">_PATTERN_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">no_leading_trailing_whitespace</span> <span class="ow">and</span> <span class="n">_PATTERN_LEAD_TRAIL_WHITESPACE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> contains leading/trailing whitespace&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">min_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_len</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_len</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> too short/long (</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">min_len</span><span class="p">,</span> <span class="n">max_len</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">whole_word</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_WORD</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> can only contain alphanumeric (unicode) characters, numbers and the underscore&#39;</span>
-                             <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-    <span class="c1"># whole words cannot contain newline so additional check not required</span>
-    <span class="k">elif</span> <span class="n">no_newline</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot contain line breaks&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">obj</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def check_convert_string(obj, name=None,
+                         no_leading_trailing_whitespace=True,
+                         no_whitespace=False,
+                         no_newline=True,
+                         whole_word=False,
+                         min_len=1,
+                         max_len=0):
+    """Ensures the provided object can be interpreted as a unicode string, optionally with
+       additional restrictions imposed. By default this means a non-zero length string
+       which does not begin or end in whitespace."""
+    if not name:
+        name = 'Argument'
+    obj = ensure_unicode(obj, name=name)
+    if no_whitespace:
+        if _PATTERN_WHITESPACE.match(obj):
+            raise ValueError('%s cannot contain whitespace' % name)
+    elif no_leading_trailing_whitespace and _PATTERN_LEAD_TRAIL_WHITESPACE.match(obj):
+        raise ValueError('%s contains leading/trailing whitespace' % name)
+    if (min_len and len(obj) < min_len) or (max_len and len(obj) > max_len):
+        raise ValueError('%s too short/long (%d/%d)' % (name, min_len, max_len))
+    if whole_word:
+        if not _PATTERN_WORD.match(obj):
+            raise ValueError('%s can only contain alphanumeric (unicode) characters, numbers and the underscore'
+                             % name)
+    # whole words cannot contain newline so additional check not required
+    elif no_newline and '\n' in obj:
+        raise ValueError('%s cannot contain line breaks' % name)
+    return obj
+</code></pre>
   </div>
 </div>
 
@@ -1987,12 +1915,11 @@ which does not begin or end in whitespace.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.foc_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.foc_check" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">foc_check</span><span class="p">(</span><span class="n">foc</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">foc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resource type invalid expected one of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_FOC_TYPES</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def foc_check(foc):
+    if foc not in VALIDATION_FOC_TYPES:
+        raise ValueError("Resource type invalid expected one of %s" % VALIDATION_FOC_TYPES)
+</code></pre>
   </div>
 </div>
 
@@ -2012,19 +1939,18 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.guid_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.guid_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">guid_check_convert</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Take a GUID in the form of hex string &quot;32&quot; or &quot;8-4-4-4-12&quot;.</span>
-<span class="sd">    Returns hex string &quot;32&quot; or raises ValueError: badly formed hexadecimal UUID string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">guid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;guid must be a string&#39;</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def guid_check_convert(guid, allow_none=False):
+    """Take a GUID in the form of hex string "32" or "8-4-4-4-12".
+    Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID string
+    """
+    if isinstance(guid, string_types):
+        return ensure_unicode(UUID(guid).hex)
+    elif guid is None and allow_none:
+        return None
+    else:
+        raise ValueError('guid must be a string')
+</code></pre>
   </div>
 </div>
 
@@ -2042,13 +1968,12 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.limit_offset_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.limit_offset_check" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">limit_offset_check</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">limit</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">int_types</span><span class="p">)</span> <span class="ow">and</span> <span class="n">offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;limit/offset invalid&quot;</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def limit_offset_check(limit, offset):
+    if not (isinstance(limit, int_types) and limit >= 0 and
+            isinstance(offset, int_types) and offset >= 0):
+        raise ValueError("limit/offset invalid")
+</code></pre>
   </div>
 </div>
 
@@ -2067,15 +1992,14 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.location_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.location_check" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">location_check</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;For use by Core client wrappers&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">90</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="mi">90</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Latitude: &#39;{latitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="n">lat</span><span class="p">))</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="o">-</span><span class="mi">180</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Longitude: &#39;{longitude}&#39; invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">longitude</span><span class="o">=</span><span class="n">lon</span><span class="p">))</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def location_check(lat, lon):
+    """For use by Core client wrappers"""
+    if not (isinstance(lat, number_types) and -90 <= lat <= 90):
+        raise ValueError("Latitude: '{latitude}' invalid".format(latitude=lat))
+    if not (isinstance(lon, number_types) and -180 <= lon <= 180):
+        raise ValueError("Longitude: '{longitude}' invalid".format(longitude=lon))
+</code></pre>
   </div>
 </div>
 
@@ -2093,14 +2017,13 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.metafmt_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.metafmt_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">metafmt_check_convert</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
-    <span class="n">fmt</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmt&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_FMT</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;metadata fmt must be one of of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">VALIDATION_META_FMT</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fmt</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def metafmt_check_convert(fmt):
+    fmt = ensure_unicode(fmt, name='fmt')
+    if fmt not in VALIDATION_META_FMT:
+        raise ValueError("metadata fmt must be one of of %s" % VALIDATION_META_FMT)
+    return fmt
+</code></pre>
   </div>
 </div>
 
@@ -2118,18 +2041,17 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.search_type_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.search_type_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">search_type_check_convert</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-    <span class="c1"># Allow for old behaviour, specified as string</span>
-    <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">type_</span>
-    <span class="n">type_</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;type_&#39;</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search type must be one of: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Const</span><span class="o">.</span><span class="n">SearchType</span><span class="p">)),</span> <span class="n">ex</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def search_type_check_convert(type_):
+    # Allow for old behaviour, specified as string
+    if type_ in Const.SearchType:
+        return type_
+    type_ = ensure_ascii(type_, name='type_')
+    try:
+        return Const.SearchType(type_)
+    except ValueError as ex:
+        raise_from(ValueError('Search type must be one of: %s' % ', '.join(str(x) for x in Const.SearchType)), ex)
+</code></pre>
   </div>
 </div>
 
@@ -2147,14 +2069,13 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.value_type_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.value_type_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">value_type_check_convert</span><span class="p">(</span><span class="n">vtype</span><span class="p">):</span>
-    <span class="n">vtype</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">vtype</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;vtype&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">vtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALIDATION_META_VALUE_TYPES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value type not a valid xsd primitive (or derived) type name&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">vtype</span>
-</pre></div>
-
+    <pre><code>@staticmethod
+def value_type_check_convert(vtype):
+    vtype = ensure_unicode(vtype, name='vtype')
+    if vtype not in VALIDATION_META_VALUE_TYPES:
+        raise ValueError("value type not a valid xsd primitive (or derived) type name")
+    return vtype
+</code></pre>
   </div>
 </div>
 
@@ -2173,14 +2094,13 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.comment_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.comment_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">comment_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_COMMENT</span><span class="p">,</span> <span class="n">no_newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def comment_check_convert(cls, comment, allow_none=False):
+    if comment is None and allow_none:
+        return None
+    else:
+        return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT, no_newline=False)
+</code></pre>
   </div>
 </div>
 
@@ -2198,19 +2118,18 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.datetime_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.datetime_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">datetime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">require_utc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">to_iso8601</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance required&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">require_utc</span><span class="p">:</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">offset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">__zeroOffsetOrNone</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime instance must be naive or have zero UTC offset&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">VALIDATION_TIME_FMT</span><span class="p">))</span> <span class="k">if</span> <span class="n">to_iso8601</span> <span class="k">else</span> <span class="n">time</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def datetime_check_convert(cls, time, allow_none=False, require_utc=True, to_iso8601=True):
+    if time is None and allow_none:
+        return None
+    if not isinstance(time, datetime):
+        raise ValueError('datetime instance required')
+    if require_utc:
+        offset = time.utcoffset()
+        if offset not in cls.__zeroOffsetOrNone:
+            raise ValueError('datetime instance must be naive or have zero UTC offset')
+    return ensure_unicode(time.strftime(VALIDATION_TIME_FMT)) if to_iso8601 else time
+</code></pre>
   </div>
 </div>
 
@@ -2228,14 +2147,13 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.description_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.description_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">comment_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_COMMENT</span><span class="p">,</span> <span class="n">no_newline</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def comment_check_convert(cls, comment, allow_none=False):
+    if comment is None and allow_none:
+        return None
+    else:
+        return cls.check_convert_string(comment, 'comment', max_len=VALIDATION_META_COMMENT, no_newline=False)
+</code></pre>
   </div>
 </div>
 
@@ -2253,14 +2171,13 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.label_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.label_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">label_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_META_LABEL</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def label_check_convert(cls, label, allow_none=False):
+    if label is None and allow_none:
+        return None
+    else:
+        return cls.check_convert_string(label, 'label', max_len=VALIDATION_META_LABEL)
+</code></pre>
   </div>
 </div>
 
@@ -2278,19 +2195,18 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.lang_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.lang_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">lang_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">lang</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">allow_none</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">lang</span> <span class="o">=</span> <span class="n">default</span>
-    <span class="n">lang</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lang&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_PATTERN_LANGUAGE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lang</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Language should only contain a-z characters&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">lang</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def lang_check_convert(cls, lang, allow_none=False, default=None):
+    if lang is None:
+        if allow_none:
+            return None
+        else:
+            lang = default
+    lang = ensure_unicode(lang, name='lang')
+    if not _PATTERN_LANGUAGE.match(lang):
+        raise ValueError('Language should only contain a-z characters')
+    return lang
+</code></pre>
   </div>
 </div>
 
@@ -2308,11 +2224,10 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.lid_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.lid_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">lid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;lid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def lid_check_convert(cls, lid):
+    return cls.check_convert_string(lid, 'lid', max_len=VALIDATION_LID_LEN)
+</code></pre>
   </div>
 </div>
 
@@ -2330,18 +2245,17 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.mime_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.mime_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">mime_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mime</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">allow_none</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mime</span> <span class="o">=</span> <span class="n">ensure_ascii</span><span class="p">(</span><span class="n">mime</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mime&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">mime</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">mime</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mime too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_MIME_LEN</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def mime_check_convert(cls, mime, allow_none=False):
+    if mime is None and allow_none:
+        return None
+    else:
+        mime = ensure_ascii(mime, name='mime')
+        if 1 < len(mime) < VALIDATION_MIME_LEN:
+            return mime
+        else:
+            raise ValueError('mime too long (%d)' % VALIDATION_MIME_LEN)
+</code></pre>
   </div>
 </div>
 
@@ -2359,11 +2273,10 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.pid_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.pid_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">pid_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">check_convert_string</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s1">&#39;pid&#39;</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">VALIDATION_LID_LEN</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def pid_check_convert(cls, lid):
+    return cls.check_convert_string(lid, 'pid', max_len=VALIDATION_LID_LEN)
+</code></pre>
   </div>
 </div>
 
@@ -2381,28 +2294,27 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.search_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.search_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">search_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">default_lang</span><span class="p">):</span>
-    <span class="n">arg_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__search_text_check_convert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;lang&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">lang_check_convert</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default_lang</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">cls</span><span class="o">.</span><span class="n">search_location_check</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-        <span class="n">payload</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
-        <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">25</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;radius cannot exceed 25km when no search text supplied&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">value_unit_check_convert</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">arg_count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_count</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of text, location and unit must be specified&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">payload</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def search_check_convert(cls, text, lang, location, unit, default_lang):
+    arg_count = 0
+    payload = {}
+    if text is not None:
+        payload['text'] = cls.__search_text_check_convert(text)
+        arg_count += 1
+    payload['lang'] = cls.lang_check_convert(lang, default=default_lang)
+    if location is not None:
+        cls.search_location_check(location)
+        payload.update(location)
+        arg_count += 1
+        if location['radius'] > 25 and text is None:
+            raise ValueError('radius cannot exceed 25km when no search text supplied')
+    if unit is not None:
+        payload['unit'] = cls.value_unit_check_convert(unit)
+        arg_count += 1
+    if not arg_count:
+        raise ValueError('At least one of text, location and unit must be specified')
+    return payload
+</code></pre>
   </div>
 </div>
 
@@ -2421,18 +2333,17 @@ Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID stri
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.search_location_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.search_location_check" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">search_location_check</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Search location should be mapping with keys: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_LOCATION_SEARCH_ARGS</span><span class="p">)</span>
-    <span class="n">cls</span><span class="o">.</span><span class="n">location_check</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;long&#39;</span><span class="p">])</span>
-    <span class="n">radius</span> <span class="o">=</span> <span class="n">location</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">number_types</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="mi">20038</span><span class="p">):</span>  <span class="c1"># half circumference</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Radius: &#39;{radius}&#39; is invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def search_location_check(cls, location):
+    """Core.Client.request_search location parameter should be a dictionary that contains lat, lon and radius floats
+    """
+    if not (isinstance(location, Mapping) and set(location.keys()) == _LOCATION_SEARCH_ARGS):
+        raise ValueError('Search location should be mapping with keys: %s' % _LOCATION_SEARCH_ARGS)
+    cls.location_check(location['lat'], location['long'])
+    radius = location['radius']
+    if not (isinstance(radius, number_types) and 0 < radius <= 20038):  # half circumference
+        raise ValueError("Radius: '{radius}' is invalid".format(radius=radius))
+</code></pre>
   </div>
 </div>
 
@@ -2452,22 +2363,21 @@ Returns list (with tags in unicode form) or raises ValueError</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.tags_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.tags_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">tags_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Accept one tag as string or multiple tags in list of strings.</span>
-<span class="sd">    Returns list (with tags in unicode form) or raises ValueError</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># single string check comes first since string is also a Sequence</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tags</span><span class="p">)]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tag list is empty&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">cls</span><span class="o">.</span><span class="n">__tag_check_convert</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tags must be a single string or list of sequence of strings&quot;</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def tags_check_convert(cls, tags):
+    """Accept one tag as string or multiple tags in list of strings.
+    Returns list (with tags in unicode form) or raises ValueError
+    """
+    # single string check comes first since string is also a Sequence
+    if isinstance(tags, string_types):
+        return [cls.__tag_check_convert(tags)]
+    elif isinstance(tags, Sequence):
+        if not tags:
+            raise ValueError("Tag list is empty")
+        return [cls.__tag_check_convert(tag) for tag in tags]
+    else:
+        raise ValueError("tags must be a single string or list of sequence of strings")
+</code></pre>
   </div>
 </div>
 
@@ -2485,19 +2395,18 @@ Returns list (with tags in unicode form) or raises ValueError</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Validation.Validation.value_unit_check_convert', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Validation.Validation.value_unit_check_convert" class="source">
-    <div class="codehilite"><pre><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">value_unit_check_convert</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="n">unit</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;unit&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit too long (</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">VALIDATION_META_VALUE_UNIT</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">__valid_url</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">unit</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unit does not resemble valid http(s) url&#39;</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>@classmethod
+def value_unit_check_convert(cls, unit):
+    if unit is None:
+        return None
+    unit = ensure_unicode(unit, name='unit')
+    if len(unit) > VALIDATION_META_VALUE_UNIT:
+        raise ValueError('unit too long (%d)' % VALIDATION_META_VALUE_UNIT)
+    if cls.__valid_url(unit):
+        return unit
+    else:
+        raise ValueError('unit does not resemble valid http(s) url')
+</code></pre>
   </div>
 </div>
 

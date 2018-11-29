@@ -128,7 +128,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
-                 throttle_conf=''):
+                 throttle_conf='', max_encoded_length=None):
         """
         `host` amqp broker "host:port"
 
@@ -164,6 +164,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                         requests being sent over the last 60 seconds and no more than 600 requests over the
                         last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
                         the client without requiring application code to introduce artificial delays.
+
+        `max_encoded_length` Override the maximum permissible encoded request size (in bytes). Warning: Increasing this
+                             without first consulting the container provider could result in a ban.
         """
         logger.info('ubjson version: %s (extension %s)', ubj_version, 'enabled' if ubj_ext else 'disabled')
         logger.debug("__init__ config host='%s', vhost='%s', epId='%s', passwd='%s', token='%s', prefix='%s'"
@@ -204,6 +207,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         # Timer used to retry sending of requests which might not have reached the broker (dummy instance set here)
         self.__send_retry_requests_timer = Timer(0, self.__send_retry_requests, args=(0,))
         self.__send_retry_requests_lock = Lock()
+        # maximum permissible request size (outgoing only)
+        self.__max_encoded_length = validate_nonnegative_int(max_encoded_length or VALIDATION_MAX_ENCODED_LENGTH,
+                                                             'max_encoded_length', allow_zero=True)
         # network_retry thread
         self.__network_retry_thread = None
         self.__network_retry_timeout = validate_nonnegative_int(network_retry_timeout, 'network_retry_timeout')
@@ -1139,9 +1145,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         msg = ubjdumpb(p)
 
         # do not send messages exceeding size limit
-        if len(msg) > VALIDATION_MAX_ENCODED_LENGTH:
+        if len(msg) > self.__max_encoded_length:
             self.__request_except(qmsg.requestId, ValueError("Message Payload too large %d > %d"
-                                                             % (len(msg), VALIDATION_MAX_ENCODED_LENGTH)))
+                                                             % (len(msg), self.__max_encoded_length)))
             return False
 
         self.__amqplink.send(msg, content_type='application/ubjson')
@@ -1258,20 +1264,20 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         try:
             if not _CONTENT_TYPE_PATTERN.match(message.content_type):
                 logger.debug('Message with unexpected content type %s from container, ignoring', message.content_type)
-                return
+                return None
         except AttributeError:
             logger.debug('Message without content type from container, ignoring')
-            return False
+            return None
 
         # Decode & check message wrapper
         try:
             body = ubjloadb(message.body)
         except:
             logger.warning('Failed to decode message wrapper, ignoring', exc_info=DEBUG_ENABLED)
-            return
+            return None
         if not self.__valid_msg_wrapper(body):
             logger.warning('Invalid message wrapper, ignoring')
-            return
+            return None
 
         # currently only warn although maybe this should be an error
         if self.__cnt_seqnum != -1 and not self.__valid_seqnum(body[W_SEQ], self.__cnt_seqnum):
@@ -1282,27 +1288,27 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         # Check message hash
         if not self.__check_hash(body):
             logger.warning('Message has invalid hash, ignoring')
-            return
+            return None
 
         # Decompress inner message
         try:
             msg = COMPRESSORS[body[W_COMPRESSION]].decompress(body[W_MESSAGE])
         except KeyError:
             logger.warning('Received message with unknown compression: %s', body[W_COMPRESSION])
-            return
+            return None
         except OversizeException as ex:
             logger.warning('Uncompressed message exceeds %d bytes, ignoring', ex.size, exc_info=DEBUG_ENABLED)
-            return
+            return None
         except:
             logger.warning('Decompression failed, ignoring message', exc_info=DEBUG_ENABLED)
-            return
+            return None
 
         # Decode inner message
         try:
             msg = ubjloadb(msg, object_pairs_hook=OrderedDict)
         except:
             logger.warning('Failed to decode message, ignoring', exc_info=DEBUG_ENABLED)
-            return
+            return None
 
         if self.__valid_msg_body(msg):
             return (msg, body[W_SEQ])

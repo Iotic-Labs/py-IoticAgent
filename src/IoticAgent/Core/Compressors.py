@@ -49,7 +49,7 @@ class OversizeException(Exception):
 
     @property
     def size(self):
-        return self.args[0]
+        return self.args[0]  # pylint: disable=unsubscriptable-object
 
 
 class Compressor(object):

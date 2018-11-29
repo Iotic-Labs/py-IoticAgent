@@ -853,73 +853,6 @@ table {
 
   </style>
 
-  <style type="text/css">
-  .codehilite .hll { background-color: #ffffcc }
-.codehilite  { background: #f8f8f8; }
-.codehilite .c { color: #408080; font-style: italic } /* Comment */
-.codehilite .err { border: 1px solid #FF0000 } /* Error */
-.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
-.codehilite .o { color: #666666 } /* Operator */
-.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
-.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
-.codehilite .gd { color: #A00000 } /* Generic.Deleted */
-.codehilite .ge { font-style: italic } /* Generic.Emph */
-.codehilite .gr { color: #FF0000 } /* Generic.Error */
-.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.codehilite .gi { color: #00A000 } /* Generic.Inserted */
-.codehilite .go { color: #888888 } /* Generic.Output */
-.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.codehilite .gs { font-weight: bold } /* Generic.Strong */
-.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.codehilite .gt { color: #0044DD } /* Generic.Traceback */
-.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
-.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.codehilite .kt { color: #B00040 } /* Keyword.Type */
-.codehilite .m { color: #666666 } /* Literal.Number */
-.codehilite .s { color: #BA2121 } /* Literal.String */
-.codehilite .na { color: #7D9029 } /* Name.Attribute */
-.codehilite .nb { color: #008000 } /* Name.Builtin */
-.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.codehilite .no { color: #880000 } /* Name.Constant */
-.codehilite .nd { color: #AA22FF } /* Name.Decorator */
-.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.codehilite .nf { color: #0000FF } /* Name.Function */
-.codehilite .nl { color: #A0A000 } /* Name.Label */
-.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.codehilite .nv { color: #19177C } /* Name.Variable */
-.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
-.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
-.codehilite .mf { color: #666666 } /* Literal.Number.Float */
-.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
-.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
-.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
-.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
-.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
-.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
-.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.codehilite .sx { color: #008000 } /* Literal.String.Other */
-.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
-.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
-.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
-.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.codehilite .vc { color: #19177C } /* Name.Variable.Class */
-.codehilite .vg { color: #19177C } /* Name.Variable.Global */
-.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
-.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
-  </style>
 
   <style type="text/css">
   
@@ -1092,251 +1025,250 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config" class="source">
-    <div class="codehilite"><pre><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
-<span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;Wrapper object for the Client Configuration file</span>
-<span class="sd">&quot;&quot;&quot;</span>
+    <pre><code># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Wrapper object for the Client Configuration file
+"""
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+from __future__ import unicode_literals
 
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+from sys import argv
+from io import StringIO
+import os.path
+import logging
+logger = logging.getLogger(__name__)
 
-<span class="kn">from</span> <span class="nn">IoticAgent.Core.compat</span> <span class="kn">import</span> <span class="n">PY3</span>
+from IoticAgent.Core.compat import PY3
 
-<span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>  <span class="c1"># pylint: disable=import-error,wrong-import-order</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">ConfigParser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>  <span class="c1"># pylint: disable=import-error,wrong-import-order</span>
-
-
-<span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Config helper reads/writes .ini files.</span>
-<span class="sd">        If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively</span>
-<span class="sd">        a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.</span>
-
-<span class="sd">        `[agent] =` This section is used for AMQP Login details.</span>
-
-<span class="sd">            #!python</span>
-<span class="sd">            host =   # ip:port of the AMQP broker</span>
-<span class="sd">            vhost =  # virtualhost name</span>
-<span class="sd">            prefix = # username (agent id) prefix for login</span>
-<span class="sd">            sslca =  # SSL CA file for non-public (dns) broker connections</span>
-<span class="sd">            lang =   # The two-character ISO 639-1 language code to use by</span>
-<span class="sd">                     # default for your agent.  Uses container default</span>
-<span class="sd">                     # if not specified</span>
-
-<span class="sd">        `[iot] =` Settings for the IOT wrapper</span>
-
-<span class="sd">            sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This</span>
-<span class="sd">                                   # option should have a higher value set than core.network_retry_timeout.</span>
+if PY3:
+    from configparser import ConfigParser  # pylint: disable=import-error,wrong-import-order
+else:
+    from ConfigParser import ConfigParser  # pylint: disable=import-error,wrong-import-order
 
 
-<span class="sd">        `[logging] =` Logging preferences</span>
+class Config(object):
 
-<span class="sd">            amqp and rdflib are both set to Warning to prevent verbose/boring output</span>
+    def __init__(self, fn=None, string=None):
+        """Config helper reads/writes .ini files.
+        If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively
+        a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.
 
-<span class="sd">        `[core] =` advanced settings</span>
+        `[agent] =` This section is used for AMQP Login details.
 
-<span class="sd">            #!python</span>
-<span class="sd">            network_retry_timeout = # seconds to retry message sending for if no</span>
-<span class="sd">                                    # connection. 0 to disable.</span>
-<span class="sd">                                    # IOT functions that make requests without</span>
-<span class="sd">                                    # internet access will block until success</span>
-<span class="sd">                                    # or retry_timeout</span>
+            #!python
+            host =   # ip:port of the AMQP broker
+            vhost =  # virtualhost name
+            prefix = # username (agent id) prefix for login
+            sslca =  # SSL CA file for non-public (dns) broker connections
+            lang =   # The two-character ISO 639-1 language code to use by
+                     # default for your agent.  Uses container default
+                     # if not specified
 
-<span class="sd">            socket_timeout = # 10 (default) Underlying socket connection/operation timeout</span>
+        `[iot] =` Settings for the IOT wrapper
 
-<span class="sd">            auto_encode_decode = # 1 (default). If a dict is shared it can be</span>
-<span class="sd">                                 # automatically encoded and decoded.</span>
-<span class="sd">                                 # Disable with = 0.</span>
-
-<span class="sd">            queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending</span>
-<span class="sd">                         # request queue before blocking. Set to zero for unlimited. Whether queue</span>
-<span class="sd">                         # fills up depends on latency &amp; throughput of network &amp; container as well as</span>
-<span class="sd">                         # throttling setting.</span>
-
-<span class="sd">            throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of</span>
-<span class="sd">                       # REQUESTS/INTERVAL pairs. E.g. &#39;180/60,600/300&#39; would result in no more than 180</span>
-<span class="sd">                       # requests being sent over the last 60 seconds and no more than 600 requests over the</span>
-<span class="sd">                       # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning</span>
-<span class="sd">                       # the client without requiring application code to introduce artificial delays. Note:</span>
-<span class="sd">                       # The limits should be set a bit lower than the hard limits imposed by container.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#</span>
-        <span class="c1"># Defaults if not specified in config file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;vhost&#39;</span><span class="p">:</span> <span class="s1">&#39;container1&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;sync_request_timeout&#39;</span><span class="p">:</span> <span class="mi">330</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;network_retry_timeout&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
-                <span class="s1">&#39;socket_timeout&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                <span class="s1">&#39;auto_encode_decode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="s1">&#39;queue_size&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-                <span class="s1">&#39;throttle&#39;</span><span class="p">:</span> <span class="s1">&#39;480/30,1680/300&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;amqp&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;rdflib&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="c1">#</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{}</span>
-        <span class="p">}</span>
-        <span class="c1"># Sanity, check the config file exists and is valid</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="n">fn</span>
-        <span class="k">if</span> <span class="n">string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-            <span class="n">conf_name</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_loc</span><span class="p">()</span>
-            <span class="n">conf_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">):</span>
-                <span class="n">conf_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-        <span class="c1">#</span>
-        <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-                <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_file_loc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;_file_loc helper returns a possible config filename.</span>
-<span class="sd">        EG /tmp/stuff/fish.py -&gt; /tmp/stuff/fish.ini</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.ini&#39;</span>
-            <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-            <span class="c1"># todo: prefer script path or current path ??</span>
-            <span class="c1"># print(os.path.realpath(sys.argv[0]))</span>
-            <span class="c1"># todo: if os.path.exists(os.path.join(cwd, main.__file__)):</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span>
-
-    <span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Setup logging module based on known modules in the config file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;amqp&#39;</span><span class="p">)))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;rdflib&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;rdflib&#39;</span><span class="p">)))</span>
-
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write config to file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Config loaded from string, no filename specified&#39;</span><span class="p">)</span>
-        <span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span>
-        <span class="n">cpa</span> <span class="o">=</span> <span class="n">dict_to_cp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a setting or the default</span>
-
-<span class="sd">        `Returns` The current value of the setting `val` or the default, or `None` if not found</span>
-
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                <span class="c1"># logger.debug(&#39;get config %s %s = %s&#39;, section, val, self.__config[section][val])</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                <span class="c1"># logger.debug(&#39;get defaults %s %s = %s&#39;, section, val, self.__defaults[section][val])</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">None</span>
-
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a setting to the config</span>
-
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-
-<span class="sd">        `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-            <span class="c1"># logger.debug(&#39;set %s %s = %s&#39;, section, val, data)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a setting to the config, but if same as default or None then no action.</span>
-<span class="sd">        This saves the .save writing the defaults</span>
-
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-
-<span class="sd">        `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-        <span class="c1"># logger.debug(&#39;update %s %s from: %s to: %s&#39;, section, val, k, data)</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">data</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
+                                   # option should have a higher value set than core.network_retry_timeout.
 
 
-<span class="k">def</span> <span class="nf">dict_to_cp</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">esc</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">esc</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">esc</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">][</span><span class="n">eva</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">ret</span>
+        `[logging] =` Logging preferences
+
+            amqp and rdflib are both set to Warning to prevent verbose/boring output
+
+        `[core] =` advanced settings
+
+            #!python
+            network_retry_timeout = # seconds to retry message sending for if no
+                                    # connection. 0 to disable.
+                                    # IOT functions that make requests without
+                                    # internet access will block until success
+                                    # or retry_timeout
+
+            socket_timeout = # 10 (default) Underlying socket connection/operation timeout
+
+            auto_encode_decode = # 1 (default). If a dict is shared it can be
+                                 # automatically encoded and decoded.
+                                 # Disable with = 0.
+
+            queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending
+                         # request queue before blocking. Set to zero for unlimited. Whether queue
+                         # fills up depends on latency & throughput of network & container as well as
+                         # throttling setting.
+
+            throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of
+                       # REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                       # requests being sent over the last 60 seconds and no more than 600 requests over the
+                       # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                       # the client without requiring application code to introduce artificial delays. Note:
+                       # The limits should be set a bit lower than the hard limits imposed by container.
+        """
+        self.__fname = None
+        self.__config = {}
+        #
+        # Defaults if not specified in config file
+        self.__defaults = {
+            'agent': {
+                'vhost': 'container1',
+                'prefix': ''
+            },
+            'iot': {
+                'sync_request_timeout': 330
+            },
+            'core': {
+                'network_retry_timeout': 300,
+                'socket_timeout': 10,
+                'auto_encode_decode': 1,
+                'queue_size': 128,
+                'throttle': '480/30,1680/300'
+            },
+            'logging': {
+                'amqp': 'warning',
+                'rdflib': 'warning'
+            }
+        }
+        #
+        self.__config = {
+            'iot': {},
+            'core': {},
+            'agent': {},
+            'logging': {}
+        }
+        # Sanity, check the config file exists and is valid
+        self.__fname = fn
+        if string is not None and fn is None:
+            conf_stream = StringIO(string)
+            conf_name = 'string'
+        else:
+            self.__fname = self._file_loc()
+            conf_name = self.__fname
+            if os.path.exists(self.__fname):
+                conf_stream = open(self.__fname, 'r')
+            else:
+                conf_stream = StringIO()
+        #
+        cpa = ConfigParser()
+        try:
+            if PY3:
+                cpa.read_file(conf_stream, source=conf_name)  # pylint: disable=no-member
+            else:
+                cpa.readfp(conf_stream, conf_name)  # pylint: disable=deprecated-method
+        finally:
+            conf_stream.close()
+
+        for ese in cpa.sections():
+            for eva in cpa.options(ese):
+                self.update(ese, eva, cpa.get(ese, eva))
+
+    def _file_loc(self):
+        """_file_loc helper returns a possible config filename.
+        EG /tmp/stuff/fish.py -> /tmp/stuff/fish.ini
+        """
+        if self.__fname is None:
+            f = os.path.splitext(os.path.basename(argv[0]))[0] + '.ini'
+            cwd = os.getcwd()
+            # todo: prefer script path or current path ??
+            # print(os.path.realpath(sys.argv[0]))
+            # todo: if os.path.exists(os.path.join(cwd, main.__file__)):
+            return os.path.join(cwd, f)
+        return self.__fname
+
+    def setup_logging(self):
+        """Setup logging module based on known modules in the config file
+        """
+        logging.getLogger('amqp').setLevel(str_to_logging(self.get('logging', 'amqp')))
+        logging.getLogger('rdflib').setLevel(str_to_logging(self.get('logging', 'rdflib')))
+
+    def save(self, filename=None):
+        """Write config to file."""
+        if self.__fname is None and filename is None:
+            raise ValueError('Config loaded from string, no filename specified')
+        conf = self.__config
+        cpa = dict_to_cp(conf)
+        with open(self.__fname if filename is None else filename, 'w') as f:
+            cpa.write(f)
+
+    def get(self, section, val):
+        """Get a setting or the default
+
+        `Returns` The current value of the setting `val` or the default, or `None` if not found
+
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+        """
+        val = val.lower()
+        if section in self.__config:
+            if val in self.__config[section]:
+                # logger.debug('get config %s %s = %s', section, val, self.__config[section][val])
+                return self.__config[section][val]
+        if section in self.__defaults:
+            if val in self.__defaults[section]:
+                # logger.debug('get defaults %s %s = %s', section, val, self.__defaults[section][val])
+                return self.__defaults[section][val]
+        return None
+
+    def set(self, section, val, data):
+        """Add a setting to the config
+
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+
+        `data` (mandatory) (as appropriate) the new value for the `val`
+        """
+        val = val.lower()
+        if section in self.__config:
+            # logger.debug('set %s %s = %s', section, val, data)
+            self.__config[section][val] = data
+
+    def update(self, section, val, data):
+        """Add a setting to the config, but if same as default or None then no action.
+        This saves the .save writing the defaults
+
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+
+        `data` (mandatory) (as appropriate) the new value for the `val`
+        """
+        k = self.get(section, val)
+        # logger.debug('update %s %s from: %s to: %s', section, val, k, data)
+        if data is not None and k != data:
+            self.set(section, val, data)
 
 
-<span class="k">def</span> <span class="nf">str_to_logging</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="n">level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;critical&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;warning&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-</pre></div>
+def dict_to_cp(dic):
+    ret = ConfigParser()
+    for esc in dic:
+        if dic[esc]:
+            ret.add_section(esc)
+        for eva in dic[esc]:
+            ret.set(esc, eva, str(dic[esc][eva]))
+    return ret
 
+
+def str_to_logging(level):
+    level = level.lower()
+    if level == 'critical':
+        return logging.CRITICAL
+    if level == 'error':
+        return logging.ERROR
+    if level == 'warning':
+        return logging.WARNING
+    if level == 'debug':
+        return logging.DEBUG
+    return logging.INFO
+</code></pre>
   </div>
 
   </header>
@@ -1381,16 +1313,15 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.dict_to_cp', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.dict_to_cp" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">dict_to_cp</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">esc</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">esc</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">]:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">esc</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">esc</span><span class="p">][</span><span class="n">eva</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</pre></div>
-
+    <pre><code>def dict_to_cp(dic):
+    ret = ConfigParser()
+    for esc in dic:
+        if dic[esc]:
+            ret.add_section(esc)
+        for eva in dic[esc]:
+            ret.set(esc, eva, str(dic[esc][eva]))
+    return ret
+</code></pre>
   </div>
 </div>
 
@@ -1408,19 +1339,18 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.str_to_logging', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.str_to_logging" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">str_to_logging</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="n">level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;critical&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;warning&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
-    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-</pre></div>
-
+    <pre><code>def str_to_logging(level):
+    level = level.lower()
+    if level == 'critical':
+        return logging.CRITICAL
+    if level == 'error':
+        return logging.ERROR
+    if level == 'warning':
+        return logging.WARNING
+    if level == 'debug':
+        return logging.DEBUG
+    return logging.INFO
+</code></pre>
   </div>
 </div>
 
@@ -1436,196 +1366,195 @@ table {
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config" class="source">
-    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <pre><code>class Config(object):
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Config helper reads/writes .ini files.</span>
-<span class="sd">        If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively</span>
-<span class="sd">        a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.</span>
+    def __init__(self, fn=None, string=None):
+        """Config helper reads/writes .ini files.
+        If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively
+        a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.
 
-<span class="sd">        `[agent] =` This section is used for AMQP Login details.</span>
+        `[agent] =` This section is used for AMQP Login details.
 
-<span class="sd">            #!python</span>
-<span class="sd">            host =   # ip:port of the AMQP broker</span>
-<span class="sd">            vhost =  # virtualhost name</span>
-<span class="sd">            prefix = # username (agent id) prefix for login</span>
-<span class="sd">            sslca =  # SSL CA file for non-public (dns) broker connections</span>
-<span class="sd">            lang =   # The two-character ISO 639-1 language code to use by</span>
-<span class="sd">                     # default for your agent.  Uses container default</span>
-<span class="sd">                     # if not specified</span>
+            #!python
+            host =   # ip:port of the AMQP broker
+            vhost =  # virtualhost name
+            prefix = # username (agent id) prefix for login
+            sslca =  # SSL CA file for non-public (dns) broker connections
+            lang =   # The two-character ISO 639-1 language code to use by
+                     # default for your agent.  Uses container default
+                     # if not specified
 
-<span class="sd">        `[iot] =` Settings for the IOT wrapper</span>
+        `[iot] =` Settings for the IOT wrapper
 
-<span class="sd">            sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This</span>
-<span class="sd">                                   # option should have a higher value set than core.network_retry_timeout.</span>
+            sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
+                                   # option should have a higher value set than core.network_retry_timeout.
 
 
-<span class="sd">        `[logging] =` Logging preferences</span>
+        `[logging] =` Logging preferences
 
-<span class="sd">            amqp and rdflib are both set to Warning to prevent verbose/boring output</span>
+            amqp and rdflib are both set to Warning to prevent verbose/boring output
 
-<span class="sd">        `[core] =` advanced settings</span>
+        `[core] =` advanced settings
 
-<span class="sd">            #!python</span>
-<span class="sd">            network_retry_timeout = # seconds to retry message sending for if no</span>
-<span class="sd">                                    # connection. 0 to disable.</span>
-<span class="sd">                                    # IOT functions that make requests without</span>
-<span class="sd">                                    # internet access will block until success</span>
-<span class="sd">                                    # or retry_timeout</span>
+            #!python
+            network_retry_timeout = # seconds to retry message sending for if no
+                                    # connection. 0 to disable.
+                                    # IOT functions that make requests without
+                                    # internet access will block until success
+                                    # or retry_timeout
 
-<span class="sd">            socket_timeout = # 10 (default) Underlying socket connection/operation timeout</span>
+            socket_timeout = # 10 (default) Underlying socket connection/operation timeout
 
-<span class="sd">            auto_encode_decode = # 1 (default). If a dict is shared it can be</span>
-<span class="sd">                                 # automatically encoded and decoded.</span>
-<span class="sd">                                 # Disable with = 0.</span>
+            auto_encode_decode = # 1 (default). If a dict is shared it can be
+                                 # automatically encoded and decoded.
+                                 # Disable with = 0.
 
-<span class="sd">            queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending</span>
-<span class="sd">                         # request queue before blocking. Set to zero for unlimited. Whether queue</span>
-<span class="sd">                         # fills up depends on latency &amp; throughput of network &amp; container as well as</span>
-<span class="sd">                         # throttling setting.</span>
+            queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending
+                         # request queue before blocking. Set to zero for unlimited. Whether queue
+                         # fills up depends on latency & throughput of network & container as well as
+                         # throttling setting.
 
-<span class="sd">            throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of</span>
-<span class="sd">                       # REQUESTS/INTERVAL pairs. E.g. &#39;180/60,600/300&#39; would result in no more than 180</span>
-<span class="sd">                       # requests being sent over the last 60 seconds and no more than 600 requests over the</span>
-<span class="sd">                       # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning</span>
-<span class="sd">                       # the client without requiring application code to introduce artificial delays. Note:</span>
-<span class="sd">                       # The limits should be set a bit lower than the hard limits imposed by container.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#</span>
-        <span class="c1"># Defaults if not specified in config file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;vhost&#39;</span><span class="p">:</span> <span class="s1">&#39;container1&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;sync_request_timeout&#39;</span><span class="p">:</span> <span class="mi">330</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;network_retry_timeout&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
-                <span class="s1">&#39;socket_timeout&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                <span class="s1">&#39;auto_encode_decode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="s1">&#39;queue_size&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-                <span class="s1">&#39;throttle&#39;</span><span class="p">:</span> <span class="s1">&#39;480/30,1680/300&#39;</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;amqp&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;rdflib&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="c1">#</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{},</span>
-            <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{}</span>
-        <span class="p">}</span>
-        <span class="c1"># Sanity, check the config file exists and is valid</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="n">fn</span>
-        <span class="k">if</span> <span class="n">string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-            <span class="n">conf_name</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_loc</span><span class="p">()</span>
-            <span class="n">conf_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">):</span>
-                <span class="n">conf_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-        <span class="c1">#</span>
-        <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-                <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of
+                       # REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                       # requests being sent over the last 60 seconds and no more than 600 requests over the
+                       # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                       # the client without requiring application code to introduce artificial delays. Note:
+                       # The limits should be set a bit lower than the hard limits imposed by container.
+        """
+        self.__fname = None
+        self.__config = {}
+        #
+        # Defaults if not specified in config file
+        self.__defaults = {
+            'agent': {
+                'vhost': 'container1',
+                'prefix': ''
+            },
+            'iot': {
+                'sync_request_timeout': 330
+            },
+            'core': {
+                'network_retry_timeout': 300,
+                'socket_timeout': 10,
+                'auto_encode_decode': 1,
+                'queue_size': 128,
+                'throttle': '480/30,1680/300'
+            },
+            'logging': {
+                'amqp': 'warning',
+                'rdflib': 'warning'
+            }
+        }
+        #
+        self.__config = {
+            'iot': {},
+            'core': {},
+            'agent': {},
+            'logging': {}
+        }
+        # Sanity, check the config file exists and is valid
+        self.__fname = fn
+        if string is not None and fn is None:
+            conf_stream = StringIO(string)
+            conf_name = 'string'
+        else:
+            self.__fname = self._file_loc()
+            conf_name = self.__fname
+            if os.path.exists(self.__fname):
+                conf_stream = open(self.__fname, 'r')
+            else:
+                conf_stream = StringIO()
+        #
+        cpa = ConfigParser()
+        try:
+            if PY3:
+                cpa.read_file(conf_stream, source=conf_name)  # pylint: disable=no-member
+            else:
+                cpa.readfp(conf_stream, conf_name)  # pylint: disable=deprecated-method
+        finally:
+            conf_stream.close()
 
-        <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>
+        for ese in cpa.sections():
+            for eva in cpa.options(ese):
+                self.update(ese, eva, cpa.get(ese, eva))
 
-    <span class="k">def</span> <span class="nf">_file_loc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;_file_loc helper returns a possible config filename.</span>
-<span class="sd">        EG /tmp/stuff/fish.py -&gt; /tmp/stuff/fish.ini</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.ini&#39;</span>
-            <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-            <span class="c1"># todo: prefer script path or current path ??</span>
-            <span class="c1"># print(os.path.realpath(sys.argv[0]))</span>
-            <span class="c1"># todo: if os.path.exists(os.path.join(cwd, main.__file__)):</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span>
+    def _file_loc(self):
+        """_file_loc helper returns a possible config filename.
+        EG /tmp/stuff/fish.py -> /tmp/stuff/fish.ini
+        """
+        if self.__fname is None:
+            f = os.path.splitext(os.path.basename(argv[0]))[0] + '.ini'
+            cwd = os.getcwd()
+            # todo: prefer script path or current path ??
+            # print(os.path.realpath(sys.argv[0]))
+            # todo: if os.path.exists(os.path.join(cwd, main.__file__)):
+            return os.path.join(cwd, f)
+        return self.__fname
 
-    <span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Setup logging module based on known modules in the config file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;amqp&#39;</span><span class="p">)))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;rdflib&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;rdflib&#39;</span><span class="p">)))</span>
+    def setup_logging(self):
+        """Setup logging module based on known modules in the config file
+        """
+        logging.getLogger('amqp').setLevel(str_to_logging(self.get('logging', 'amqp')))
+        logging.getLogger('rdflib').setLevel(str_to_logging(self.get('logging', 'rdflib')))
 
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write config to file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Config loaded from string, no filename specified&#39;</span><span class="p">)</span>
-        <span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span>
-        <span class="n">cpa</span> <span class="o">=</span> <span class="n">dict_to_cp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    def save(self, filename=None):
+        """Write config to file."""
+        if self.__fname is None and filename is None:
+            raise ValueError('Config loaded from string, no filename specified')
+        conf = self.__config
+        cpa = dict_to_cp(conf)
+        with open(self.__fname if filename is None else filename, 'w') as f:
+            cpa.write(f)
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a setting or the default</span>
+    def get(self, section, val):
+        """Get a setting or the default
 
-<span class="sd">        `Returns` The current value of the setting `val` or the default, or `None` if not found</span>
+        `Returns` The current value of the setting `val` or the default, or `None` if not found
 
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
 
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                <span class="c1"># logger.debug(&#39;get config %s %s = %s&#39;, section, val, self.__config[section][val])</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-                <span class="c1"># logger.debug(&#39;get defaults %s %s = %s&#39;, section, val, self.__defaults[section][val])</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">None</span>
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+        """
+        val = val.lower()
+        if section in self.__config:
+            if val in self.__config[section]:
+                # logger.debug('get config %s %s = %s', section, val, self.__config[section][val])
+                return self.__config[section][val]
+        if section in self.__defaults:
+            if val in self.__defaults[section]:
+                # logger.debug('get defaults %s %s = %s', section, val, self.__defaults[section][val])
+                return self.__defaults[section][val]
+        return None
 
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a setting to the config</span>
+    def set(self, section, val, data):
+        """Add a setting to the config
 
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
 
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
 
-<span class="sd">        `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-            <span class="c1"># logger.debug(&#39;set %s %s = %s&#39;, section, val, data)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        `data` (mandatory) (as appropriate) the new value for the `val`
+        """
+        val = val.lower()
+        if section in self.__config:
+            # logger.debug('set %s %s = %s', section, val, data)
+            self.__config[section][val] = data
 
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a setting to the config, but if same as default or None then no action.</span>
-<span class="sd">        This saves the .save writing the defaults</span>
+    def update(self, section, val, data):
+        """Add a setting to the config, but if same as default or None then no action.
+        This saves the .save writing the defaults
 
-<span class="sd">        `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
+        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
 
-<span class="sd">        `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
+        `val` (mandatory) (string) the section name in the config E.g. `"host"`
 
-<span class="sd">        `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-        <span class="c1"># logger.debug(&#39;update %s %s from: %s to: %s&#39;, section, val, k, data)</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">data</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-</pre></div>
-
+        `data` (mandatory) (as appropriate) the new value for the `val`
+        """
+        k = self.get(section, val)
+        # logger.debug('update %s %s from: %s to: %s', section, val, k, data)
+        if data is not None and k != data:
+            self.set(section, val, data)
+</code></pre>
   </div>
 </div>
 
@@ -1650,152 +1579,147 @@ table {
 If a setting is not specified in the .ini file the default from <code>self.__defaults</code> will be used. Alternatively
 a textual configuration can be specified using the <code>string</code> argument. <code>fn</code> takes precedence over <code>string</code>.</p>
 <p><code>[agent] =</code> This section is used for AMQP Login details.</p>
-<div class="codehilite"><pre><span class="n">host</span> <span class="o">=</span>   <span class="c1"># ip:port of the AMQP broker</span>
-<span class="n">vhost</span> <span class="o">=</span>  <span class="c1"># virtualhost name</span>
-<span class="n">prefix</span> <span class="o">=</span> <span class="c1"># username (agent id) prefix for login</span>
-<span class="n">sslca</span> <span class="o">=</span>  <span class="c1"># SSL CA file for non-public (dns) broker connections</span>
-<span class="n">lang</span> <span class="o">=</span>   <span class="c1"># The two-character ISO 639-1 language code to use by</span>
-         <span class="c1"># default for your agent.  Uses container default</span>
-         <span class="c1"># if not specified</span>
-</pre></div>
-
-
+<pre><code>#!python
+host =   # ip:port of the AMQP broker
+vhost =  # virtualhost name
+prefix = # username (agent id) prefix for login
+sslca =  # SSL CA file for non-public (dns) broker connections
+lang =   # The two-character ISO 639-1 language code to use by
+         # default for your agent.  Uses container default
+         # if not specified
+</code></pre>
 <p><code>[iot] =</code> Settings for the IOT wrapper</p>
-<div class="codehilite"><pre>sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
+<pre><code>sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
                        # option should have a higher value set than core.network_retry_timeout.
-</pre></div>
-
-
+</code></pre>
 <p><code>[logging] =</code> Logging preferences</p>
-<div class="codehilite"><pre>amqp and rdflib are both set to Warning to prevent verbose/boring output
-</pre></div>
-
-
+<pre><code>amqp and rdflib are both set to Warning to prevent verbose/boring output
+</code></pre>
 <p><code>[core] =</code> advanced settings</p>
-<div class="codehilite"><pre><span class="n">network_retry_timeout</span> <span class="o">=</span> <span class="c1"># seconds to retry message sending for if no</span>
-                        <span class="c1"># connection. 0 to disable.</span>
-                        <span class="c1"># IOT functions that make requests without</span>
-                        <span class="c1"># internet access will block until success</span>
-                        <span class="c1"># or retry_timeout</span>
+<pre><code>#!python
+network_retry_timeout = # seconds to retry message sending for if no
+                        # connection. 0 to disable.
+                        # IOT functions that make requests without
+                        # internet access will block until success
+                        # or retry_timeout
 
-<span class="n">socket_timeout</span> <span class="o">=</span> <span class="c1"># 10 (default) Underlying socket connection/operation timeout</span>
+socket_timeout = # 10 (default) Underlying socket connection/operation timeout
 
-<span class="n">auto_encode_decode</span> <span class="o">=</span> <span class="c1"># 1 (default). If a dict is shared it can be</span>
-                     <span class="c1"># automatically encoded and decoded.</span>
-                     <span class="c1"># Disable with = 0.</span>
+auto_encode_decode = # 1 (default). If a dict is shared it can be
+                     # automatically encoded and decoded.
+                     # Disable with = 0.
 
-<span class="n">queue_size</span> <span class="o">=</span> <span class="c1"># 128 (default). Maximum number of (outgoing) requests to allow in pending</span>
-             <span class="c1"># request queue before blocking. Set to zero for unlimited. Whether queue</span>
-             <span class="c1"># fills up depends on latency &amp; throughput of network &amp; container as well as</span>
-             <span class="c1"># throttling setting.</span>
+queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending
+             # request queue before blocking. Set to zero for unlimited. Whether queue
+             # fills up depends on latency &amp; throughput of network &amp; container as well as
+             # throttling setting.
 
-<span class="n">throttle</span> <span class="o">=</span> <span class="c1"># Automatic request (outgoing) throttling, specified as comma-separate list of</span>
-           <span class="c1"># REQUESTS/INTERVAL pairs. E.g. &#39;180/60,600/300&#39; would result in no more than 180</span>
-           <span class="c1"># requests being sent over the last 60 seconds and no more than 600 requests over the</span>
-           <span class="c1"># last 5 minutes. Used to prevent rate-limiting containers from temporarily banning</span>
-           <span class="c1"># the client without requiring application code to introduce artificial delays. Note:</span>
-           <span class="c1"># The limits should be set a bit lower than the hard limits imposed by container.</span>
-</pre></div></div>
+throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of
+           # REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+           # requests being sent over the last 60 seconds and no more than 600 requests over the
+           # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+           # the client without requiring application code to introduce artificial delays. Note:
+           # The limits should be set a bit lower than the hard limits imposed by container.
+</code></pre></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.__init__" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Config helper reads/writes .ini files.</span>
-<span class="sd">    If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively</span>
-<span class="sd">    a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.</span>
-<span class="sd">    `[agent] =` This section is used for AMQP Login details.</span>
-<span class="sd">        #!python</span>
-<span class="sd">        host =   # ip:port of the AMQP broker</span>
-<span class="sd">        vhost =  # virtualhost name</span>
-<span class="sd">        prefix = # username (agent id) prefix for login</span>
-<span class="sd">        sslca =  # SSL CA file for non-public (dns) broker connections</span>
-<span class="sd">        lang =   # The two-character ISO 639-1 language code to use by</span>
-<span class="sd">                 # default for your agent.  Uses container default</span>
-<span class="sd">                 # if not specified</span>
-<span class="sd">    `[iot] =` Settings for the IOT wrapper</span>
-<span class="sd">        sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This</span>
-<span class="sd">                               # option should have a higher value set than core.network_retry_timeout.</span>
-<span class="sd">    `[logging] =` Logging preferences</span>
-<span class="sd">        amqp and rdflib are both set to Warning to prevent verbose/boring output</span>
-<span class="sd">    `[core] =` advanced settings</span>
-<span class="sd">        #!python</span>
-<span class="sd">        network_retry_timeout = # seconds to retry message sending for if no</span>
-<span class="sd">                                # connection. 0 to disable.</span>
-<span class="sd">                                # IOT functions that make requests without</span>
-<span class="sd">                                # internet access will block until success</span>
-<span class="sd">                                # or retry_timeout</span>
-<span class="sd">        socket_timeout = # 10 (default) Underlying socket connection/operation timeout</span>
-<span class="sd">        auto_encode_decode = # 1 (default). If a dict is shared it can be</span>
-<span class="sd">                             # automatically encoded and decoded.</span>
-<span class="sd">                             # Disable with = 0.</span>
-<span class="sd">        queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending</span>
-<span class="sd">                     # request queue before blocking. Set to zero for unlimited. Whether queue</span>
-<span class="sd">                     # fills up depends on latency &amp; throughput of network &amp; container as well as</span>
-<span class="sd">                     # throttling setting.</span>
-<span class="sd">        throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of</span>
-<span class="sd">                   # REQUESTS/INTERVAL pairs. E.g. &#39;180/60,600/300&#39; would result in no more than 180</span>
-<span class="sd">                   # requests being sent over the last 60 seconds and no more than 600 requests over the</span>
-<span class="sd">                   # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning</span>
-<span class="sd">                   # the client without requiring application code to introduce artificial delays. Note:</span>
-<span class="sd">                   # The limits should be set a bit lower than the hard limits imposed by container.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="c1">#</span>
-    <span class="c1"># Defaults if not specified in config file</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;vhost&#39;</span><span class="p">:</span> <span class="s1">&#39;container1&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;sync_request_timeout&#39;</span><span class="p">:</span> <span class="mi">330</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;network_retry_timeout&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
-            <span class="s1">&#39;socket_timeout&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-            <span class="s1">&#39;auto_encode_decode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">&#39;queue_size&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-            <span class="s1">&#39;throttle&#39;</span><span class="p">:</span> <span class="s1">&#39;480/30,1680/300&#39;</span>
-        <span class="p">},</span>
-        <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;amqp&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;rdflib&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="c1">#</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;iot&#39;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s1">&#39;logging&#39;</span><span class="p">:</span> <span class="p">{}</span>
-    <span class="p">}</span>
-    <span class="c1"># Sanity, check the config file exists and is valid</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="n">fn</span>
-    <span class="k">if</span> <span class="n">string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-        <span class="n">conf_name</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_loc</span><span class="p">()</span>
-        <span class="n">conf_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">):</span>
-            <span class="n">conf_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">conf_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-    <span class="c1">#</span>
-    <span class="n">cpa</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">cpa</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="n">conf_stream</span><span class="p">,</span> <span class="n">conf_name</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">conf_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">ese</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">eva</span> <span class="ow">in</span> <span class="n">cpa</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">ese</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">,</span> <span class="n">cpa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ese</span><span class="p">,</span> <span class="n">eva</span><span class="p">))</span>
-</pre></div>
-
+    <pre><code>def __init__(self, fn=None, string=None):
+    """Config helper reads/writes .ini files.
+    If a setting is not specified in the .ini file the default from `self.__defaults` will be used. Alternatively
+    a textual configuration can be specified using the `string` argument. `fn` takes precedence over `string`.
+    `[agent] =` This section is used for AMQP Login details.
+        #!python
+        host =   # ip:port of the AMQP broker
+        vhost =  # virtualhost name
+        prefix = # username (agent id) prefix for login
+        sslca =  # SSL CA file for non-public (dns) broker connections
+        lang =   # The two-character ISO 639-1 language code to use by
+                 # default for your agent.  Uses container default
+                 # if not specified
+    `[iot] =` Settings for the IOT wrapper
+        sync_request_timeout = # 330 (default). How long synchronous requests at most wait before timing out. This
+                               # option should have a higher value set than core.network_retry_timeout.
+    `[logging] =` Logging preferences
+        amqp and rdflib are both set to Warning to prevent verbose/boring output
+    `[core] =` advanced settings
+        #!python
+        network_retry_timeout = # seconds to retry message sending for if no
+                                # connection. 0 to disable.
+                                # IOT functions that make requests without
+                                # internet access will block until success
+                                # or retry_timeout
+        socket_timeout = # 10 (default) Underlying socket connection/operation timeout
+        auto_encode_decode = # 1 (default). If a dict is shared it can be
+                             # automatically encoded and decoded.
+                             # Disable with = 0.
+        queue_size = # 128 (default). Maximum number of (outgoing) requests to allow in pending
+                     # request queue before blocking. Set to zero for unlimited. Whether queue
+                     # fills up depends on latency & throughput of network & container as well as
+                     # throttling setting.
+        throttle = # Automatic request (outgoing) throttling, specified as comma-separate list of
+                   # REQUESTS/INTERVAL pairs. E.g. '180/60,600/300' would result in no more than 180
+                   # requests being sent over the last 60 seconds and no more than 600 requests over the
+                   # last 5 minutes. Used to prevent rate-limiting containers from temporarily banning
+                   # the client without requiring application code to introduce artificial delays. Note:
+                   # The limits should be set a bit lower than the hard limits imposed by container.
+    """
+    self.__fname = None
+    self.__config = {}
+    #
+    # Defaults if not specified in config file
+    self.__defaults = {
+        'agent': {
+            'vhost': 'container1',
+            'prefix': ''
+        },
+        'iot': {
+            'sync_request_timeout': 330
+        },
+        'core': {
+            'network_retry_timeout': 300,
+            'socket_timeout': 10,
+            'auto_encode_decode': 1,
+            'queue_size': 128,
+            'throttle': '480/30,1680/300'
+        },
+        'logging': {
+            'amqp': 'warning',
+            'rdflib': 'warning'
+        }
+    }
+    #
+    self.__config = {
+        'iot': {},
+        'core': {},
+        'agent': {},
+        'logging': {}
+    }
+    # Sanity, check the config file exists and is valid
+    self.__fname = fn
+    if string is not None and fn is None:
+        conf_stream = StringIO(string)
+        conf_name = 'string'
+    else:
+        self.__fname = self._file_loc()
+        conf_name = self.__fname
+        if os.path.exists(self.__fname):
+            conf_stream = open(self.__fname, 'r')
+        else:
+            conf_stream = StringIO()
+    #
+    cpa = ConfigParser()
+    try:
+        if PY3:
+            cpa.read_file(conf_stream, source=conf_name)  # pylint: disable=no-member
+        else:
+            cpa.readfp(conf_stream, conf_name)  # pylint: disable=deprecated-method
+    finally:
+        conf_stream.close()
+    for ese in cpa.sections():
+        for eva in cpa.options(ese):
+            self.update(ese, eva, cpa.get(ese, eva))
+</code></pre>
   </div>
 </div>
 
@@ -1817,24 +1741,23 @@ a textual configuration can be specified using the <code>string</code> argument.
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.get', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.get" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get a setting or the default</span>
-<span class="sd">    `Returns` The current value of the setting `val` or the default, or `None` if not found</span>
-<span class="sd">    `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-<span class="sd">    `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-            <span class="c1"># logger.debug(&#39;get config %s %s = %s&#39;, section, val, self.__config[section][val])</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
-            <span class="c1"># logger.debug(&#39;get defaults %s %s = %s&#39;, section, val, self.__defaults[section][val])</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__defaults</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span>
-    <span class="k">return</span> <span class="bp">None</span>
-</pre></div>
-
+    <pre><code>def get(self, section, val):
+    """Get a setting or the default
+    `Returns` The current value of the setting `val` or the default, or `None` if not found
+    `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+    `val` (mandatory) (string) the section name in the config E.g. `"host"`
+    """
+    val = val.lower()
+    if section in self.__config:
+        if val in self.__config[section]:
+            # logger.debug('get config %s %s = %s', section, val, self.__config[section][val])
+            return self.__config[section][val]
+    if section in self.__defaults:
+        if val in self.__defaults[section]:
+            # logger.debug('get defaults %s %s = %s', section, val, self.__defaults[section][val])
+            return self.__defaults[section][val]
+    return None
+</code></pre>
   </div>
 </div>
 
@@ -1853,16 +1776,15 @@ a textual configuration can be specified using the <code>string</code> argument.
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.save', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.save" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write config to file.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Config loaded from string, no filename specified&#39;</span><span class="p">)</span>
-    <span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span>
-    <span class="n">cpa</span> <span class="o">=</span> <span class="n">dict_to_cp</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fname</span> <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">cpa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>def save(self, filename=None):
+    """Write config to file."""
+    if self.__fname is None and filename is None:
+        raise ValueError('Config loaded from string, no filename specified')
+    conf = self.__config
+    cpa = dict_to_cp(conf)
+    with open(self.__fname if filename is None else filename, 'w') as f:
+        cpa.write(f)
+</code></pre>
   </div>
 </div>
 
@@ -1884,18 +1806,17 @@ a textual configuration can be specified using the <code>string</code> argument.
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.set', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.set" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add a setting to the config</span>
-<span class="sd">    `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-<span class="sd">    `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-<span class="sd">    `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">:</span>
-        <span class="c1"># logger.debug(&#39;set %s %s = %s&#39;, section, val, data)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-</pre></div>
-
+    <pre><code>def set(self, section, val, data):
+    """Add a setting to the config
+    `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+    `val` (mandatory) (string) the section name in the config E.g. `"host"`
+    `data` (mandatory) (as appropriate) the new value for the `val`
+    """
+    val = val.lower()
+    if section in self.__config:
+        # logger.debug('set %s %s = %s', section, val, data)
+        self.__config[section][val] = data
+</code></pre>
   </div>
 </div>
 
@@ -1914,13 +1835,12 @@ a textual configuration can be specified using the <code>string</code> argument.
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.setup_logging', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.setup_logging" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Setup logging module based on known modules in the config file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;amqp&#39;</span><span class="p">)))</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;rdflib&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">str_to_logging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logging&#39;</span><span class="p">,</span> <span class="s1">&#39;rdflib&#39;</span><span class="p">)))</span>
-</pre></div>
-
+    <pre><code>def setup_logging(self):
+    """Setup logging module based on known modules in the config file
+    """
+    logging.getLogger('amqp').setLevel(str_to_logging(self.get('logging', 'amqp')))
+    logging.getLogger('rdflib').setLevel(str_to_logging(self.get('logging', 'rdflib')))
+</code></pre>
   </div>
 </div>
 
@@ -1943,19 +1863,18 @@ This saves the .save writing the defaults</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.Config.Config.update', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.Config.Config.update" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add a setting to the config, but if same as default or None then no action.</span>
-<span class="sd">    This saves the .save writing the defaults</span>
-<span class="sd">    `section` (mandatory) (string) the section name in the config E.g. `&quot;agent&quot;`</span>
-<span class="sd">    `val` (mandatory) (string) the section name in the config E.g. `&quot;host&quot;`</span>
-<span class="sd">    `data` (mandatory) (as appropriate) the new value for the `val`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-    <span class="c1"># logger.debug(&#39;update %s %s from: %s to: %s&#39;, section, val, k, data)</span>
-    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">data</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>def update(self, section, val, data):
+    """Add a setting to the config, but if same as default or None then no action.
+    This saves the .save writing the defaults
+    `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+    `val` (mandatory) (string) the section name in the config E.g. `"host"`
+    `data` (mandatory) (as appropriate) the new value for the `val`
+    """
+    k = self.get(section, val)
+    # logger.debug('update %s %s from: %s to: %s', section, val, k, data)
+    if data is not None and k != data:
+        self.set(section, val, data)
+</code></pre>
   </div>
 </div>
 

@@ -516,7 +516,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         with new_subs:
             # don't allow multiple subscription requests to overwrite internal reference
             if key in new_subs:
-                raise ValueError('subscription for given args pending: %s', key)
+                raise ValueError('subscription for given args pending: %s' % key)
             new_subs[key] = None
         try:
             yield

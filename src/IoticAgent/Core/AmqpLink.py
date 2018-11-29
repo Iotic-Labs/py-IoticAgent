@@ -46,8 +46,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     """Helper class to deal with AMQP connection.
     """
 
-    def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback, send_ready_callback,
-                 sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10):
+    def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback,  # pylint: disable=too-many-locals
+                 send_ready_callback, sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10):
         """
         `host`: Broker 'host:port'
 

@@ -23,6 +23,7 @@ DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 from IoticAgent.IOT import Client
 from IoticAgent.IOT.Exceptions import LinkException, IOTSyncTimeout
+from IoticAgent.Core.utils import validate_nonnegative_int
 
 
 @unique
@@ -58,11 +59,16 @@ class ThingRunner(object):
     run cycle.
     """
 
-    def __init__(self, config=None):
-        """config: IOT.Client config file to use (or None to try to use default location"""
+    def __init__(self, config=None, retry_timeout=15):
+        """
+        `config` (optional) IOT.Client config file to use (or None to try to use default location)
+
+        `retry_timeout` (int, optional): Number of seconds to wait before retrying. See also `on_exception`.
+        """
         self.__client = Client(config=config)
         self.__shutdown = Event()
         self.__bgthread = None
+        self.__retry_timeout = validate_nonnegative_int(retry_timeout, 'retry_timeout')
 
     def run(self, background=False):
         """Runs `on_startup`, `main` and `on_shutdown`, blocking until finished, unless background is set."""
@@ -97,11 +103,13 @@ class ThingRunner(object):
                 exc_occurred = True
                 if self.__handle_exception(ctx):
                     logger.debug('Sleeping before retry')
-                    self.wait_for_shutdown(15)
+                    self.wait_for_shutdown(self.__retry_timeout)
                     continue
 
             # Normal run finished
             break
+
+        self.__shutdown.set()
 
         # Shutdown not applicable if on_startup did not finish
         if not (exc_occurred or ctx == RunContext.ON_STARTUP):
@@ -125,6 +133,8 @@ class ThingRunner(object):
             raise
         except:
             logger.exception('Exception in on_exception callback')
+
+        self.__shutdown.set()
 
         # Failure in on_startup should not result in shutdown callback
         if ctx != RunContext.ON_STARTUP:
@@ -156,7 +166,8 @@ class ThingRunner(object):
 
     @property
     def shutdown_requested(self):
-        """Whether `stop()` has been called and thus the device should be shutting down"""
+        """Whether `stop()` has been called, an exception has occurred (which does not result in a retry) or the
+        implemented main loop has finished and thus the device should be shutting down."""
         return self.__shutdown.is_set()
 
     def wait_for_shutdown(self, timeout=None):
@@ -175,9 +186,9 @@ class ThingRunner(object):
 
     def on_exception(self, ctx, exc_info):  # pylint: disable=no-self-use,unused-argument
         """Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to
-        True, the method in question will be re-tried (after a fixed wait). Otherwise the exception will be re-raised
-        (the default). Note that KeyboardInterrupt will not result in this method being called and instead cause a
-        shutdown.
+        True, the method in question will be re-tried (after `retry_timeout` seconds wait). Otherwise the exception will
+        be re-raised (the default). Note that KeyboardInterrupt will not result in this method being called and instead
+        cause a shutdown.
 
         `ctx` One of `RunContext`. Indicates at what point exception occurred.
         `exc_info` Tuple (as for `sys.exc_info()`) of the exception

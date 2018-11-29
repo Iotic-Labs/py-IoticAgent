@@ -853,73 +853,6 @@ table {
 
   </style>
 
-  <style type="text/css">
-  .codehilite .hll { background-color: #ffffcc }
-.codehilite  { background: #f8f8f8; }
-.codehilite .c { color: #408080; font-style: italic } /* Comment */
-.codehilite .err { border: 1px solid #FF0000 } /* Error */
-.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
-.codehilite .o { color: #666666 } /* Operator */
-.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
-.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
-.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
-.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
-.codehilite .gd { color: #A00000 } /* Generic.Deleted */
-.codehilite .ge { font-style: italic } /* Generic.Emph */
-.codehilite .gr { color: #FF0000 } /* Generic.Error */
-.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
-.codehilite .gi { color: #00A000 } /* Generic.Inserted */
-.codehilite .go { color: #888888 } /* Generic.Output */
-.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-.codehilite .gs { font-weight: bold } /* Generic.Strong */
-.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.codehilite .gt { color: #0044DD } /* Generic.Traceback */
-.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
-.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-.codehilite .kt { color: #B00040 } /* Keyword.Type */
-.codehilite .m { color: #666666 } /* Literal.Number */
-.codehilite .s { color: #BA2121 } /* Literal.String */
-.codehilite .na { color: #7D9029 } /* Name.Attribute */
-.codehilite .nb { color: #008000 } /* Name.Builtin */
-.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.codehilite .no { color: #880000 } /* Name.Constant */
-.codehilite .nd { color: #AA22FF } /* Name.Decorator */
-.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
-.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-.codehilite .nf { color: #0000FF } /* Name.Function */
-.codehilite .nl { color: #A0A000 } /* Name.Label */
-.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
-.codehilite .nv { color: #19177C } /* Name.Variable */
-.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
-.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
-.codehilite .mf { color: #666666 } /* Literal.Number.Float */
-.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
-.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
-.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
-.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
-.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
-.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
-.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
-.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-.codehilite .sx { color: #008000 } /* Literal.String.Other */
-.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
-.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
-.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
-.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.codehilite .vc { color: #19177C } /* Name.Variable.Class */
-.codehilite .vg { color: #19177C } /* Name.Variable.Global */
-.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
-.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
-  </style>
 
   <style type="text/css">
   
@@ -1128,242 +1061,241 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Units', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Units" class="source">
-    <div class="codehilite"><pre><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
-<span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;Constants for Units and helper class to build complete JSON tree of units from</span>
-<span class="sd">&quot;&quot;&quot;</span>
+    <pre><code>#!/usr/bin/env python3
+# Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Constants for Units and helper class to build complete JSON tree of units from
+"""
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+from __future__ import print_function, unicode_literals
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+import os
+import json
+import logging
+logger = logging.getLogger(__name__)
 
-<span class="kn">import</span> <span class="nn">rdflib</span>
+import rdflib
 
-<span class="c1">#</span>
-<span class="c1"># Common units constants</span>
-<span class="c1">#</span>
-<span class="c1"># - Electric Current</span>
-<span class="n">AMPERE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000011&#39;</span>
-<span class="sd">&#39;&#39;&#39;Electric current unit&#39;&#39;&#39;</span>
-<span class="c1"># - Distance</span>
-<span class="n">METER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000008&#39;</span>
-<span class="sd">&#39;&#39;&#39;Metric distance unit = 100 cm&#39;&#39;&#39;</span>
-<span class="n">METRE</span> <span class="o">=</span> <span class="n">METER</span>
-<span class="n">MILLIMETER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000016&#39;</span>
-<span class="sd">&#39;&#39;&#39;Metric distance unit = 1/100 of a meter&#39;&#39;&#39;</span>
-<span class="n">MILLIMETRE</span> <span class="o">=</span> <span class="n">MILLIMETER</span>
-<span class="n">CENTIMETER</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000015&#39;</span>
-<span class="sd">&#39;&#39;&#39;Metric distance unit = 1/100 of a meter&#39;&#39;&#39;</span>
-<span class="n">CENTIMETRE</span> <span class="o">=</span> <span class="n">CENTIMETER</span>
-<span class="n">CM</span> <span class="o">=</span> <span class="n">CENTIMETER</span>
-<span class="c1"># - Area</span>
-<span class="n">SQUARE_METER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000080&quot;</span>
-<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 meter long.&#39;&#39;&#39;</span>
-<span class="n">SQUARE_METRE</span> <span class="o">=</span> <span class="n">SQUARE_METER</span>
-<span class="n">SQUARE_CENTIMETER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000081&quot;</span>
-<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 centimeter long.&#39;&#39;&#39;</span>
-<span class="n">SQUARE_CENTIMETRE</span> <span class="o">=</span> <span class="n">SQUARE_CENTIMETER</span>
-<span class="n">SQUARE_MILLIMETER</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000082&quot;</span>
-<span class="sd">&#39;&#39;&#39;An area unit which is equal to an area enclosed by a square with sides each 1 millimeter long.&#39;&#39;&#39;</span>
-<span class="n">SQUARE_MILLIMETRE</span> <span class="o">=</span> <span class="n">SQUARE_MILLIMETER</span>
-<span class="c1"># - Temperature</span>
-<span class="n">CELSIUS</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000027&#39;</span>
-<span class="sd">&#39;&#39;&#39;Temperature units where the freezing point of water at 273.15 Kelvin is considered 0C and the boiling point 283.15K</span>
-<span class="sd">is 100C&#39;&#39;&#39;</span>
-<span class="n">FAHRENHEIT</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000195&#39;</span>
-<span class="sd">&#39;&#39;&#39;A temperature unit which is equal to 5/9ths of a kelvin. Negative 40 degrees Fahrenheit is equal to negative 40</span>
-<span class="sd">degrees Celsius&#39;&#39;&#39;</span>
-<span class="n">KELVIN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000012&#39;</span>
-<span class="sd">&#39;&#39;&#39;A thermodynamic temperature unit. 0K is &quot;absolute zero&quot;, ~293K is &quot;room temperature&quot;, i.e. 20C&#39;&#39;&#39;</span>
-<span class="c1"># - Speed</span>
-<span class="n">METER_PER_SEC</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000094&#39;</span>
-<span class="sd">&#39;&#39;&#39;A speed/velocity unit which is equal to the speed of an object traveling 1 meter distance in one second&#39;&#39;&#39;</span>
-<span class="c1"># - Frequency</span>
-<span class="n">HERTZ</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000106&#39;</span>
-<span class="sd">&#39;&#39;&#39;A frequency unit which is equal to 1 complete cycle of a recurring phenomenon in 1 second.&#39;&#39;&#39;</span>
-<span class="n">MEGAHERTZ</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000325&#39;</span>
-<span class="sd">&#39;&#39;&#39;A frequency unit which is equal 1 Million Hz&#39;&#39;&#39;</span>
-<span class="c1"># - Angles</span>
-<span class="n">DEGREE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000185&#39;</span>
-<span class="sd">&#39;&#39;&#39; A plane angle unit which is equal to 1/360 of a full rotation or 1.7453310^[-2] rad&#39;&#39;&#39;</span>
-<span class="n">RADIAN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000123&#39;</span>
-<span class="sd">&#39;&#39;&#39; A plane angle unit which is equal to the angle subtended at the center of a circle by an arc equal in length</span>
-<span class="sd">to the radius of the circle, approximately 57 degrees 17 minutes and 44.6 seconds.&#39;&#39;&#39;</span>
-<span class="c1"># - Time</span>
-<span class="n">SECOND</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000010&#39;</span>
-<span class="sd">&#39;&#39;&#39; A time unit which is equal to the duration of 9,192,631,770 periods of the radiation</span>
-<span class="sd"> corresponding to the transition between the two hyperfine levels</span>
-<span class="sd"> of the ground state of the caesium 133 atom</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="n">HOUR</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000032&#39;</span>
-<span class="sd">&#39;&#39;&#39; A time unit which is equal to 3600 seconds or 60 minutes&#39;&#39;&#39;</span>
-<span class="n">MINUTE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000031&#39;</span>
-<span class="sd">&#39;&#39;&#39; A time unit which is equal to 60 seconds&#39;&#39;&#39;</span>
-<span class="c1"># - Energy</span>
-<span class="n">JOULE</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000112&#39;</span>
-<span class="sd">&#39;&#39;&#39;An energy unit which is equal to the energy required when a force of 1 newton moves an object 1 meter&#39;&#39;&#39;</span>
-<span class="n">WATT_HOUR</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000223&#39;</span>
-<span class="sd">&#39;&#39;&#39;An energy unit which is equal to the amount of electrical energy equivalent to a one-watt load drawing power for one</span>
-<span class="sd">hour&#39;&#39;&#39;</span>
-<span class="n">KILOWATT_HOUR</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000224&#39;</span>
-<span class="sd">&#39;&#39;&#39;An energy unit which is equal to 1000 Watt-hours&#39;&#39;&#39;</span>
-<span class="c1"># - Power</span>
-<span class="n">WATT</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000114&#39;</span>
-<span class="sd">&#39;&#39;&#39;A power unit which is equal to the power used when work is done at the rate of 1 joule per second&#39;&#39;&#39;</span>
-<span class="c1"># - Electric potential</span>
-<span class="n">VOLT</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000218&#39;</span>
-<span class="sd">&#39;&#39;&#39;An electric potential difference unit which is equal to the work per unit charge&#39;&#39;&#39;</span>
-<span class="c1"># - Force</span>
-<span class="n">NEWTON</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000108&#39;</span>
-<span class="sd">&#39;&#39;&#39;A force unit which is equal to the force required to cause an acceleration of 1m/s2 of a mass of 1 Kg&#39;&#39;&#39;</span>
-<span class="c1"># - Illuminance</span>
-<span class="n">LUX</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000116&#39;</span>
-<span class="sd">&#39;&#39;&#39;An illuminance unit which is equal to the illuminance produced by 1 lumen evenly spread over an area 1 m^[2]&#39;&#39;&#39;</span>
-<span class="c1"># - Pressure</span>
-<span class="n">MM_MERCURY</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000272&#39;</span>
-<span class="sd">&#39;&#39;&#39;A unit of pressure equal to the amount of fluid pressure one millimeter deep in mercury at 0C&#39;&#39;&#39;</span>
-<span class="n">PASCAL</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000110&#39;</span>
-<span class="sd">&#39;&#39;&#39; A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a</span>
-<span class="sd">surface of 1 m^[2]&#39;&#39;&#39;</span>
-<span class="c1"># - Weight</span>
-<span class="n">GRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000021&#39;</span>
-<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one thousandth of a kilogram or 10^[-3] kg&#39;&#39;&#39;</span>
-<span class="n">MILLIGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000022&#39;</span>
-<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one thousandth of a gram or 10^[-3] g&#39;&#39;&#39;</span>
-<span class="n">MICROGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000023&#39;</span>
-<span class="sd">&#39;&#39;&#39;A mass unit which is equal to one millionth of a gram or 10^[-6] g&#39;&#39;&#39;</span>
-<span class="n">KILOGRAM</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000009&#39;</span>
-<span class="sd">&#39;&#39;&#39; A mass unit which is equal to the mass of the International Prototype Kilogram kept by the BIPM at Svres, France.&#39;&#39;&#39;</span>
-<span class="c1"># - Radiation</span>
-<span class="n">ROENTGEN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000136&#39;</span>
-<span class="sd">&#39;&#39;&#39;An exposure unit which is equal to the amount of radiation required to liberate positive</span>
-<span class="sd"> and negative charges of one electrostatic unit of charge in 1  cm^[3] of air</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="n">BECQUEREL</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000132&#39;</span>
-<span class="sd">&#39;&#39;&#39;An activity (of a radionuclide) unit which is equal to the activity of a quantity</span>
-<span class="sd"> of radioactive material in which one nucleus decays per second or</span>
-<span class="sd"> there is one atom disintegration per second</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="n">COUNTS_PER_MIN</span> <span class="o">=</span> <span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000148&#39;</span>
-<span class="sd">&#39;&#39;&#39;An activity (of a radionuclide) unit which is equal to the number of light</span>
-<span class="sd"> emissions produced by ionizing radiation in one minute.</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="c1"># - Dimensionless</span>
-<span class="n">PERCENT</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000187&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless ratio unit which denotes numbers as fractions of 100.&#39;&#39;&#39;</span>
-<span class="n">DECIBEL</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000259&quot;</span>
-<span class="sd">&#39;&#39;&#39; A ratio unit which is an indicator of sound power per unit area.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_HUNDRED</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000167&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 100</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_THOUSAND</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000168&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1000</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_MILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000169&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1,000,000</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_BILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000170&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^9</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_TRILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000171&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^12</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-<span class="n">PARTS_PER_QUADRILLION</span> <span class="o">=</span> <span class="s2">&quot;http://purl.obolibrary.org/obo/UO_0000172&quot;</span>
-<span class="sd">&#39;&#39;&#39;A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^15</span>
-<span class="sd">regardless of the units of measure as long as they are the same.&#39;&#39;&#39;</span>
-
-
-<span class="k">class</span> <span class="nc">Units</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uofn</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c1"># Get a location for the uo.owl</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="s1">&#39;https://unit-ontology.googlecode.com/svn/trunk/uo.owl&#39;</span>
-        <span class="k">if</span> <span class="n">uofn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uofn</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">uofn</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">pfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;uo.owl&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pfn</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">pfn</span>
-        <span class="c1">#</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">            ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent</span>
-<span class="s2">            prefix rdf:        &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</span>
-<span class="s2">            prefix rdfs:        &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
-
-<span class="s2">            SELECT ?s ?label ?comment</span>
-<span class="s2">            WHERE</span>
-<span class="s2">            {</span>
-<span class="s2">            ?s rdfs:subClassOf &lt;</span><span class="si">%s</span><span class="s2">&gt; .</span>
-<span class="s2">            ?s rdfs:label ?label .</span>
-<span class="s2">            ?s rdfs:comment ?comment</span>
-<span class="s2">            }</span>
-<span class="s2">            &quot;&quot;&quot;</span>
-        <span class="c1">#</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">__build_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000000&#39;</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">qres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__query</span> <span class="o">%</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">qres</span><span class="p">:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">s</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="k">def</span> <span class="nf">print_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write a .json file with the units tree</span>
-<span class="sd">        jsonfn=&#39;path/file.name&#39; default os.getcwd() + &#39;units.json&#39;</span>
-<span class="sd">        pretty=True use JSON dumps pretty print for human readability</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">jsonfn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">jsonfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;units.json&#39;</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="n">jsondump</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
-            <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">jsondump</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonfn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsondump</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">return</span> <span class="bp">False</span>
+#
+# Common units constants
+#
+# - Electric Current
+AMPERE = 'http://purl.obolibrary.org/obo/UO_0000011'
+'''Electric current unit'''
+# - Distance
+METER = 'http://purl.obolibrary.org/obo/UO_0000008'
+'''Metric distance unit = 100 cm'''
+METRE = METER
+MILLIMETER = 'http://purl.obolibrary.org/obo/UO_0000016'
+'''Metric distance unit = 1/100 of a meter'''
+MILLIMETRE = MILLIMETER
+CENTIMETER = 'http://purl.obolibrary.org/obo/UO_0000015'
+'''Metric distance unit = 1/100 of a meter'''
+CENTIMETRE = CENTIMETER
+CM = CENTIMETER
+# - Area
+SQUARE_METER = "http://purl.obolibrary.org/obo/UO_0000080"
+'''An area unit which is equal to an area enclosed by a square with sides each 1 meter long.'''
+SQUARE_METRE = SQUARE_METER
+SQUARE_CENTIMETER = "http://purl.obolibrary.org/obo/UO_0000081"
+'''An area unit which is equal to an area enclosed by a square with sides each 1 centimeter long.'''
+SQUARE_CENTIMETRE = SQUARE_CENTIMETER
+SQUARE_MILLIMETER = "http://purl.obolibrary.org/obo/UO_0000082"
+'''An area unit which is equal to an area enclosed by a square with sides each 1 millimeter long.'''
+SQUARE_MILLIMETRE = SQUARE_MILLIMETER
+# - Temperature
+CELSIUS = 'http://purl.obolibrary.org/obo/UO_0000027'
+'''Temperature units where the freezing point of water at 273.15 Kelvin is considered 0C and the boiling point 283.15K
+is 100C'''
+FAHRENHEIT = 'http://purl.obolibrary.org/obo/UO_0000195'
+'''A temperature unit which is equal to 5/9ths of a kelvin. Negative 40 degrees Fahrenheit is equal to negative 40
+degrees Celsius'''
+KELVIN = 'http://purl.obolibrary.org/obo/UO_0000012'
+'''A thermodynamic temperature unit. 0K is "absolute zero", ~293K is "room temperature", i.e. 20C'''
+# - Speed
+METER_PER_SEC = 'http://purl.obolibrary.org/obo/UO_0000094'
+'''A speed/velocity unit which is equal to the speed of an object traveling 1 meter distance in one second'''
+# - Frequency
+HERTZ = 'http://purl.obolibrary.org/obo/UO_0000106'
+'''A frequency unit which is equal to 1 complete cycle of a recurring phenomenon in 1 second.'''
+MEGAHERTZ = 'http://purl.obolibrary.org/obo/UO_0000325'
+'''A frequency unit which is equal 1 Million Hz'''
+# - Angles
+DEGREE = 'http://purl.obolibrary.org/obo/UO_0000185'
+''' A plane angle unit which is equal to 1/360 of a full rotation or 1.7453310^[-2] rad'''
+RADIAN = 'http://purl.obolibrary.org/obo/UO_0000123'
+''' A plane angle unit which is equal to the angle subtended at the center of a circle by an arc equal in length
+to the radius of the circle, approximately 57 degrees 17 minutes and 44.6 seconds.'''
+# - Time
+SECOND = 'http://purl.obolibrary.org/obo/UO_0000010'
+''' A time unit which is equal to the duration of 9,192,631,770 periods of the radiation
+ corresponding to the transition between the two hyperfine levels
+ of the ground state of the caesium 133 atom
+'''
+HOUR = 'http://purl.obolibrary.org/obo/UO_0000032'
+''' A time unit which is equal to 3600 seconds or 60 minutes'''
+MINUTE = 'http://purl.obolibrary.org/obo/UO_0000031'
+''' A time unit which is equal to 60 seconds'''
+# - Energy
+JOULE = 'http://purl.obolibrary.org/obo/UO_0000112'
+'''An energy unit which is equal to the energy required when a force of 1 newton moves an object 1 meter'''
+WATT_HOUR = 'http://purl.obolibrary.org/obo/UO_0000223'
+'''An energy unit which is equal to the amount of electrical energy equivalent to a one-watt load drawing power for one
+hour'''
+KILOWATT_HOUR = 'http://purl.obolibrary.org/obo/UO_0000224'
+'''An energy unit which is equal to 1000 Watt-hours'''
+# - Power
+WATT = 'http://purl.obolibrary.org/obo/UO_0000114'
+'''A power unit which is equal to the power used when work is done at the rate of 1 joule per second'''
+# - Electric potential
+VOLT = 'http://purl.obolibrary.org/obo/UO_0000218'
+'''An electric potential difference unit which is equal to the work per unit charge'''
+# - Force
+NEWTON = 'http://purl.obolibrary.org/obo/UO_0000108'
+'''A force unit which is equal to the force required to cause an acceleration of 1m/s2 of a mass of 1 Kg'''
+# - Illuminance
+LUX = 'http://purl.obolibrary.org/obo/UO_0000116'
+'''An illuminance unit which is equal to the illuminance produced by 1 lumen evenly spread over an area 1 m^[2]'''
+# - Pressure
+MM_MERCURY = 'http://purl.obolibrary.org/obo/UO_0000272'
+'''A unit of pressure equal to the amount of fluid pressure one millimeter deep in mercury at 0C'''
+PASCAL = 'http://purl.obolibrary.org/obo/UO_0000110'
+''' A pressure unit which is equal to the pressure or stress on a surface caused by a force of 1 newton spread over a
+surface of 1 m^[2]'''
+# - Weight
+GRAM = 'http://purl.obolibrary.org/obo/UO_0000021'
+'''A mass unit which is equal to one thousandth of a kilogram or 10^[-3] kg'''
+MILLIGRAM = 'http://purl.obolibrary.org/obo/UO_0000022'
+'''A mass unit which is equal to one thousandth of a gram or 10^[-3] g'''
+MICROGRAM = 'http://purl.obolibrary.org/obo/UO_0000023'
+'''A mass unit which is equal to one millionth of a gram or 10^[-6] g'''
+KILOGRAM = 'http://purl.obolibrary.org/obo/UO_0000009'
+''' A mass unit which is equal to the mass of the International Prototype Kilogram kept by the BIPM at Svres, France.'''
+# - Radiation
+ROENTGEN = 'http://purl.obolibrary.org/obo/UO_0000136'
+'''An exposure unit which is equal to the amount of radiation required to liberate positive
+ and negative charges of one electrostatic unit of charge in 1  cm^[3] of air
+'''
+BECQUEREL = 'http://purl.obolibrary.org/obo/UO_0000132'
+'''An activity (of a radionuclide) unit which is equal to the activity of a quantity
+ of radioactive material in which one nucleus decays per second or
+ there is one atom disintegration per second
+'''
+COUNTS_PER_MIN = 'http://purl.obolibrary.org/obo/UO_0000148'
+'''An activity (of a radionuclide) unit which is equal to the number of light
+ emissions produced by ionizing radiation in one minute.
+'''
+# - Dimensionless
+PERCENT = "http://purl.obolibrary.org/obo/UO_0000187"
+'''A dimensionless ratio unit which denotes numbers as fractions of 100.'''
+DECIBEL = "http://purl.obolibrary.org/obo/UO_0000259"
+''' A ratio unit which is an indicator of sound power per unit area.'''
+PARTS_PER_HUNDRED = "http://purl.obolibrary.org/obo/UO_0000167"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 100
+regardless of the units of measure as long as they are the same.'''
+PARTS_PER_THOUSAND = "http://purl.obolibrary.org/obo/UO_0000168"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1000
+regardless of the units of measure as long as they are the same.'''
+PARTS_PER_MILLION = "http://purl.obolibrary.org/obo/UO_0000169"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 1,000,000
+regardless of the units of measure as long as they are the same.'''
+PARTS_PER_BILLION = "http://purl.obolibrary.org/obo/UO_0000170"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^9
+regardless of the units of measure as long as they are the same.'''
+PARTS_PER_TRILLION = "http://purl.obolibrary.org/obo/UO_0000171"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^12
+regardless of the units of measure as long as they are the same.'''
+PARTS_PER_QUADRILLION = "http://purl.obolibrary.org/obo/UO_0000172"
+'''A dimensionless concentration notation which denotes the amount of a given substance in a total amount of 10^15
+regardless of the units of measure as long as they are the same.'''
 
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-    <span class="n">Units</span><span class="p">()</span><span class="o">.</span><span class="n">save_json</span><span class="p">()</span>
-</pre></div>
+class Units(object):
 
+    def __init__(self, uofn=None):
+        # Get a location for the uo.owl
+        self.__owlfn = 'https://unit-ontology.googlecode.com/svn/trunk/uo.owl'
+        if uofn is not None and os.path.exists(uofn):
+            self.__owlfn = uofn
+        else:
+            pfn = os.path.join(os.getcwd(), 'uo.owl')
+            if os.path.exists(pfn):
+                self.__owlfn = pfn
+        #
+        self.__query = """
+            ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent
+            prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+
+            SELECT ?s ?label ?comment
+            WHERE
+            {
+            ?s rdfs:subClassOf <%s> .
+            ?s rdfs:label ?label .
+            ?s rdfs:comment ?comment
+            }
+            """
+        #
+        if self.__owlfn.startswith('https://'):
+            logger.debug("Downloading: %s", self.__owlfn)
+        self.__graph = rdflib.Graph()
+        self.__graph.parse(self.__owlfn, format="xml")
+        #
+        logger.debug("Building Units")
+        self.units = self.__build_units()
+
+    def __build_units(self, parent='http://purl.obolibrary.org/obo/UO_0000000'):
+        ret = []
+        qres = self.__graph.query(self.__query % parent)
+        for s, label, comment in qres:
+            ret.append((s, label, comment, self.__build_units(parent=s)))
+        return ret
+
+    def print_units(self, parent=None, indent=0, indentsize=4):
+        if parent is None:
+            parent = self.units
+        for s, label, comment, children in parent:
+            print("%s %s => %s (%s)" % ((' ' * indent), s, label, comment))
+            if children:
+                self.print_units(parent=children, indent=indent + indentsize, indentsize=indentsize)
+
+    def save_json(self, jsonfn=None, pretty=True):
+        """Write a .json file with the units tree
+        jsonfn='path/file.name' default os.getcwd() + 'units.json'
+        pretty=True use JSON dumps pretty print for human readability
+        """
+        if jsonfn is None:
+            jsonfn = os.path.join(os.getcwd(), 'units.json')
+        #
+        jsondump = None
+        sort_keys = False
+        indent = 0
+        if pretty:
+            sort_keys = True
+            indent = 4
+        jsondump = json.dumps(self.units, sort_keys=sort_keys, indent=indent)
+        #
+        with open(jsonfn, 'w') as f:
+            f.write(jsondump)
+            return True
+        return False
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    Units().save_json()
+</code></pre>
   </div>
 
   </header>
@@ -1840,77 +1772,76 @@ hour</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Units.Units', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Units.Units" class="source">
-    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Units</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <pre><code>class Units(object):
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uofn</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c1"># Get a location for the uo.owl</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="s1">&#39;https://unit-ontology.googlecode.com/svn/trunk/uo.owl&#39;</span>
-        <span class="k">if</span> <span class="n">uofn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uofn</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">uofn</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">pfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;uo.owl&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pfn</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">pfn</span>
-        <span class="c1">#</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">            ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent</span>
-<span class="s2">            prefix rdf:        &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</span>
-<span class="s2">            prefix rdfs:        &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
+    def __init__(self, uofn=None):
+        # Get a location for the uo.owl
+        self.__owlfn = 'https://unit-ontology.googlecode.com/svn/trunk/uo.owl'
+        if uofn is not None and os.path.exists(uofn):
+            self.__owlfn = uofn
+        else:
+            pfn = os.path.join(os.getcwd(), 'uo.owl')
+            if os.path.exists(pfn):
+                self.__owlfn = pfn
+        #
+        self.__query = """
+            ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent
+            prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
 
-<span class="s2">            SELECT ?s ?label ?comment</span>
-<span class="s2">            WHERE</span>
-<span class="s2">            {</span>
-<span class="s2">            ?s rdfs:subClassOf &lt;</span><span class="si">%s</span><span class="s2">&gt; .</span>
-<span class="s2">            ?s rdfs:label ?label .</span>
-<span class="s2">            ?s rdfs:comment ?comment</span>
-<span class="s2">            }</span>
-<span class="s2">            &quot;&quot;&quot;</span>
-        <span class="c1">#</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
+            SELECT ?s ?label ?comment
+            WHERE
+            {
+            ?s rdfs:subClassOf <%s> .
+            ?s rdfs:label ?label .
+            ?s rdfs:comment ?comment
+            }
+            """
+        #
+        if self.__owlfn.startswith('https://'):
+            logger.debug("Downloading: %s", self.__owlfn)
+        self.__graph = rdflib.Graph()
+        self.__graph.parse(self.__owlfn, format="xml")
+        #
+        logger.debug("Building Units")
+        self.units = self.__build_units()
 
-    <span class="k">def</span> <span class="nf">__build_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="s1">&#39;http://purl.obolibrary.org/obo/UO_0000000&#39;</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">qres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__query</span> <span class="o">%</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">qres</span><span class="p">:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">s</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">ret</span>
+    def __build_units(self, parent='http://purl.obolibrary.org/obo/UO_0000000'):
+        ret = []
+        qres = self.__graph.query(self.__query % parent)
+        for s, label, comment in qres:
+            ret.append((s, label, comment, self.__build_units(parent=s)))
+        return ret
 
-    <span class="k">def</span> <span class="nf">print_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
+    def print_units(self, parent=None, indent=0, indentsize=4):
+        if parent is None:
+            parent = self.units
+        for s, label, comment, children in parent:
+            print("%s %s => %s (%s)" % ((' ' * indent), s, label, comment))
+            if children:
+                self.print_units(parent=children, indent=indent + indentsize, indentsize=indentsize)
 
-    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write a .json file with the units tree</span>
-<span class="sd">        jsonfn=&#39;path/file.name&#39; default os.getcwd() + &#39;units.json&#39;</span>
-<span class="sd">        pretty=True use JSON dumps pretty print for human readability</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">jsonfn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">jsonfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;units.json&#39;</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="n">jsondump</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
-            <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">jsondump</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonfn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsondump</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">return</span> <span class="bp">False</span>
-</pre></div>
-
+    def save_json(self, jsonfn=None, pretty=True):
+        """Write a .json file with the units tree
+        jsonfn='path/file.name' default os.getcwd() + 'units.json'
+        pretty=True use JSON dumps pretty print for human readability
+        """
+        if jsonfn is None:
+            jsonfn = os.path.join(os.getcwd(), 'units.json')
+        #
+        jsondump = None
+        sort_keys = False
+        indent = 0
+        if pretty:
+            sort_keys = True
+            indent = 4
+        jsondump = json.dumps(self.units, sort_keys=sort_keys, indent=indent)
+        #
+        with open(jsonfn, 'w') as f:
+            f.write(jsondump)
+            return True
+        return False
+</code></pre>
   </div>
 </div>
 
@@ -1935,38 +1866,37 @@ hour</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Units.Units.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Units.Units.__init__" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uofn</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="c1"># Get a location for the uo.owl</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="s1">&#39;https://unit-ontology.googlecode.com/svn/trunk/uo.owl&#39;</span>
-    <span class="k">if</span> <span class="n">uofn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uofn</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">uofn</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;uo.owl&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pfn</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span> <span class="o">=</span> <span class="n">pfn</span>
-    <span class="c1">#</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent</span>
-<span class="s2">        prefix rdf:        &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</span>
-<span class="s2">        prefix rdfs:        &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</span>
-<span class="s2">        SELECT ?s ?label ?comment</span>
-<span class="s2">        WHERE</span>
-<span class="s2">        {</span>
-<span class="s2">        ?s rdfs:subClassOf &lt;</span><span class="si">%s</span><span class="s2">&gt; .</span>
-<span class="s2">        ?s rdfs:label ?label .</span>
-<span class="s2">        ?s rdfs:comment ?comment</span>
-<span class="s2">        }</span>
-<span class="s2">        &quot;&quot;&quot;</span>
-    <span class="c1">#</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span> <span class="o">=</span> <span class="n">rdflib</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__owlfn</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
-    <span class="c1">#</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Building Units&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__build_units</span><span class="p">()</span>
-</pre></div>
-
+    <pre><code>def __init__(self, uofn=None):
+    # Get a location for the uo.owl
+    self.__owlfn = 'https://unit-ontology.googlecode.com/svn/trunk/uo.owl'
+    if uofn is not None and os.path.exists(uofn):
+        self.__owlfn = uofn
+    else:
+        pfn = os.path.join(os.getcwd(), 'uo.owl')
+        if os.path.exists(pfn):
+            self.__owlfn = pfn
+    #
+    self.__query = """
+        ## SPARQL to get all labels and comments of all classes which are sub-classes of a parent
+        prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?s ?label ?comment
+        WHERE
+        {
+        ?s rdfs:subClassOf <%s> .
+        ?s rdfs:label ?label .
+        ?s rdfs:comment ?comment
+        }
+        """
+    #
+    if self.__owlfn.startswith('https://'):
+        logger.debug("Downloading: %s", self.__owlfn)
+    self.__graph = rdflib.Graph()
+    self.__graph.parse(self.__owlfn, format="xml")
+    #
+    logger.debug("Building Units")
+    self.units = self.__build_units()
+</code></pre>
   </div>
 </div>
 
@@ -1984,15 +1914,14 @@ hour</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Units.Units.print_units', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Units.Units.print_units" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">print_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
-    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">children</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> =&gt; </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_units</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span> <span class="o">+</span> <span class="n">indentsize</span><span class="p">,</span> <span class="n">indentsize</span><span class="o">=</span><span class="n">indentsize</span><span class="p">)</span>
-</pre></div>
-
+    <pre><code>def print_units(self, parent=None, indent=0, indentsize=4):
+    if parent is None:
+        parent = self.units
+    for s, label, comment, children in parent:
+        print("%s %s => %s (%s)" % ((' ' * indent), s, label, comment))
+        if children:
+            self.print_units(parent=children, indent=indent + indentsize, indentsize=indentsize)
+</code></pre>
   </div>
 </div>
 
@@ -2013,28 +1942,27 @@ pretty=True use JSON dumps pretty print for human readability</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Units.Units.save_json', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Units.Units.save_json" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write a .json file with the units tree</span>
-<span class="sd">    jsonfn=&#39;path/file.name&#39; default os.getcwd() + &#39;units.json&#39;</span>
-<span class="sd">    pretty=True use JSON dumps pretty print for human readability</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">jsonfn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">jsonfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;units.json&#39;</span><span class="p">)</span>
-    <span class="c1">#</span>
-    <span class="n">jsondump</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">False</span>
-    <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
-        <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">jsondump</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
-    <span class="c1">#</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonfn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsondump</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">return</span> <span class="bp">False</span>
-</pre></div>
-
+    <pre><code>def save_json(self, jsonfn=None, pretty=True):
+    """Write a .json file with the units tree
+    jsonfn='path/file.name' default os.getcwd() + 'units.json'
+    pretty=True use JSON dumps pretty print for human readability
+    """
+    if jsonfn is None:
+        jsonfn = os.path.join(os.getcwd(), 'units.json')
+    #
+    jsondump = None
+    sort_keys = False
+    indent = 0
+    if pretty:
+        sort_keys = True
+        indent = 4
+    jsondump = json.dumps(self.units, sort_keys=sort_keys, indent=indent)
+    #
+    with open(jsonfn, 'w') as f:
+        f.write(jsondump)
+        return True
+    return False
+</code></pre>
   </div>
 </div>
 

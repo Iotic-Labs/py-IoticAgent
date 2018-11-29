@@ -38,7 +38,7 @@ class RateLimiter(object):
         if not all(isinstance(param, int_types) and param > 0 for param in (interval, max_iterations)):
             raise ValueError('Parameters must be positive integers')
         if wait_cmd is None:
-            self.__wait_cmd = self.sleep
+            self.__wait_cmd = sleep
         else:
             try:
                 wait_cmd(0)
@@ -50,11 +50,6 @@ class RateLimiter(object):
         self.__max_iterations = max_iterations
         self.__iterations = deque()
         self.__lock = Lock()
-
-    @staticmethod
-    def sleep(amount):
-        sleep(amount)
-        return None
 
     def throttle(self):
         """Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once
