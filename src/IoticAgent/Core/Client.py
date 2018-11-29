@@ -94,7 +94,7 @@ _CB_RECENT_DATA = 14    # Requested recent data samples
 _CB_CRUD_TYPES = frozenset((_CB_CREATED, _CB_DUPLICATE, _CB_RENAMED, _CB_DELETED, _CB_REASSIGNED))
 
 # expected content type for incoming messages
-_CONTENT_TYPE_PATTERN = re_compile(r'^(?%si)application/ubjson$' % ('a' if PY3 else ''))
+_CONTENT_TYPE_PATTERN = re_compile(r'(?%si)^application/ubjson$' % ('a' if PY3 else ''))
 
 # unsolicited responses which never have a reference
 _RSP_NO_REF = frozenset((E_FEEDDATA, E_SUBSCRIBED))

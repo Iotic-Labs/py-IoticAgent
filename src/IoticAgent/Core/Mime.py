@@ -29,7 +29,7 @@ __MAX_LEN = 64
 # The shorthand pattern begins with "idx/" and is followed by a positive integer without trailing zeroes. The maximum
 # type length (__MAX_LEN) still applies.
 __IDX_PREFIX = 'idx/'
-__IDX_PATTERN = re_compile(r'^(?%si)%s(\S{1,%d})$' % (('a' if PY3 else ''), __IDX_PREFIX,
+__IDX_PATTERN = re_compile(r'(?%si)^%s(\S{1,%d})$' % (('a' if PY3 else ''), __IDX_PREFIX,
                                                       __MAX_LEN - len(__IDX_PREFIX)))
 
 

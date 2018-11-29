@@ -47,15 +47,15 @@ VALIDATION_META_VALUE_TYPES = frozenset(("string", "boolean", "decimal", "float"
                                          "nonNegativeInteger", "unsignedLong", "unsignedInt", "unsignedShort",
                                          "unsignedByte", "positiveInteger"))
 
-_PATTERN_ASCII = re_compile(r'^(?%s)\S+$' % 'a' if PY3 else '')
-_PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'^(?u)\s.*|.*\s$')
-_PATTERN_WHITESPACE = re_compile(r'^(?u).*\s.*$')
-_PATTERN_LANGUAGE = re_compile(r'^(?%si)[a-z]{2}$' % 'a' if PY3 else '')
-_PATTERN_WORD = re_compile(r'^(?u)\w+$')
+_PATTERN_ASCII = re_compile(r'(?%s)^\S+$' % 'a' if PY3 else '')
+_PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'(?u)^\s.*|.*\s$')
+_PATTERN_WHITESPACE = re_compile(r'(?u)^.*\s.*$')
+_PATTERN_LANGUAGE = re_compile(r'(?%si)^[a-z]{2}$' % 'a' if PY3 else '')
+_PATTERN_WORD = re_compile(r'(?u)^\w+$')
 # For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters
 _PATTERN_WORDS = re_compile(r'(?u)(?<!\S)\w+(?!\S)')
 # for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)
-_PATTERN_URL_PART = re_compile(r'^(?u)\S{3}\S*$')
+_PATTERN_URL_PART = re_compile(r'(?u)^\S{3}\S*$')
 
 _LOCATION_SEARCH_ARGS = frozenset(('lat', 'long', 'radius'))
 
