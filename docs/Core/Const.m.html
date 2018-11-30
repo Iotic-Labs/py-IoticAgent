@@ -853,6 +853,77 @@ table {
 
   </style>
 
+  <style type="text/css">
+  .codehilite .hll { background-color: #ffffcc }
+.codehilite  { background: #f8f8f8; }
+.codehilite .c { color: #408080; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #FF0000 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666666 } /* Operator */
+.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .gr { color: #FF0000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888888 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #0044DD } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #7D9029 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #880000 } /* Name.Constant */
+.codehilite .nd { color: #AA22FF } /* Name.Decorator */
+.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #0000FF } /* Name.Function */
+.codehilite .nl { color: #A0A000 } /* Name.Label */
+.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #0000FF } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+  </style>
 
   <style type="text/css">
   
@@ -1087,174 +1158,175 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Const" class="source">
-    <pre><code># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""QAPI Constants
-"""
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;QAPI Constants</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-from __future__ import unicode_literals
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
-from enum import Enum, unique
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
 
-# Action types the container accepts
-C_CREATE = 1
-C_UPDATE = 2
-C_DELETE = 3
-C_LIST = 4
+<span class="c1"># Action types the container accepts</span>
+<span class="n">C_CREATE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">C_UPDATE</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">C_DELETE</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">C_LIST</span> <span class="o">=</span> <span class="mi">4</span>
 
-# Action types on calls from the container
-E_COMPLETE = 1
-E_PROGRESS = 2
-E_PROGRESS_CODE_ACCEPTED = 1
-E_PROGRESS_CODE_REMOTEDELAY = 2
-E_PROGRESS_CODE_UPDATE = 3  # additional progress update
-E_FAILED = 3
-E_FAILED_CODE_NOTALLOWED = 1
-E_FAILED_CODE_UNKNOWN = 2
-E_FAILED_CODE_MALFORMED = 3
-E_FAILED_CODE_DUPLICATE = 4
-E_FAILED_CODE_INTERNALERROR = 5
-E_FAILED_CODE_LOWSEQNUM = 6
-E_FAILED_CODE_ACCESSDENIED = 7
-E_CREATED = 4
-E_DUPLICATED = 5
-E_DELETED = 6
-E_FEEDDATA = 7
-E_CONTROLREQ = 8
-E_SUBSCRIBED = 9
-E_RENAMED = 10
-E_REASSIGNED = 11
-E_RECENTDATA = 12
+<span class="c1"># Action types on calls from the container</span>
+<span class="n">E_COMPLETE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">E_PROGRESS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">E_PROGRESS_CODE_ACCEPTED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">E_PROGRESS_CODE_REMOTEDELAY</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">E_PROGRESS_CODE_UPDATE</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># additional progress update</span>
+<span class="n">E_FAILED</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">E_FAILED_CODE_NOTALLOWED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">E_FAILED_CODE_UNKNOWN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">E_FAILED_CODE_MALFORMED</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">E_FAILED_CODE_DUPLICATE</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">E_FAILED_CODE_INTERNALERROR</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">E_FAILED_CODE_LOWSEQNUM</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">E_FAILED_CODE_ACCESSDENIED</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">E_CREATED</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">E_DUPLICATED</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">E_DELETED</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">E_FEEDDATA</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">E_CONTROLREQ</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">E_SUBSCRIBED</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">E_RENAMED</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">E_REASSIGNED</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">E_RECENTDATA</span> <span class="o">=</span> <span class="mi">12</span>
 
-# Resource types
-R_PING = 0
-R_ENTITY = 1
-R_FEED = 2
-R_CONTROL = 3
-R_SUB = 4
-R_ENTITY_META = 5
-R_FEED_META = 6
-R_CONTROL_META = 7
-R_VALUE_META = 8
-R_ENTITY_TAG_META = 9
-R_FEED_TAG_META = 10
-R_CONTROL_TAG_META = 11
-# R_VALUE_TAG_META = 12  # Note: removed from QAPI
-R_SEARCH = 13
-R_DESCRIBE = 14
+<span class="c1"># Resource types</span>
+<span class="n">R_PING</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">R_ENTITY</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">R_FEED</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">R_CONTROL</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">R_SUB</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">R_ENTITY_META</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">R_FEED_META</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">R_CONTROL_META</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">R_VALUE_META</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">R_ENTITY_TAG_META</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="n">R_FEED_TAG_META</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">R_CONTROL_TAG_META</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="c1"># R_VALUE_TAG_META = 12  # Note: removed from QAPI</span>
+<span class="n">R_SEARCH</span> <span class="o">=</span> <span class="mi">13</span>
+<span class="n">R_DESCRIBE</span> <span class="o">=</span> <span class="mi">14</span>
 
-# Wrapper
-W_SEQ = 's'
-W_HASH = 'h'
-W_COMPRESSION = 'c'
-W_MESSAGE = 'm'
+<span class="c1"># Wrapper</span>
+<span class="n">W_SEQ</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+<span class="n">W_HASH</span> <span class="o">=</span> <span class="s1">&#39;h&#39;</span>
+<span class="n">W_COMPRESSION</span> <span class="o">=</span> <span class="s1">&#39;c&#39;</span>
+<span class="n">W_MESSAGE</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
 
-# Compression levels
-COMP_NONE = 0
-COMP_ZLIB = 1
-COMP_LZ4F = 2
+<span class="c1"># Compression levels</span>
+<span class="n">COMP_NONE</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">COMP_ZLIB</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">COMP_LZ4F</span> <span class="o">=</span> <span class="mi">2</span>
 
-# Message
-M_RESOURCE = 'r'
-M_TYPE = 't'
-M_CLIENTREF = 'c'
-M_ACTION = 'a'
-M_PAYLOAD = 'p'
-M_RANGE = 'g'
+<span class="c1"># Message</span>
+<span class="n">M_RESOURCE</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+<span class="n">M_TYPE</span> <span class="o">=</span> <span class="s1">&#39;t&#39;</span>
+<span class="n">M_CLIENTREF</span> <span class="o">=</span> <span class="s1">&#39;c&#39;</span>
+<span class="n">M_ACTION</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+<span class="n">M_PAYLOAD</span> <span class="o">=</span> <span class="s1">&#39;p&#39;</span>
+<span class="n">M_RANGE</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span>
 
-# Payload
-P_CODE = 'c'
-P_RESOURCE = 'r'
-P_MESSAGE = 'm'
-P_LID = 'lid'
-P_ENTITY_LID = 'entityLid'
-P_POINT_ENTITY_LID = 'pointEntityLid'
-P_POINT_LID = 'pointLid'
-P_OLD_LID = 'oldLid'
-P_EPID = 'epId'
-P_ID = 'id'
-P_POINT_ID = 'pointId'
-P_FEED_ID = 'feedId'
-P_POINT_TYPE = 'pointType'
-P_MIME = 'mime'
-P_DATA = 'data'
-P_SUCCESS = 'success'
-P_CONFIRM = 'confirm'
-P_SUB_ID = 'subId'
-P_TIME = 'time'
-P_SAMPLES = 'samples'
+<span class="c1"># Payload</span>
+<span class="n">P_CODE</span> <span class="o">=</span> <span class="s1">&#39;c&#39;</span>
+<span class="n">P_RESOURCE</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+<span class="n">P_MESSAGE</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+<span class="n">P_LID</span> <span class="o">=</span> <span class="s1">&#39;lid&#39;</span>
+<span class="n">P_ENTITY_LID</span> <span class="o">=</span> <span class="s1">&#39;entityLid&#39;</span>
+<span class="n">P_POINT_ENTITY_LID</span> <span class="o">=</span> <span class="s1">&#39;pointEntityLid&#39;</span>
+<span class="n">P_POINT_LID</span> <span class="o">=</span> <span class="s1">&#39;pointLid&#39;</span>
+<span class="n">P_OLD_LID</span> <span class="o">=</span> <span class="s1">&#39;oldLid&#39;</span>
+<span class="n">P_EPID</span> <span class="o">=</span> <span class="s1">&#39;epId&#39;</span>
+<span class="n">P_ID</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
+<span class="n">P_POINT_ID</span> <span class="o">=</span> <span class="s1">&#39;pointId&#39;</span>
+<span class="n">P_FEED_ID</span> <span class="o">=</span> <span class="s1">&#39;feedId&#39;</span>
+<span class="n">P_POINT_TYPE</span> <span class="o">=</span> <span class="s1">&#39;pointType&#39;</span>
+<span class="n">P_MIME</span> <span class="o">=</span> <span class="s1">&#39;mime&#39;</span>
+<span class="n">P_DATA</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+<span class="n">P_SUCCESS</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+<span class="n">P_CONFIRM</span> <span class="o">=</span> <span class="s1">&#39;confirm&#39;</span>
+<span class="n">P_SUB_ID</span> <span class="o">=</span> <span class="s1">&#39;subId&#39;</span>
+<span class="n">P_TIME</span> <span class="o">=</span> <span class="s1">&#39;time&#39;</span>
+<span class="n">P_SAMPLES</span> <span class="o">=</span> <span class="s1">&#39;samples&#39;</span>
 
-#
-# Configuration
-# Compression Default when the COMP_SIZE threshold is passed
-# Can set default or size to COMP_NONE or 0 for no compression
-# Client.set_compression overwrites this!
-COMP_DEFAULT = COMP_ZLIB
+<span class="c1">#</span>
+<span class="c1"># Configuration</span>
+<span class="c1"># Compression Default when the COMP_SIZE threshold is passed</span>
+<span class="c1"># Can set default or size to COMP_NONE or 0 for no compression</span>
+<span class="c1"># Client.set_compression overwrites this!</span>
+<span class="n">COMP_DEFAULT</span> <span class="o">=</span> <span class="n">COMP_ZLIB</span>
 
-# comp_size when innerMsg is longer than this (selected) compression will be used
-COMP_SIZE = 768
-
-
-# Request-specific enumerations
-
-@unique
-class SearchScope(Enum):
-    """Determines how search is performed
-
-    `PUBLIC` - Public metadata search
-
-    `LOCAL` - Container-local search (only available if container running in 'private' mode)
-
-    `LOCAL_OWN` - Container-local search for own things only
-    """
-    PUBLIC = 'public'
-    LOCAL = 'local'
-    LOCAL_OWN = 'localOwn'
+<span class="c1"># comp_size when innerMsg is longer than this (selected) compression will be used</span>
+<span class="n">COMP_SIZE</span> <span class="o">=</span> <span class="mi">768</span>
 
 
-@unique
-class SearchType(Enum):
-    """Determines what results a search returns
+<span class="c1"># Request-specific enumerations</span>
 
-    `FULL` - Provides most information
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">SearchScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how search is performed</span>
 
-    `REDUCED` - Limit output including only points and their type
+<span class="sd">    `PUBLIC` - Public metadata search</span>
 
-    `LOCATED` - Minimal location + label format (e.g. for display on a map)
-    """
-    FULL = 'full'
-    REDUCED = 'reduced'
-    LOCATED = 'located'
+<span class="sd">    `LOCAL` - Container-local search (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local search for own things only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
 
 
-@unique
-class DescribeScope(Enum):
-    """Determines how a resource is described
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">SearchType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines what results a search returns</span>
 
-    `AUTO` - Uses local meta if available, otherwise public
+<span class="sd">    `FULL` - Provides most information</span>
 
-    `PUBLIC` - Public metadata (public)
+<span class="sd">    `REDUCED` - Limit output including only points and their type</span>
 
-    `LOCAL` - Container-local meta (only available if container running in 'private' mode)
+<span class="sd">    `LOCATED` - Minimal location + label format (e.g. for display on a map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FULL</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span>
+    <span class="n">REDUCED</span> <span class="o">=</span> <span class="s1">&#39;reduced&#39;</span>
+    <span class="n">LOCATED</span> <span class="o">=</span> <span class="s1">&#39;located&#39;</span>
 
-    `LOCAL_OWN` - Container-local meta for own resource only
-    """
-    AUTO = 'auto'
-    PUBLIC = 'public'
-    LOCAL = 'local'
-    LOCAL_OWN = 'localOwn'
-</code></pre>
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">DescribeScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how a resource is described</span>
+
+<span class="sd">    `AUTO` - Uses local meta if available, otherwise public</span>
+
+<span class="sd">    `PUBLIC` - Public metadata (public)</span>
+
+<span class="sd">    `LOCAL` - Container-local meta (only available if container running in &#39;private&#39; mode)</span>
+
+<span class="sd">    `LOCAL_OWN` - Container-local meta for own resource only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+</pre></div>
+
   </div>
 
   </header>
@@ -1877,22 +1949,23 @@ class DescribeScope(Enum):
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.DescribeScope', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Const.DescribeScope" class="source">
-    <pre><code>class DescribeScope(Enum):
-    """Determines how a resource is described
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DescribeScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how a resource is described</span>
 
-    `AUTO` - Uses local meta if available, otherwise public
+<span class="sd">    `AUTO` - Uses local meta if available, otherwise public</span>
 
-    `PUBLIC` - Public metadata (public)
+<span class="sd">    `PUBLIC` - Public metadata (public)</span>
 
-    `LOCAL` - Container-local meta (only available if container running in 'private' mode)
+<span class="sd">    `LOCAL` - Container-local meta (only available if container running in &#39;private&#39; mode)</span>
 
-    `LOCAL_OWN` - Container-local meta for own resource only
-    """
-    AUTO = 'auto'
-    PUBLIC = 'public'
-    LOCAL = 'local'
-    LOCAL_OWN = 'localOwn'
-</code></pre>
+<span class="sd">    `LOCAL_OWN` - Container-local meta for own resource only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1979,19 +2052,20 @@ class DescribeScope(Enum):
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.SearchScope', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Const.SearchScope" class="source">
-    <pre><code>class SearchScope(Enum):
-    """Determines how search is performed
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SearchScope</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines how search is performed</span>
 
-    `PUBLIC` - Public metadata search
+<span class="sd">    `PUBLIC` - Public metadata search</span>
 
-    `LOCAL` - Container-local search (only available if container running in 'private' mode)
+<span class="sd">    `LOCAL` - Container-local search (only available if container running in &#39;private&#39; mode)</span>
 
-    `LOCAL_OWN` - Container-local search for own things only
-    """
-    PUBLIC = 'public'
-    LOCAL = 'local'
-    LOCAL_OWN = 'localOwn'
-</code></pre>
+<span class="sd">    `LOCAL_OWN` - Container-local search for own things only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+    <span class="n">LOCAL_OWN</span> <span class="o">=</span> <span class="s1">&#39;localOwn&#39;</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -2068,19 +2142,20 @@ class DescribeScope(Enum):
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Const.SearchType', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Const.SearchType" class="source">
-    <pre><code>class SearchType(Enum):
-    """Determines what results a search returns
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SearchType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines what results a search returns</span>
 
-    `FULL` - Provides most information
+<span class="sd">    `FULL` - Provides most information</span>
 
-    `REDUCED` - Limit output including only points and their type
+<span class="sd">    `REDUCED` - Limit output including only points and their type</span>
 
-    `LOCATED` - Minimal location + label format (e.g. for display on a map)
-    """
-    FULL = 'full'
-    REDUCED = 'reduced'
-    LOCATED = 'located'
-</code></pre>
+<span class="sd">    `LOCATED` - Minimal location + label format (e.g. for display on a map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FULL</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span>
+    <span class="n">REDUCED</span> <span class="o">=</span> <span class="s1">&#39;reduced&#39;</span>
+    <span class="n">LOCATED</span> <span class="o">=</span> <span class="s1">&#39;located&#39;</span>
+</pre></div>
+
   </div>
 </div>
 

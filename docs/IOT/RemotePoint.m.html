@@ -853,6 +853,77 @@ table {
 
   </style>
 
+  <style type="text/css">
+  .codehilite .hll { background-color: #ffffcc }
+.codehilite  { background: #f8f8f8; }
+.codehilite .c { color: #408080; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #FF0000 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666666 } /* Operator */
+.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .gr { color: #FF0000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888888 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #0044DD } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #7D9029 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #880000 } /* Name.Constant */
+.codehilite .nd { color: #AA22FF } /* Name.Decorator */
+.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #0000FF } /* Name.Function */
+.codehilite .nl { color: #A0A000 } /* Name.Label */
+.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #0000FF } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+  </style>
 
   <style type="text/css">
   
@@ -1037,232 +1108,233 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint" class="source">
-    <pre><code># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
 
-from __future__ import unicode_literals
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
-import logging
-logger = logging.getLogger(__name__)
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-from IoticAgent.Core.Validation import Validation
-from IoticAgent.Core.utils import validate_nonnegative_int
-from IoticAgent.Core.compat import Queue, Empty, monotonic
+<span class="kn">from</span> <span class="nn">IoticAgent.Core.Validation</span> <span class="kn">import</span> <span class="n">Validation</span>
+<span class="kn">from</span> <span class="nn">IoticAgent.Core.utils</span> <span class="kn">import</span> <span class="n">validate_nonnegative_int</span>
+<span class="kn">from</span> <span class="nn">IoticAgent.Core.compat</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">monotonic</span>
 
-from .Point import PointDataObject
-
-
-class RemotePoint(object):
-    """Base class for remote point types"""
-
-    def __init__(self, client, subid, pointid, lid):
-        self.__client = client
-        self.__subid = Validation.guid_check_convert(subid)
-        self.__pointid = Validation.guid_check_convert(pointid)
-        self.__lid = Validation.lid_check_convert(lid)
-
-    @property
-    def _client(self):
-        """For internal use: reference to IOT.Client instance"""
-        return self.__client
-
-    @property
-    def subid(self):
-        """`Advanced users only`
-        The global subscription ID for the connection to this remote point in hex form (undashed).
-        """
-        return self.__subid
-
-    @property
-    def guid(self):
-        """The Globally Unique ID of the Point you've followed (or attached to) in hex form (undashed).
-        """
-        return self.__pointid
-
-    @property
-    def lid(self):
-        """Local id of thing which is following to this feed / attached to this control"""
-        return self.__lid
+<span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">PointDataObject</span>
 
 
-class RemoteFeed(RemotePoint):
-    """Helper object for Feed Subscription.
-    A subscription the connection you have to another Thing's feed.  This object allows you to simulate a feed
-    being received by your Thing and also to return you the last known received feed data.
+<span class="k">class</span> <span class="nc">RemotePoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for remote point types&quot;&quot;&quot;</span>
 
-    When you subscribe to a Feed this object will be returned from
-    [Thing.follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)
-    This helper object provides `simulate()` and `get_last()`
-    """
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">subid</span><span class="p">,</span> <span class="n">pointid</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">subid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">pointid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">lid_check_convert</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
-    def get_last(self):
-        """Returns None if no recent data is available for this point or a dict containing:
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For internal use: reference to IOT.Client instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span>
 
-            #!python
-            'data' # (decoded or raw bytes)
-            'mime' # (None, unless payload was not decoded and has a mime type)
-            'time' # (datetime representing UTC timestamp of share)
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">subid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`Advanced users only`</span>
+<span class="sd">        The global subscription ID for the connection to this remote point in hex form (undashed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span>
 
-        Note: Shorthand for get_recent(1).
-        """
-        try:
-            return next(self.get_recent(1))
-        except StopIteration:
-            pass
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">guid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Globally Unique ID of the Point you&#39;ve followed (or attached to) in hex form (undashed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span>
 
-    def get_recent(self, count):
-        """Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn't publish very often.
-        Returns an iterable of dicts (in chronologically ascending order) containing:
-
-            #!python
-            'data' # (decoded or raw bytes)
-            'mime' # (None, unless payload was not decoded and has a mime type)
-            'time' # (datetime representing UTC timestamp of share)
-
-        `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum
-        as defined by the container.
-
-        Note: Feed data is iterable as soon as it arrives, rather than when the request completes.
-        """
-        queue = Queue()
-        evt = self.get_recent_async(count, queue.put)
-        timeout_time = monotonic() + self._client.sync_timeout
-
-        while True:
-            try:
-                yield queue.get(True, .1)
-            except Empty:
-                if evt.is_set() or monotonic() >= timeout_time:
-                    break
-        self._client._except_if_failed(evt)
-
-    def get_recent_async(self, count, callback):
-        """Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which
-        must accept a single argument. Returns the request.
-
-        `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the
-        given function which must accept a single argument. Nothing is returned.
-        """
-        validate_nonnegative_int(count, 'count')
-        Validation.callable_check(callback, allow_none=True)
-        evt = self._client._request_sub_recent(self.subid, count=count)
-        self._client._add_recent_cb_for(evt, callback)
-        return evt
-
-    def simulate(self, data, mime=None):
-        """Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn't publish
-        very often.
-
-        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data
-
-        `mime` (optional) (string) The mime type of your data.  See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        self._client.simulate_feeddata(self.__pointid, data, mime)
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Local id of thing which is following to this feed / attached to this control&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span>
 
 
-class RemoteControl(RemotePoint):
-    """Helper object for Control Subscription.
-    A subscription the connection you have to another Thing's control.  This object allows you to pass data
-    to the other Things control in two ways, `ask` and `tell`:
+<span class="k">class</span> <span class="nc">RemoteFeed</span><span class="p">(</span><span class="n">RemotePoint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper object for Feed Subscription.</span>
+<span class="sd">    A subscription the connection you have to another Thing&#39;s feed.  This object allows you to simulate a feed</span>
+<span class="sd">    being received by your Thing and also to return you the last known received feed data.</span>
 
-    `ask` where you "fire and forget" - the receiving object doesn't have to let you know whether it has actioned your
-    request
+<span class="sd">    When you subscribe to a Feed this object will be returned from</span>
+<span class="sd">    [Thing.follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)</span>
+<span class="sd">    This helper object provides `simulate()` and `get_last()`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    `tell` where you expect the receiving object to let you know whether or not has actioned your request
+    <span class="k">def</span> <span class="nf">get_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns None if no recent data is available for this point or a dict containing:</span>
 
-    When you attach to a Control this object will be returned from
-    [Thing.attach()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.attach).
-    """
+<span class="sd">            #!python</span>
+<span class="sd">            &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">            &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">            &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
 
-    def get_template(self):
-        """Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)
-        instance to use with this control."""
-        return self._client._get_point_data_handler_for(self).get_template()
+<span class="sd">        Note: Shorthand for get_recent(1).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_recent</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">pass</span>
 
-    def ask(self, data, mime=None):
-        """Request a remote control to do something.  Ask is "fire-and-forget" in that you won't receive
-        any notification of the success or otherwise of the action at the far end.
+    <span class="k">def</span> <span class="nf">get_recent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn&#39;t publish very often.</span>
+<span class="sd">        Returns an iterable of dicts (in chronologically ascending order) containing:</span>
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+<span class="sd">            #!python</span>
+<span class="sd">            &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">            &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">            &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+<span class="sd">        `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum</span>
+<span class="sd">        as defined by the container.</span>
 
-        `data` (mandatory) (as applicable) The data you want to share
+<span class="sd">        Note: Feed data is iterable as soon as it arrives, rather than when the request completes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recent_async</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">)</span>
+        <span class="n">timeout_time</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">sync_timeout</span>
 
-        `mime` (optional) (string) The mime type of the data you're sharing.  See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        evt = self.ask_async(data, mime=mime)
-        self._client._wait_and_except_if_failed(evt)
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span> <span class="ow">or</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">timeout_time</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
-    def ask_async(self, data, mime=None):
-        logger.info("ask() [subid=%s]", self.subid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        return self._client._request_sub_ask(self.subid, data, mime)
+    <span class="k">def</span> <span class="nf">get_recent_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which</span>
+<span class="sd">        must accept a single argument. Returns the request.</span>
 
-    def tell(self, data, timeout=10, mime=None):
-        """Order a remote control to do something.  Tell is confirmed in that you will receive
-        a notification of the success or otherwise of the action at the far end via a callback
+<span class="sd">        `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the</span>
+<span class="sd">        given function which must accept a single argument. Nothing is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_nonnegative_int</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">)</span>
+        <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_recent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_add_recent_cb_for</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">evt</span>
 
-        `Example`
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
+<span class="sd">        very often.</span>
 
-            #!python
-            data = {"thermostat":18.0}
-            retval = r_thermostat.tell(data, timeout=10, mime=None)
-            if retval is not True:
-                print("Thermostat not reset - reason: {reason}".format(reason=retval))
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 
-        Returns True on success or else returns the reason (string) one of:
+<span class="sd">        `mime` (optional) (string) The mime type of your data.  See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">simulate_feeddata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
 
-            #!python
-            "timeout"     # The request-specified timeout has been reached.
-            "unreachable" # The remote control is not associated with an agent
-                          #     or is not reachable in some other way.
-            "failed"      # The remote control indicates it did not perform
-                          #     the request.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+<span class="k">class</span> <span class="nc">RemoteControl</span><span class="p">(</span><span class="n">RemotePoint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper object for Control Subscription.</span>
+<span class="sd">    A subscription the connection you have to another Thing&#39;s control.  This object allows you to pass data</span>
+<span class="sd">    to the other Things control in two ways, `ask` and `tell`:</span>
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+<span class="sd">    `ask` where you &quot;fire and forget&quot; - the receiving object doesn&#39;t have to let you know whether it has actioned your</span>
+<span class="sd">    request</span>
 
-        `data` (mandatory) (as applicable) The data you want to share
+<span class="sd">    `tell` where you expect the receiving object to let you know whether or not has actioned your request</span>
 
-        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.
+<span class="sd">    When you attach to a Control this object will be returned from</span>
+<span class="sd">    [Thing.attach()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.attach).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-        `mime` (optional) (string) See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        evt = self.tell_async(data, timeout=timeout, mime=mime)
-        self._client._wait_and_except_if_failed(evt)
-        return True if evt.payload['success'] else evt.payload['reason']
+    <span class="k">def</span> <span class="nf">get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)</span>
+<span class="sd">        instance to use with this control.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">()</span>
 
-    def tell_async(self, data, timeout=10, mime=None):
-        """Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)
+    <span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Request a remote control to do something.  Ask is &quot;fire-and-forget&quot; in that you won&#39;t receive</span>
+<span class="sd">        any notification of the success or otherwise of the action at the far end.</span>
 
-        `Note` payload contains the success and reason keys they are not separated out as in the synchronous version
-        """
-        logger.info("tell(timeout=%s) [subid=%s]", timeout, self.subid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        return self._client._request_sub_tell(self.subid, data, timeout, mime=mime)
-</code></pre>
+<span class="sd">        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">        containing the error if the infrastructure detects a problem</span>
+
+<span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">        if there is a communications problem between you and the infrastructure</span>
+
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to share</span>
+
+<span class="sd">        `mime` (optional) (string) The mime type of the data you&#39;re sharing.  See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ask_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ask() [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_ask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Order a remote control to do something.  Tell is confirmed in that you will receive</span>
+<span class="sd">        a notification of the success or otherwise of the action at the far end via a callback</span>
+
+<span class="sd">        `Example`</span>
+
+<span class="sd">            #!python</span>
+<span class="sd">            data = {&quot;thermostat&quot;:18.0}</span>
+<span class="sd">            retval = r_thermostat.tell(data, timeout=10, mime=None)</span>
+<span class="sd">            if retval is not True:</span>
+<span class="sd">                print(&quot;Thermostat not reset - reason: {reason}&quot;.format(reason=retval))</span>
+
+<span class="sd">        Returns True on success or else returns the reason (string) one of:</span>
+
+<span class="sd">            #!python</span>
+<span class="sd">            &quot;timeout&quot;     # The request-specified timeout has been reached.</span>
+<span class="sd">            &quot;unreachable&quot; # The remote control is not associated with an agent</span>
+<span class="sd">                          #     or is not reachable in some other way.</span>
+<span class="sd">            &quot;failed&quot;      # The remote control indicates it did not perform</span>
+<span class="sd">                          #     the request.</span>
+
+<span class="sd">        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">        containing the error if the infrastructure detects a problem</span>
+
+<span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">        if there is a communications problem between you and the infrastructure</span>
+
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to share</span>
+
+<span class="sd">        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.</span>
+
+<span class="sd">        `mime` (optional) (string) See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">tell_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)</span>
+
+<span class="sd">        `Note` payload contains the success and reason keys they are not separated out as in the synchronous version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tell(timeout=</span><span class="si">%s</span><span class="s2">) [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_tell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 
   </header>
@@ -1296,97 +1368,98 @@ request</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl" class="source">
-    <pre><code>class RemoteControl(RemotePoint):
-    """Helper object for Control Subscription.
-    A subscription the connection you have to another Thing's control.  This object allows you to pass data
-    to the other Things control in two ways, `ask` and `tell`:
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RemoteControl</span><span class="p">(</span><span class="n">RemotePoint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper object for Control Subscription.</span>
+<span class="sd">    A subscription the connection you have to another Thing&#39;s control.  This object allows you to pass data</span>
+<span class="sd">    to the other Things control in two ways, `ask` and `tell`:</span>
 
-    `ask` where you "fire and forget" - the receiving object doesn't have to let you know whether it has actioned your
-    request
+<span class="sd">    `ask` where you &quot;fire and forget&quot; - the receiving object doesn&#39;t have to let you know whether it has actioned your</span>
+<span class="sd">    request</span>
 
-    `tell` where you expect the receiving object to let you know whether or not has actioned your request
+<span class="sd">    `tell` where you expect the receiving object to let you know whether or not has actioned your request</span>
 
-    When you attach to a Control this object will be returned from
-    [Thing.attach()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.attach).
-    """
+<span class="sd">    When you attach to a Control this object will be returned from</span>
+<span class="sd">    [Thing.attach()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.attach).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    def get_template(self):
-        """Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)
-        instance to use with this control."""
-        return self._client._get_point_data_handler_for(self).get_template()
+    <span class="k">def</span> <span class="nf">get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)</span>
+<span class="sd">        instance to use with this control.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">()</span>
 
-    def ask(self, data, mime=None):
-        """Request a remote control to do something.  Ask is "fire-and-forget" in that you won't receive
-        any notification of the success or otherwise of the action at the far end.
+    <span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Request a remote control to do something.  Ask is &quot;fire-and-forget&quot; in that you won&#39;t receive</span>
+<span class="sd">        any notification of the success or otherwise of the action at the far end.</span>
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+<span class="sd">        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">        containing the error if the infrastructure detects a problem</span>
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+<span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">        if there is a communications problem between you and the infrastructure</span>
 
-        `data` (mandatory) (as applicable) The data you want to share
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to share</span>
 
-        `mime` (optional) (string) The mime type of the data you're sharing.  See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        evt = self.ask_async(data, mime=mime)
-        self._client._wait_and_except_if_failed(evt)
+<span class="sd">        `mime` (optional) (string) The mime type of the data you&#39;re sharing.  See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
-    def ask_async(self, data, mime=None):
-        logger.info("ask() [subid=%s]", self.subid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        return self._client._request_sub_ask(self.subid, data, mime)
+    <span class="k">def</span> <span class="nf">ask_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ask() [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_ask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
 
-    def tell(self, data, timeout=10, mime=None):
-        """Order a remote control to do something.  Tell is confirmed in that you will receive
-        a notification of the success or otherwise of the action at the far end via a callback
+    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Order a remote control to do something.  Tell is confirmed in that you will receive</span>
+<span class="sd">        a notification of the success or otherwise of the action at the far end via a callback</span>
 
-        `Example`
+<span class="sd">        `Example`</span>
 
-            #!python
-            data = {"thermostat":18.0}
-            retval = r_thermostat.tell(data, timeout=10, mime=None)
-            if retval is not True:
-                print("Thermostat not reset - reason: {reason}".format(reason=retval))
+<span class="sd">            #!python</span>
+<span class="sd">            data = {&quot;thermostat&quot;:18.0}</span>
+<span class="sd">            retval = r_thermostat.tell(data, timeout=10, mime=None)</span>
+<span class="sd">            if retval is not True:</span>
+<span class="sd">                print(&quot;Thermostat not reset - reason: {reason}&quot;.format(reason=retval))</span>
 
-        Returns True on success or else returns the reason (string) one of:
+<span class="sd">        Returns True on success or else returns the reason (string) one of:</span>
 
-            #!python
-            "timeout"     # The request-specified timeout has been reached.
-            "unreachable" # The remote control is not associated with an agent
-                          #     or is not reachable in some other way.
-            "failed"      # The remote control indicates it did not perform
-                          #     the request.
+<span class="sd">            #!python</span>
+<span class="sd">            &quot;timeout&quot;     # The request-specified timeout has been reached.</span>
+<span class="sd">            &quot;unreachable&quot; # The remote control is not associated with an agent</span>
+<span class="sd">                          #     or is not reachable in some other way.</span>
+<span class="sd">            &quot;failed&quot;      # The remote control indicates it did not perform</span>
+<span class="sd">                          #     the request.</span>
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+<span class="sd">        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">        containing the error if the infrastructure detects a problem</span>
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+<span class="sd">        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">        if there is a communications problem between you and the infrastructure</span>
 
-        `data` (mandatory) (as applicable) The data you want to share
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to share</span>
 
-        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.
+<span class="sd">        `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.</span>
 
-        `mime` (optional) (string) See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        evt = self.tell_async(data, timeout=timeout, mime=mime)
-        self._client._wait_and_except_if_failed(evt)
-        return True if evt.payload['success'] else evt.payload['reason']
+<span class="sd">        `mime` (optional) (string) See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
 
-    def tell_async(self, data, timeout=10, mime=None):
-        """Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)
+    <span class="k">def</span> <span class="nf">tell_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)</span>
 
-        `Note` payload contains the success and reason keys they are not separated out as in the synchronous version
-        """
-        logger.info("tell(timeout=%s) [subid=%s]", timeout, self.subid)
-        if mime is None and isinstance(data, PointDataObject):
-            data = data.to_dict()
-        return self._client._request_sub_tell(self.subid, data, timeout, mime=mime)
-</code></pre>
+<span class="sd">        `Note` payload contains the success and reason keys they are not separated out as in the synchronous version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tell(timeout=</span><span class="si">%s</span><span class="s2">) [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_tell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1412,12 +1485,13 @@ request</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.__init__" class="source">
-    <pre><code>def __init__(self, client, subid, pointid, lid):
-    self.__client = client
-    self.__subid = Validation.guid_check_convert(subid)
-    self.__pointid = Validation.guid_check_convert(pointid)
-    self.__lid = Validation.lid_check_convert(lid)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">subid</span><span class="p">,</span> <span class="n">pointid</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">client</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">subid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">pointid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">lid_check_convert</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1444,20 +1518,21 @@ if there is a communications problem between you and the infrastructure</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.ask', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.ask" class="source">
-    <pre><code>def ask(self, data, mime=None):
-    """Request a remote control to do something.  Ask is "fire-and-forget" in that you won't receive
-    any notification of the success or otherwise of the action at the far end.
-    Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-    containing the error if the infrastructure detects a problem
-    Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-    if there is a communications problem between you and the infrastructure
-    `data` (mandatory) (as applicable) The data you want to share
-    `mime` (optional) (string) The mime type of the data you're sharing.  See:
-    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-    """
-    evt = self.ask_async(data, mime=mime)
-    self._client._wait_and_except_if_failed(evt)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Request a remote control to do something.  Ask is &quot;fire-and-forget&quot; in that you won&#39;t receive</span>
+<span class="sd">    any notification of the success or otherwise of the action at the far end.</span>
+<span class="sd">    Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">    containing the error if the infrastructure detects a problem</span>
+<span class="sd">    Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">    if there is a communications problem between you and the infrastructure</span>
+<span class="sd">    `data` (mandatory) (as applicable) The data you want to share</span>
+<span class="sd">    `mime` (optional) (string) The mime type of the data you&#39;re sharing.  See:</span>
+<span class="sd">    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1475,12 +1550,13 @@ if there is a communications problem between you and the infrastructure</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.ask_async', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.ask_async" class="source">
-    <pre><code>def ask_async(self, data, mime=None):
-    logger.info("ask() [subid=%s]", self.subid)
-    if mime is None and isinstance(data, PointDataObject):
-        data = data.to_dict()
-    return self._client._request_sub_ask(self.subid, data, mime)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ask_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ask() [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_ask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1500,11 +1576,12 @@ instance to use with this control.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.get_template', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.get_template" class="source">
-    <pre><code>def get_template(self):
-    """Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)
-    instance to use with this control."""
-    return self._client._get_point_data_handler_for(self).get_template()
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Retreive [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject)</span>
+<span class="sd">    instance to use with this control.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_get_point_data_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_template</span><span class="p">()</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1522,20 +1599,22 @@ instance to use with this control.</p></div>
     <div class="desc"><p>Order a remote control to do something.  Tell is confirmed in that you will receive
 a notification of the success or otherwise of the action at the far end via a callback</p>
 <p><code>Example</code></p>
-<pre><code>#!python
-data = {"thermostat":18.0}
-retval = r_thermostat.tell(data, timeout=10, mime=None)
-if retval is not True:
-    print("Thermostat not reset - reason: {reason}".format(reason=retval))
-</code></pre>
+<div class="codehilite"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;thermostat&quot;</span><span class="p">:</span><span class="mf">18.0</span><span class="p">}</span>
+<span class="n">retval</span> <span class="o">=</span> <span class="n">r_thermostat</span><span class="o">.</span><span class="n">tell</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">retval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Thermostat not reset - reason: {reason}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">retval</span><span class="p">))</span>
+</pre></div>
+
+
 <p>Returns True on success or else returns the reason (string) one of:</p>
-<pre><code>#!python
-"timeout"     # The request-specified timeout has been reached.
-"unreachable" # The remote control is not associated with an agent
-              #     or is not reachable in some other way.
-"failed"      # The remote control indicates it did not perform
-              #     the request.
-</code></pre>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;timeout&quot;</span>     <span class="c1"># The request-specified timeout has been reached.</span>
+<span class="s2">&quot;unreachable&quot;</span> <span class="c1"># The remote control is not associated with an agent</span>
+              <span class="c1">#     or is not reachable in some other way.</span>
+<span class="s2">&quot;failed&quot;</span>      <span class="c1"># The remote control indicates it did not perform</span>
+              <span class="c1">#     the request.</span>
+</pre></div>
+
+
 <p>Raises <a href="./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException">IOTException</a>
 containing the error if the infrastructure detects a problem</p>
 <p>Raises <a href="../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException">LinkException</a>
@@ -1547,35 +1626,36 @@ if there is a communications problem between you and the infrastructure</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.tell', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.tell" class="source">
-    <pre><code>def tell(self, data, timeout=10, mime=None):
-    """Order a remote control to do something.  Tell is confirmed in that you will receive
-    a notification of the success or otherwise of the action at the far end via a callback
-    `Example`
-        #!python
-        data = {"thermostat":18.0}
-        retval = r_thermostat.tell(data, timeout=10, mime=None)
-        if retval is not True:
-            print("Thermostat not reset - reason: {reason}".format(reason=retval))
-    Returns True on success or else returns the reason (string) one of:
-        #!python
-        "timeout"     # The request-specified timeout has been reached.
-        "unreachable" # The remote control is not associated with an agent
-                      #     or is not reachable in some other way.
-        "failed"      # The remote control indicates it did not perform
-                      #     the request.
-    Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-    containing the error if the infrastructure detects a problem
-    Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-    if there is a communications problem between you and the infrastructure
-    `data` (mandatory) (as applicable) The data you want to share
-    `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.
-    `mime` (optional) (string) See:
-    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-    """
-    evt = self.tell_async(data, timeout=timeout, mime=mime)
-    self._client._wait_and_except_if_failed(evt)
-    return True if evt.payload['success'] else evt.payload['reason']
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Order a remote control to do something.  Tell is confirmed in that you will receive</span>
+<span class="sd">    a notification of the success or otherwise of the action at the far end via a callback</span>
+<span class="sd">    `Example`</span>
+<span class="sd">        #!python</span>
+<span class="sd">        data = {&quot;thermostat&quot;:18.0}</span>
+<span class="sd">        retval = r_thermostat.tell(data, timeout=10, mime=None)</span>
+<span class="sd">        if retval is not True:</span>
+<span class="sd">            print(&quot;Thermostat not reset - reason: {reason}&quot;.format(reason=retval))</span>
+<span class="sd">    Returns True on success or else returns the reason (string) one of:</span>
+<span class="sd">        #!python</span>
+<span class="sd">        &quot;timeout&quot;     # The request-specified timeout has been reached.</span>
+<span class="sd">        &quot;unreachable&quot; # The remote control is not associated with an agent</span>
+<span class="sd">                      #     or is not reachable in some other way.</span>
+<span class="sd">        &quot;failed&quot;      # The remote control indicates it did not perform</span>
+<span class="sd">                      #     the request.</span>
+<span class="sd">    Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)</span>
+<span class="sd">    containing the error if the infrastructure detects a problem</span>
+<span class="sd">    Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)</span>
+<span class="sd">    if there is a communications problem between you and the infrastructure</span>
+<span class="sd">    `data` (mandatory) (as applicable) The data you want to share</span>
+<span class="sd">    `timeout` (optional) (int) Default 10.  The delay in seconds before your tell request times out.</span>
+<span class="sd">    `mime` (optional) (string) See:</span>
+<span class="sd">    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1595,15 +1675,16 @@ if there is a communications problem between you and the infrastructure</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteControl.tell_async', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteControl.tell_async" class="source">
-    <pre><code>def tell_async(self, data, timeout=10, mime=None):
-    """Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)
-    `Note` payload contains the success and reason keys they are not separated out as in the synchronous version
-    """
-    logger.info("tell(timeout=%s) [subid=%s]", timeout, self.subid)
-    if mime is None and isinstance(data, PointDataObject):
-        data = data.to_dict()
-    return self._client._request_sub_tell(self.subid, data, timeout, mime=mime)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">tell_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Asyncronous version of [tell()](./RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl.tell)</span>
+<span class="sd">    `Note` payload contains the success and reason keys they are not separated out as in the synchronous version</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tell(timeout=</span><span class="si">%s</span><span class="s2">) [subid=</span><span class="si">%s</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">PointDataObject</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_tell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1664,81 +1745,82 @@ This helper object provides <code>simulate()</code> and <code>get_last()</code><
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed" class="source">
-    <pre><code>class RemoteFeed(RemotePoint):
-    """Helper object for Feed Subscription.
-    A subscription the connection you have to another Thing's feed.  This object allows you to simulate a feed
-    being received by your Thing and also to return you the last known received feed data.
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RemoteFeed</span><span class="p">(</span><span class="n">RemotePoint</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper object for Feed Subscription.</span>
+<span class="sd">    A subscription the connection you have to another Thing&#39;s feed.  This object allows you to simulate a feed</span>
+<span class="sd">    being received by your Thing and also to return you the last known received feed data.</span>
 
-    When you subscribe to a Feed this object will be returned from
-    [Thing.follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)
-    This helper object provides `simulate()` and `get_last()`
-    """
+<span class="sd">    When you subscribe to a Feed this object will be returned from</span>
+<span class="sd">    [Thing.follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)</span>
+<span class="sd">    This helper object provides `simulate()` and `get_last()`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    def get_last(self):
-        """Returns None if no recent data is available for this point or a dict containing:
+    <span class="k">def</span> <span class="nf">get_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns None if no recent data is available for this point or a dict containing:</span>
 
-            #!python
-            'data' # (decoded or raw bytes)
-            'mime' # (None, unless payload was not decoded and has a mime type)
-            'time' # (datetime representing UTC timestamp of share)
+<span class="sd">            #!python</span>
+<span class="sd">            &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">            &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">            &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
 
-        Note: Shorthand for get_recent(1).
-        """
-        try:
-            return next(self.get_recent(1))
-        except StopIteration:
-            pass
+<span class="sd">        Note: Shorthand for get_recent(1).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_recent</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">pass</span>
 
-    def get_recent(self, count):
-        """Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn't publish very often.
-        Returns an iterable of dicts (in chronologically ascending order) containing:
+    <span class="k">def</span> <span class="nf">get_recent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn&#39;t publish very often.</span>
+<span class="sd">        Returns an iterable of dicts (in chronologically ascending order) containing:</span>
 
-            #!python
-            'data' # (decoded or raw bytes)
-            'mime' # (None, unless payload was not decoded and has a mime type)
-            'time' # (datetime representing UTC timestamp of share)
+<span class="sd">            #!python</span>
+<span class="sd">            &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">            &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">            &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
 
-        `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum
-        as defined by the container.
+<span class="sd">        `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum</span>
+<span class="sd">        as defined by the container.</span>
 
-        Note: Feed data is iterable as soon as it arrives, rather than when the request completes.
-        """
-        queue = Queue()
-        evt = self.get_recent_async(count, queue.put)
-        timeout_time = monotonic() + self._client.sync_timeout
+<span class="sd">        Note: Feed data is iterable as soon as it arrives, rather than when the request completes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recent_async</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">)</span>
+        <span class="n">timeout_time</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">sync_timeout</span>
 
-        while True:
-            try:
-                yield queue.get(True, .1)
-            except Empty:
-                if evt.is_set() or monotonic() >= timeout_time:
-                    break
-        self._client._except_if_failed(evt)
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span> <span class="ow">or</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">timeout_time</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
-    def get_recent_async(self, count, callback):
-        """Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which
-        must accept a single argument. Returns the request.
+    <span class="k">def</span> <span class="nf">get_recent_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which</span>
+<span class="sd">        must accept a single argument. Returns the request.</span>
 
-        `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the
-        given function which must accept a single argument. Nothing is returned.
-        """
-        validate_nonnegative_int(count, 'count')
-        Validation.callable_check(callback, allow_none=True)
-        evt = self._client._request_sub_recent(self.subid, count=count)
-        self._client._add_recent_cb_for(evt, callback)
-        return evt
+<span class="sd">        `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the</span>
+<span class="sd">        given function which must accept a single argument. Nothing is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_nonnegative_int</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">)</span>
+        <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_recent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_add_recent_cb_for</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">evt</span>
 
-    def simulate(self, data, mime=None):
-        """Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn't publish
-        very often.
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
+<span class="sd">        very often.</span>
 
-        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data
+<span class="sd">        `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
 
-        `mime` (optional) (string) The mime type of your data.  See:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-        """
-        self._client.simulate_feeddata(self.__pointid, data, mime)
-</code></pre>
+<span class="sd">        `mime` (optional) (string) The mime type of your data.  See:</span>
+<span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">simulate_feeddata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1764,12 +1846,13 @@ This helper object provides <code>simulate()</code> and <code>get_last()</code><
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.__init__" class="source">
-    <pre><code>def __init__(self, client, subid, pointid, lid):
-    self.__client = client
-    self.__subid = Validation.guid_check_convert(subid)
-    self.__pointid = Validation.guid_check_convert(pointid)
-    self.__lid = Validation.lid_check_convert(lid)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">subid</span><span class="p">,</span> <span class="n">pointid</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">client</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">subid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">pointid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">lid_check_convert</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1785,28 +1868,30 @@ This helper object provides <code>simulate()</code> and <code>get_last()</code><
     
   
     <div class="desc"><p>Returns None if no recent data is available for this point or a dict containing:</p>
-<pre><code>#!python
-'data' # (decoded or raw bytes)
-'mime' # (None, unless payload was not decoded and has a mime type)
-'time' # (datetime representing UTC timestamp of share)
-</code></pre>
+<div class="codehilite"><pre><span></span><span class="s1">&#39;data&#39;</span> <span class="c1"># (decoded or raw bytes)</span>
+<span class="s1">&#39;mime&#39;</span> <span class="c1"># (None, unless payload was not decoded and has a mime type)</span>
+<span class="s1">&#39;time&#39;</span> <span class="c1"># (datetime representing UTC timestamp of share)</span>
+</pre></div>
+
+
 <p>Note: Shorthand for get_recent(1).</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_last', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_last" class="source">
-    <pre><code>def get_last(self):
-    """Returns None if no recent data is available for this point or a dict containing:
-        #!python
-        'data' # (decoded or raw bytes)
-        'mime' # (None, unless payload was not decoded and has a mime type)
-        'time' # (datetime representing UTC timestamp of share)
-    Note: Shorthand for get_recent(1).
-    """
-    try:
-        return next(self.get_recent(1))
-    except StopIteration:
-        pass
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns None if no recent data is available for this point or a dict containing:</span>
+<span class="sd">        #!python</span>
+<span class="sd">        &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">        &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">        &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
+<span class="sd">    Note: Shorthand for get_recent(1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_recent</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1823,39 +1908,41 @@ This helper object provides <code>simulate()</code> and <code>get_last()</code><
   
     <div class="desc"><p>Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn't publish very often.
 Returns an iterable of dicts (in chronologically ascending order) containing:</p>
-<pre><code>#!python
-'data' # (decoded or raw bytes)
-'mime' # (None, unless payload was not decoded and has a mime type)
-'time' # (datetime representing UTC timestamp of share)
-</code></pre>
+<div class="codehilite"><pre><span></span><span class="s1">&#39;data&#39;</span> <span class="c1"># (decoded or raw bytes)</span>
+<span class="s1">&#39;mime&#39;</span> <span class="c1"># (None, unless payload was not decoded and has a mime type)</span>
+<span class="s1">&#39;time&#39;</span> <span class="c1"># (datetime representing UTC timestamp of share)</span>
+</pre></div>
+
+
 <p><code>count</code> (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum
 as defined by the container.</p>
 <p>Note: Feed data is iterable as soon as it arrives, rather than when the request completes.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_recent', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_recent" class="source">
-    <pre><code>def get_recent(self, count):
-    """Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn't publish very often.
-    Returns an iterable of dicts (in chronologically ascending order) containing:
-        #!python
-        'data' # (decoded or raw bytes)
-        'mime' # (None, unless payload was not decoded and has a mime type)
-        'time' # (datetime representing UTC timestamp of share)
-    `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum
-    as defined by the container.
-    Note: Feed data is iterable as soon as it arrives, rather than when the request completes.
-    """
-    queue = Queue()
-    evt = self.get_recent_async(count, queue.put)
-    timeout_time = monotonic() + self._client.sync_timeout
-    while True:
-        try:
-            yield queue.get(True, .1)
-        except Empty:
-            if evt.is_set() or monotonic() >= timeout_time:
-                break
-    self._client._except_if_failed(evt)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_recent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the last instance(s) of feeddata from the feed. Useful if the remote Thing doesn&#39;t publish very often.</span>
+<span class="sd">    Returns an iterable of dicts (in chronologically ascending order) containing:</span>
+<span class="sd">        #!python</span>
+<span class="sd">        &#39;data&#39; # (decoded or raw bytes)</span>
+<span class="sd">        &#39;mime&#39; # (None, unless payload was not decoded and has a mime type)</span>
+<span class="sd">        &#39;time&#39; # (datetime representing UTC timestamp of share)</span>
+<span class="sd">    `count` (mandatory) (integer) How many recent instances to retrieve. High values might be floored to a maximum</span>
+<span class="sd">    as defined by the container.</span>
+<span class="sd">    Note: Feed data is iterable as soon as it arrives, rather than when the request completes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recent_async</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">)</span>
+    <span class="n">timeout_time</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">sync_timeout</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span> <span class="ow">or</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">timeout_time</span><span class="p">:</span>
+                <span class="k">break</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1877,18 +1964,19 @@ given function which must accept a single argument. Nothing is returned.</p></di
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_recent_async', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.get_recent_async" class="source">
-    <pre><code>def get_recent_async(self, count, callback):
-    """Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which
-    must accept a single argument. Returns the request.
-    `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the
-    given function which must accept a single argument. Nothing is returned.
-    """
-    validate_nonnegative_int(count, 'count')
-    Validation.callable_check(callback, allow_none=True)
-    evt = self._client._request_sub_recent(self.subid, count=count)
-    self._client._add_recent_cb_for(evt, callback)
-    return evt
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_recent_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Similar to `get_recent` except instead of returning an iterable, passes each dict to the given function which</span>
+<span class="sd">    must accept a single argument. Returns the request.</span>
+<span class="sd">    `callback` (mandatory) (function) instead of returning an iterable, pass each dict (as described above) to the</span>
+<span class="sd">    given function which must accept a single argument. Nothing is returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">validate_nonnegative_int</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">)</span>
+    <span class="n">Validation</span><span class="o">.</span><span class="n">callable_check</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_request_sub_recent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subid</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_add_recent_cb_for</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">evt</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1911,15 +1999,16 @@ very often.</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemoteFeed.simulate', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemoteFeed.simulate" class="source">
-    <pre><code>def simulate(self, data, mime=None):
-    """Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn't publish
-    very often.
-    `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data
-    `mime` (optional) (string) The mime type of your data.  See:
-    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-    """
-    self._client.simulate_feeddata(self.__pointid, data, mime)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate the arrival of feeddata into the feed.  Useful if the remote Thing doesn&#39;t publish</span>
+<span class="sd">    very often.</span>
+<span class="sd">    `data` (mandatory) (as applicable) The data you want to use to simulate the arrival of remote feed data</span>
+<span class="sd">    `mime` (optional) (string) The mime type of your data.  See:</span>
+<span class="sd">    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">simulate_feeddata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mime</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1975,38 +2064,39 @@ The global subscription ID for the connection to this remote point in hex form (
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemotePoint', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemotePoint" class="source">
-    <pre><code>class RemotePoint(object):
-    """Base class for remote point types"""
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">RemotePoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for remote point types&quot;&quot;&quot;</span>
 
-    def __init__(self, client, subid, pointid, lid):
-        self.__client = client
-        self.__subid = Validation.guid_check_convert(subid)
-        self.__pointid = Validation.guid_check_convert(pointid)
-        self.__lid = Validation.lid_check_convert(lid)
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">subid</span><span class="p">,</span> <span class="n">pointid</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">subid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">pointid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">lid_check_convert</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
 
-    @property
-    def _client(self):
-        """For internal use: reference to IOT.Client instance"""
-        return self.__client
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For internal use: reference to IOT.Client instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span>
 
-    @property
-    def subid(self):
-        """`Advanced users only`
-        The global subscription ID for the connection to this remote point in hex form (undashed).
-        """
-        return self.__subid
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">subid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`Advanced users only`</span>
+<span class="sd">        The global subscription ID for the connection to this remote point in hex form (undashed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span>
 
-    @property
-    def guid(self):
-        """The Globally Unique ID of the Point you've followed (or attached to) in hex form (undashed).
-        """
-        return self.__pointid
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">guid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Globally Unique ID of the Point you&#39;ve followed (or attached to) in hex form (undashed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span>
 
-    @property
-    def lid(self):
-        """Local id of thing which is following to this feed / attached to this control"""
-        return self.__lid
-</code></pre>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Local id of thing which is following to this feed / attached to this control&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -2031,12 +2121,13 @@ The global subscription ID for the connection to this remote point in hex form (
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.IOT.RemotePoint.RemotePoint.__init__', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.IOT.RemotePoint.RemotePoint.__init__" class="source">
-    <pre><code>def __init__(self, client, subid, pointid, lid):
-    self.__client = client
-    self.__subid = Validation.guid_check_convert(subid)
-    self.__pointid = Validation.guid_check_convert(pointid)
-    self.__lid = Validation.lid_check_convert(lid)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">subid</span><span class="p">,</span> <span class="n">pointid</span><span class="p">,</span> <span class="n">lid</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">client</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__subid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">subid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__pointid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">guid_check_convert</span><span class="p">(</span><span class="n">pointid</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__lid</span> <span class="o">=</span> <span class="n">Validation</span><span class="o">.</span><span class="n">lid_check_convert</span><span class="p">(</span><span class="n">lid</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 

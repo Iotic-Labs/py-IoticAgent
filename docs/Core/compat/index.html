@@ -853,6 +853,77 @@ table {
 
   </style>
 
+  <style type="text/css">
+  .codehilite .hll { background-color: #ffffcc }
+.codehilite  { background: #f8f8f8; }
+.codehilite .c { color: #408080; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #FF0000 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666666 } /* Operator */
+.codehilite .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+.codehilite .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .gr { color: #FF0000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888888 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #0044DD } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #7D9029 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #880000 } /* Name.Constant */
+.codehilite .nd { color: #AA22FF } /* Name.Decorator */
+.codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #0000FF } /* Name.Function */
+.codehilite .nl { color: #A0A000 } /* Name.Label */
+.codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+.codehilite .mb { color: #666666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #0000FF } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+  </style>
 
   <style type="text/css">
   
@@ -1020,230 +1091,231 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat" class="source">
-    <pre><code># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     https://github.com/Iotic-Labs/py-IoticAgent/blob/master/LICENSE</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
 
-"""Python 2.7 & 3.2/3.3 compatibility"""
+<span class="sd">&quot;&quot;&quot;Python 2.7 &amp; 3.2/3.3 compatibility&quot;&quot;&quot;</span>
 
-# pylint: disable=unused-import,invalid-name,import-error,undefined-variable,ungrouped-imports,no-name-in-module
-# pylint: disable=wrong-import-order
+<span class="c1"># pylint: disable=unused-import,invalid-name,import-error,undefined-variable,ungrouped-imports,no-name-in-module</span>
+<span class="c1"># pylint: disable=wrong-import-order</span>
 
-from __future__ import unicode_literals
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
-from sys import version_info
-from keyword import kwlist
-from warnings import warn
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">version_info</span>
+<span class="kn">from</span> <span class="nn">keyword</span> <span class="kn">import</span> <span class="n">kwlist</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
-PY3 = (version_info[0] == 3)
-
-
-try:
-    import regex as _regex
-    from regex import compile as re_compile  # noqa (unused import)
-    # Force re module compatible behaviour
-    _regex.DEFAULT_VERSION = _regex.V0
-except ImportError:
-    from re import compile as re_compile  # noqa (unused import)
-    warn('Unable to import regex - falling back to re module', ImportWarning)
+<span class="n">PY3</span> <span class="o">=</span> <span class="p">(</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
 
 
-# PY3K
-if PY3:  # noqa (complexity)
-    from queue import Queue, Empty, Full  # noqa (unused import)
-    from threading import Lock, RLock, Event  # noqa (unsed import)
-    from urllib.parse import urlparse
-    SocketError = OSError  # noqa (unused import)
-
-    string_types = str
-    unicode_type = str
-    int_types = (int,)
-    number_types = (int, float)
-
-    def u(obj):
-        """Casts obj to unicode string, unless already one"""
-        return obj if isinstance(obj, str) else str(obj)
-
-    def ensure_ascii(obj, name=None):
-        """Checks whether obj is an ascii string. For Python 2 only also decodes plain (old) str objects"""
-        if isinstance(obj, str):
-            try:
-                obj.encode('ascii')
-            except:
-                pass
-            else:
-                return obj
-        raise ValueError('%s not a valid (ascii) string' % (name if name else 'Argument'))
-
-    def ensure_unicode(obj, name=None):
-        """Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects"""
-        if isinstance(obj, str):
-            return obj
-        else:
-            raise ValueError('%s not a valid (unicode) string' % (name if name else 'Argument'))
-
-    # add keywords which are specified in PY2
-    __KEYWORDS = frozenset(kwlist + ['exec', 'print'])
-
-    def valid_identifier(name):
-        """Determines whether the given name could be used a Python identifier"""
-        try:
-            name = ensure_unicode(name)
-        except ValueError:
-            return False
-        return name.isidentifier() and name not in __KEYWORDS
-
-# PY2k
-else:
-    import ast as _ast
-    from Queue import Queue, Empty, Full  # noqa (unused import)
-    from urlparse import urlparse  # noqa (unsed import)
-    # Not subclass of OSError, unlike in PY3 (where socket.error is deprecated)
-    from socket import error as SocketError  # noqa (unsed import)
-
-    from .thread_utils import (InterruptableLock as Lock, InterruptableRLock as RLock,  # noqa (unsed import)
-                               InterruptableEvent as Event)
-
-    string_types = basestring  # noqa (undefined in py3)
-    unicode_type = unicode  # noqa
-    int_types = (int, long)  # noqa
-    number_types = (int, long, float)  # noqa (long undefined in py3)
-
-    def u(obj):
-        """Casts obj to unicode string, unless already one"""
-        return obj if isinstance(obj, unicode) else unicode(obj)  # noqa
-
-    def ensure_ascii(obj, name=None):
-        """Checks whether obj is an ascii string (in unicode object). For Python 2 only also decodes plain (old) str
-           objects"""
-        if isinstance(obj, (unicode, str)):  # noqa (undefined in py3)
-            try:
-                return obj.decode('ascii')
-            except:
-                pass
-        raise ValueError('%s not a valid (ascii) string' % (name if name else 'Argument'))
-
-    def ensure_unicode(obj, name=None):
-        """Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects"""
-        if isinstance(obj, unicode):  # noqa (undefined in py3)
-            return obj
-        elif isinstance(obj, str):
-            return obj.decode('utf-8')
-        else:
-            raise ValueError('%s not a valid (unicode) string' % (name if name else 'Argument'))
-
-    # add keywords which are specified in PY3
-    __KEYWORDS = frozenset(kwlist + ['True', 'False', 'None', 'nonlocal'])
-
-    def valid_identifier(name):
-        """Determines whether the given name could be used a Python identifier"""
-        try:
-            name = ensure_unicode(name)
-        except ValueError:
-            return False
-
-        if name in __KEYWORDS:
-            return False
-
-        try:
-            root = _ast.parse(name)
-        except:
-            return False
-
-        return (isinstance(root, _ast.Module) and
-                len(root.body) == 1 and
-                isinstance(root.body[0], _ast.Expr) and
-                isinstance(root.body[0].value, _ast.Name) and
-                root.body[0].value.id == name)
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">regex</span> <span class="kn">as</span> <span class="nn">_regex</span>
+    <span class="kn">from</span> <span class="nn">regex</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="c1"># Force re module compatible behaviour</span>
+    <span class="n">_regex</span><span class="o">.</span><span class="n">DEFAULT_VERSION</span> <span class="o">=</span> <span class="n">_regex</span><span class="o">.</span><span class="n">V0</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unable to import regex - falling back to re module&#39;</span><span class="p">,</span> <span class="ne">ImportWarning</span><span class="p">)</span>
 
 
-if version_info[:2] == (3, 2):
-    # pylint: disable=exec-used
-    exec("""def raise_from(value, from_value):
-    if from_value is None:
-        raise value
-    raise value from from_value
-""")
-elif version_info[:2] > (3, 2):
-    # pylint: disable=exec-used
-    exec("""def raise_from(value, from_value):
-    raise value from from_value
-""")
-else:
-    def raise_from(value, _):
-        raise value
+<span class="c1"># PY3K</span>
+<span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>  <span class="c1"># noqa (complexity)</span>
+    <span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Full</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">RLock</span><span class="p">,</span> <span class="n">Event</span>  <span class="c1"># noqa (unsed import)</span>
+    <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+    <span class="n">SocketError</span> <span class="o">=</span> <span class="ne">OSError</span>  <span class="c1"># noqa (unused import)</span>
 
-try:
-    # only available since 3.3
-    from collections.abc import Sequence, Mapping, Iterable  # noqa (unused import)
-except ImportError:
-    from collections import Sequence, Mapping, Iterable  # noqa (unused import)
+    <span class="n">string_types</span> <span class="o">=</span> <span class="nb">str</span>
+    <span class="n">unicode_type</span> <span class="o">=</span> <span class="nb">str</span>
+    <span class="n">int_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,)</span>
+    <span class="n">number_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
 
-try:
-    # only available since 3.3
-    from time import monotonic  # noqa (unused import)
-except ImportError:
-    from time import time as monotonic  # noqa (unused import)
+    <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Casts obj to unicode string, unless already one&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ensure_ascii</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether obj is an ascii string. For Python 2 only also decodes plain (old) str objects&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (ascii) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (unicode) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+
+    <span class="c1"># add keywords which are specified in PY2</span>
+    <span class="n">__KEYWORDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">kwlist</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;exec&#39;</span><span class="p">,</span> <span class="s1">&#39;print&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">valid_identifier</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines whether the given name could be used a Python identifier&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">__KEYWORDS</span>
+
+<span class="c1"># PY2k</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ast</span> <span class="kn">as</span> <span class="nn">_ast</span>
+    <span class="kn">from</span> <span class="nn">Queue</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Full</span>  <span class="c1"># noqa (unused import)</span>
+    <span class="kn">from</span> <span class="nn">urlparse</span> <span class="kn">import</span> <span class="n">urlparse</span>  <span class="c1"># noqa (unsed import)</span>
+    <span class="c1"># Not subclass of OSError, unlike in PY3 (where socket.error is deprecated)</span>
+    <span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">error</span> <span class="k">as</span> <span class="n">SocketError</span>  <span class="c1"># noqa (unsed import)</span>
+
+    <span class="kn">from</span> <span class="nn">.thread_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InterruptableLock</span> <span class="k">as</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">InterruptableRLock</span> <span class="k">as</span> <span class="n">RLock</span><span class="p">,</span>  <span class="c1"># noqa (unsed import)</span>
+                               <span class="n">InterruptableEvent</span> <span class="k">as</span> <span class="n">Event</span><span class="p">)</span>
+
+    <span class="n">string_types</span> <span class="o">=</span> <span class="nb">basestring</span>  <span class="c1"># noqa (undefined in py3)</span>
+    <span class="n">unicode_type</span> <span class="o">=</span> <span class="nb">unicode</span>  <span class="c1"># noqa</span>
+    <span class="n">int_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)</span>  <span class="c1"># noqa</span>
+    <span class="n">number_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>  <span class="c1"># noqa (long undefined in py3)</span>
+
+    <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Casts obj to unicode string, unless already one&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">)</span> <span class="k">else</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># noqa</span>
+
+    <span class="k">def</span> <span class="nf">ensure_ascii</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether obj is an ascii string (in unicode object). For Python 2 only also decodes plain (old) str</span>
+<span class="sd">           objects&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>  <span class="c1"># noqa (undefined in py3)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (ascii) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>  <span class="c1"># noqa (undefined in py3)</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (unicode) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+
+    <span class="c1"># add keywords which are specified in PY3</span>
+    <span class="n">__KEYWORDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">kwlist</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;True&#39;</span><span class="p">,</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;nonlocal&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">valid_identifier</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines whether the given name could be used a Python identifier&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">__KEYWORDS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">_ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">_ast</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_ast</span><span class="o">.</span><span class="n">Expr</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ast</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">root</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">name</span><span class="p">)</span>
 
 
-def py_version_check():
-    if not ((version_info[0] == 3 and version_info[1] >= 2) or
-            (version_info[0] == 2 and version_info[1] >= 7 and version_info[2] >= 5)):
-        # Note: added >= 2.7.5 as SSL version can be upgraded
-        raise Exception('At least Python v2.7.5 or v3.2 required (found %s)' %
-                        '.'.join(str(item) for item in version_info[:3]))
+<span class="k">if</span> <span class="n">version_info</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=exec-used</span>
+    <span class="k">exec</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;def raise_from(value, from_value):</span>
+<span class="s2">    if from_value is None:</span>
+<span class="s2">        raise value</span>
+<span class="s2">    raise value from from_value</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">version_info</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=exec-used</span>
+    <span class="k">exec</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;def raise_from(value, from_value):</span>
+<span class="s2">    raise value from from_value</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">raise_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">value</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># only available since 3.3</span>
+    <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span>  <span class="c1"># noqa (unused import)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span>  <span class="c1"># noqa (unused import)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># only available since 3.3</span>
+    <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">monotonic</span>  <span class="c1"># noqa (unused import)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="k">as</span> <span class="n">monotonic</span>  <span class="c1"># noqa (unused import)</span>
 
 
-def ssl_version_check():
-    from ssl import OPENSSL_VERSION_INFO as sslv, OPENSSL_VERSION
-    if not (sslv[0] > 1 or
-            (sslv[0] == 1 and sslv[1] > 0) or
-            (sslv[0] == 1 and sslv[1] == 0 and sslv[2] > 0)):
-        raise Exception('At least SSL v1.0.1 required for TLS v1.2 (found %s)' % OPENSSL_VERSION)
+<span class="k">def</span> <span class="nf">py_version_check</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)):</span>
+        <span class="c1"># Note: added &gt;= 2.7.5 as SSL version can be upgraded</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least Python v2.7.5 or v3.2 required (found </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                        <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">version_info</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
 
 
-# callback function check helper
-try:  # noqa (complexity)
-    # v3.3+ only
-    from inspect import signature
+<span class="k">def</span> <span class="nf">ssl_version_check</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">OPENSSL_VERSION_INFO</span> <span class="k">as</span> <span class="n">sslv</span><span class="p">,</span> <span class="n">OPENSSL_VERSION</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least SSL v1.0.1 required for TLS v1.2 (found </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">OPENSSL_VERSION</span><span class="p">)</span>
 
-    def arg_checker(func, *args, **kwargs):
-        try:
-            signature(func).bind(*args, **kwargs)
-        except TypeError:
-            return False
-        else:
-            return True
 
-except ImportError:
-    # deprecated in v3.5+
-    from inspect import getcallargs
-    from functools import partial
+<span class="c1"># callback function check helper</span>
+<span class="k">try</span><span class="p">:</span>  <span class="c1"># noqa (complexity)</span>
+    <span class="c1"># v3.3+ only</span>
+    <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
 
-    def arg_checker(func, *args, **kwargs):
-        # getcallargs doesn't support partials, hence this workaround
-        if isinstance(func, partial):
-            args += func.args
-            if func.keywords:
-                kwargs.update(func.keywords)
-            func = func.func
-        try:
-            getcallargs(func, *args, **kwargs)  # pylint: disable=deprecated-method
-        except TypeError:
-            return False
-        else:
-            return True
-</code></pre>
+    <span class="k">def</span> <span class="nf">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># deprecated in v3.5+</span>
+    <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getcallargs</span>
+    <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+    <span class="k">def</span> <span class="nf">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># getcallargs doesn&#39;t support partials, hence this workaround</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">partial</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">+=</span> <span class="n">func</span><span class="o">.</span><span class="n">args</span>
+            <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="n">keywords</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">keywords</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">func</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">getcallargs</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># pylint: disable=deprecated-method</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
   </div>
 
   </header>
@@ -1304,14 +1376,15 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.arg_checker', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.arg_checker" class="source">
-    <pre><code>def arg_checker(func, *args, **kwargs):
-    try:
-        signature(func).bind(*args, **kwargs)
-    except TypeError:
-        return False
-    else:
-        return True
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">arg_checker</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1330,17 +1403,18 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.ensure_ascii', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.ensure_ascii" class="source">
-    <pre><code>def ensure_ascii(obj, name=None):
-    """Checks whether obj is an ascii string. For Python 2 only also decodes plain (old) str objects"""
-    if isinstance(obj, str):
-        try:
-            obj.encode('ascii')
-        except:
-            pass
-        else:
-            return obj
-    raise ValueError('%s not a valid (ascii) string' % (name if name else 'Argument'))
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ensure_ascii</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether obj is an ascii string. For Python 2 only also decodes plain (old) str objects&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (ascii) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1359,13 +1433,14 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.ensure_unicode', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.ensure_unicode" class="source">
-    <pre><code>def ensure_unicode(obj, name=None):
-    """Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects"""
-    if isinstance(obj, str):
-        return obj
-    else:
-        raise ValueError('%s not a valid (unicode) string' % (name if name else 'Argument'))
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ensure_unicode</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether obj is a unicode string. For Python 2 only also decodes plain (old) str objects&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not a valid (unicode) string&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;Argument&#39;</span><span class="p">))</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1383,13 +1458,14 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.py_version_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.py_version_check" class="source">
-    <pre><code>def py_version_check():
-    if not ((version_info[0] == 3 and version_info[1] >= 2) or
-            (version_info[0] == 2 and version_info[1] >= 7 and version_info[2] >= 5)):
-        # Note: added >= 2.7.5 as SSL version can be upgraded
-        raise Exception('At least Python v2.7.5 or v3.2 required (found %s)' %
-                        '.'.join(str(item) for item in version_info[:3]))
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">py_version_check</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span> <span class="ow">and</span> <span class="n">version_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)):</span>
+        <span class="c1"># Note: added &gt;= 2.7.5 as SSL version can be upgraded</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least Python v2.7.5 or v3.2 required (found </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
+                        <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">version_info</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1421,13 +1497,14 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.ssl_version_check', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.ssl_version_check" class="source">
-    <pre><code>def ssl_version_check():
-    from ssl import OPENSSL_VERSION_INFO as sslv, OPENSSL_VERSION
-    if not (sslv[0] > 1 or
-            (sslv[0] == 1 and sslv[1] > 0) or
-            (sslv[0] == 1 and sslv[1] == 0 and sslv[2] > 0)):
-        raise Exception('At least SSL v1.0.1 required for TLS v1.2 (found %s)' % OPENSSL_VERSION)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ssl_version_check</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">OPENSSL_VERSION_INFO</span> <span class="k">as</span> <span class="n">sslv</span><span class="p">,</span> <span class="n">OPENSSL_VERSION</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="n">sslv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sslv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least SSL v1.0.1 required for TLS v1.2 (found </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">OPENSSL_VERSION</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1446,10 +1523,11 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.u', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.u" class="source">
-    <pre><code>def u(obj):
-    """Casts obj to unicode string, unless already one"""
-    return obj if isinstance(obj, str) else str(obj)
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Casts obj to unicode string, unless already one&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+
   </div>
 </div>
 
@@ -1468,14 +1546,15 @@ except ImportError:
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.compat.valid_identifier', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.compat.valid_identifier" class="source">
-    <pre><code>def valid_identifier(name):
-    """Determines whether the given name could be used a Python identifier"""
-    try:
-        name = ensure_unicode(name)
-    except ValueError:
-        return False
-    return name.isidentifier() and name not in __KEYWORDS
-</code></pre>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">valid_identifier</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the given name could be used a Python identifier&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">ensure_unicode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">__KEYWORDS</span>
+</pre></div>
+
   </div>
 </div>
 
