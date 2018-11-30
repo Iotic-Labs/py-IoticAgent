@@ -63,9 +63,11 @@ def version_string_to_tuple(version):
     return tuple(int(part) if part.isdigit() else part for part in version.split('.'))
 
 
-def bool_from(obj):
-    """Returns True if string representation of obj is not 0 or False (case-insensitive)"""
-    return str(obj).lower() not in ('0', 'false')
+def bool_from(obj, default=False):
+    """Returns True if obj is not None and its string representation is not 0 or False (case-insensitive). If obj is
+    None, 'default' is used.
+    """
+    return str(obj).lower() not in ('0', 'false') if obj is not None else bool(default)
 
 
 def private_name_for(var_name, cls):

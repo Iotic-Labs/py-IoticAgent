@@ -128,7 +128,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
-                 throttle_conf='', max_encoded_length=None):
+                 throttle_conf='', max_encoded_length=None, startup_ignore_exc=False):
         """
         `host` amqp broker "host:port"
 
@@ -167,6 +167,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
         `max_encoded_length` Override the maximum permissible encoded request size (in bytes). Warning: Increasing this
                              without first consulting the container provider could result in a ban.
+
+        `startup_ignore_exc` See AmqpLink class parameter with the same name.
         """
         logger.info('ubjson version: %s (extension %s)', ubj_version, 'enabled' if ubj_ext else 'disabled')
         logger.debug("__init__ config host='%s', vhost='%s', epId='%s', passwd='%s', token='%s', prefix='%s'"
@@ -198,7 +200,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         self.__amqplink = AmqpLink(host, vhost, prefix, self.__epId, passwd, self.__dispatch_msg, self.__dispatch_ka,
                                    self.__send_ready_cb, sslca=sslca,
                                    socket_timeout=validate_nonnegative_int(socket_timeout, 'socket_timeout',
-                                                                           allow_zero=False))
+                                                                           allow_zero=False),
+                                   startup_ignore_exc=startup_ignore_exc)
         # seq (from container - initial value used to surpress warning on first message from container)
         self.__cnt_seqnum = -1
         # (Core.Client has not been .start or is .stop)

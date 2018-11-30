@@ -47,7 +47,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback,  # pylint: disable=too-many-locals
-                 send_ready_callback, sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10):
+                 send_ready_callback, sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10,
+                 startup_ignore_exc=False):
         """
         `host`: Broker 'host:port'
 
@@ -76,6 +77,10 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         `heartbeat` Every n messages or acksecs send a amqp heartbeat tick
 
         `socket_timeout` Timeout of underlying sockets both for connection and subsequent operations
+
+        `startup_ignore_exc` On startup only, whether to ignore exceptions until socket_timeout has elapsed. This means
+                             that e.g. an access-refused will result in a retry on startup (assuming `socket_timeout`
+                             seconds haven't elapsed yet) rather than immediately failing.
         """
         self.__host = host
         self.__vhost = vhost
@@ -109,6 +114,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__send_exc_time = None
         self.__send_exc = None     # Used to pass exceptions to blocking calls EG .start
         self.__recv_exc = None
+        # Whether to only rely on timeout on startup
+        self.__startup_ignore_exc = bool(startup_ignore_exc)
 
     def start(self):
         """start connection threads, blocks until started
@@ -118,6 +125,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__send_ready.clear()
             self.__recv_ready.clear()
             timeout = self.__socket_timeout + 1
+            ignore_exc = self.__startup_ignore_exc
             self.__send_exc_time = None
             self.__send_exc = None
             self.__recv_exc = None
@@ -127,7 +135,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__send_thread.start()
             start_time = monotonic()
             success = False
-            while not (success or self.__send_exc or monotonic() - start_time > timeout):
+            while not (success or (not ignore_exc and self.__send_exc) or monotonic() - start_time > timeout):
                 success = self.__send_ready.wait(.25)
 
             if success:
@@ -136,7 +144,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 self.__recv_thread.start()
                 start_time = monotonic()
                 success = False
-                while not (success or self.__recv_exc or monotonic() - start_time >= timeout):
+                while not (success or (not ignore_exc and self.__recv_exc) or monotonic() - start_time >= timeout):
                     success = self.__recv_ready.wait(.25)
 
             # handler either thread's failure

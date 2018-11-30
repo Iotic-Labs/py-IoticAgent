@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.5'
+    __core_version = '0.6.7'
 
     def __init__(self, config=None):
         """
@@ -90,10 +90,13 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                                         sslca=self.__config.get('agent', 'sslca'),
                                         network_retry_timeout=self.__config.get('core', 'network_retry_timeout'),
                                         socket_timeout=self.__config.get('core', 'socket_timeout'),
-                                        auto_encode_decode=bool_from(self.__config.get('core', 'auto_encode_decode')),
+                                        auto_encode_decode=bool_from(self.__config.get('core', 'auto_encode_decode'),
+                                                                     default=True),
                                         send_queue_size=self.__config.get('core', 'queue_size'),
                                         throttle_conf=self.__config.get('core', 'throttle'),
-                                        max_encoded_length=self.__config.get('core', 'max_encoded_length'))
+                                        max_encoded_length=self.__config.get('core', 'max_encoded_length'),
+                                        startup_ignore_exc=bool_from(self.__config.get('core', 'startup_ignore_exc'),
+                                                                     default=False))
         except ValueError as ex:
             raise_from(ValueError('Configuration error'), ex)
 

@@ -1,3 +1,9 @@
+v0.6.7
+- Option to allow retires on startup until timeout rather than first exception
+
+v0.6.6
+- Introduced universal wheel on PyPI only
+
 v0.6.5
 - Fix on_shutdown event behaviour when ThingRunner running in foreground
 - Add configurable retry delay for ThingRunner
