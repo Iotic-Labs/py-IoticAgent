@@ -1167,14 +1167,28 @@ table {
         <span class="sd">&quot;&quot;&quot;Called internally by Client to indicate this request has finished&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">()</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Post-completion function failed to run&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_completion_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__run_completion_func</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">req_id</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Completion func for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">req_id</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Post-completion function failed to run&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to call when request has finished, after having been set. Paramters are NOT validated.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Function to call when request has finished, after having been _set(). The first argument passed to func will</span>
+<span class="sd">        be the request itself. Additional parameters are NOT validated. If the request is already finished, the given</span>
+<span class="sd">        function will be run immediately (in same thread).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Completion function already set for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_completion_func</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait for the request to finish, optionally timing out. Returns True if the request has finished or False if</span>
@@ -1285,14 +1299,28 @@ https://docs.python.org/3/library/threading.html#event-objects</p></div>
         <span class="sd">&quot;&quot;&quot;Called internally by Client to indicate this request has finished&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">()</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Post-completion function failed to run&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_completion_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__run_completion_func</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">req_id</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Completion func for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">req_id</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Post-completion function failed to run&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to call when request has finished, after having been set. Paramters are NOT validated.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Function to call when request has finished, after having been _set(). The first argument passed to func will</span>
+<span class="sd">        be the request itself. Additional parameters are NOT validated. If the request is already finished, the given</span>
+<span class="sd">        function will be run immediately (in same thread).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Completion function already set for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complete_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__run_completion_func</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait for the request to finish, optionally timing out. Returns True if the request has finished or False if</span>

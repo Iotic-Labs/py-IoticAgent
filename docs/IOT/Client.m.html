@@ -1182,7 +1182,7 @@ table {
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.7&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.8&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2214,7 +2214,7 @@ table {
     <span class="k">def</span> <span class="nf">_add_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">[</span><span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__recent_cb_per_sample</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
-        <span class="n">req</span><span class="o">.</span><span class="n">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__remove_recent_cb_for</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
+        <span class="n">req</span><span class="o">.</span><span class="n">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__remove_recent_cb_for</span><span class="p">)</span>
 
     <span class="c1"># multi-sample to per-sample callback wrapper</span>
     <span class="nd">@staticmethod</span>
@@ -2224,12 +2224,12 @@ table {
             <span class="n">func</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 
     <span class="c1"># used by _add_recent_cb_for only</span>
-    <span class="k">def</span> <span class="nf">__remove_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__remove_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">request_id</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;recent cb does not exist for request </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;recent cb does not exist for request </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
 
     <span class="c1"># Wrap Core.Client functions so IOT contains everything.</span>
     <span class="c1"># These are protected functions used by Client, Thing, Point etc.</span>
@@ -2555,7 +2555,7 @@ table {
     <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.7&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.8&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3587,7 +3587,7 @@ table {
     <span class="k">def</span> <span class="nf">_add_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">[</span><span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__recent_cb_per_sample</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
-        <span class="n">req</span><span class="o">.</span><span class="n">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__remove_recent_cb_for</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
+        <span class="n">req</span><span class="o">.</span><span class="n">_run_on_completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__remove_recent_cb_for</span><span class="p">)</span>
 
     <span class="c1"># multi-sample to per-sample callback wrapper</span>
     <span class="nd">@staticmethod</span>
@@ -3597,12 +3597,12 @@ table {
             <span class="n">func</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 
     <span class="c1"># used by _add_recent_cb_for only</span>
-    <span class="k">def</span> <span class="nf">__remove_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__remove_recent_cb_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">request_id</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recent_data_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;recent cb does not exist for request </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">request_id</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;recent cb does not exist for request </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">id_</span><span class="p">)</span>
 
     <span class="c1"># Wrap Core.Client functions so IOT contains everything.</span>
     <span class="c1"># These are protected functions used by Client, Thing, Point etc.</span>
