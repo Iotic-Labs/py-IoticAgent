@@ -1341,7 +1341,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             # solicitied
             if msg[M_CLIENTREF]:
                 if not self.__handle_known_solicited(msg):
-                    logger.warning('Ignoring response for unknown request %s of type %s', msg[M_CLIENTREF], msg[M_TYPE])
+                    logger.debug('Ignoring response for unknown request %s of type %s', msg[M_CLIENTREF], msg[M_TYPE])
             # unsolicitied
             else:
                 self.__perform_unsolicited_callbacks(msg)

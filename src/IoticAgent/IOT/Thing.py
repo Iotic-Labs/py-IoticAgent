@@ -474,6 +474,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         elif not (isinstance(gpid, Sequence) and len(gpid) == 2):
             raise ValueError('gpid must be string or two-element tuple')
         try:
+            # Not using ThreadSafeDict lock since pop() is atomic operation
             sub = self.__new_subs.pop((foc, gpid))
         except KeyError as ex:
             raise_from(KeyError('Remote%s subscription %s not know as new' % (foc_to_str(foc).capitalize(), gpid)), ex)
@@ -516,7 +517,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         with new_subs:
             # don't allow multiple subscription requests to overwrite internal reference
             if key in new_subs:
-                raise ValueError('subscription for given args pending: %s' % key)
+                raise ValueError('subscription for given args pending: %s' % str(key))
             new_subs[key] = None
         try:
             yield
@@ -526,19 +527,32 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
                 new_subs.pop(key, None)
             raise
 
+    def __sub_del_reference(self, req, key):
+        """Blindly clear reference to pending subscription on failure."""
+        if not req.success:
+            try:
+                self.__new_subs.pop(key)
+            except KeyError:
+                logger.warning('No sub ref %s', key)
+
     def __sub_make_request(self, foc, gpid, callback):
         """Make right subscription request depending on whether local or global - used by __sub*"""
         # global
         if isinstance(gpid, string_types):
             gpid = uuid_to_hex(gpid)
-            with self.__sub_add_reference((foc, gpid)):
-                return self._client._request_sub_create(self.__lid, foc, gpid, callback=callback)
+            ref = (foc, gpid)
+            with self.__sub_add_reference(ref):
+                req = self._client._request_sub_create(self.__lid, foc, gpid, callback=callback)
         # local
         elif isinstance(gpid, Sequence) and len(gpid) == 2:
-            with self.__sub_add_reference((foc, tuple(gpid))):
-                return self._client._request_sub_create_local(self.__lid, foc, *gpid, callback=callback)
+            ref = (foc, tuple(gpid))
+            with self.__sub_add_reference(ref):
+                req = self._client._request_sub_create_local(self.__lid, foc, *gpid, callback=callback)
         else:
             raise ValueError('gpid must be string or two-element tuple')
+
+        req._run_on_completion(self.__sub_del_reference, ref)
+        return req
 
     def __sub(self, foc, gpid, callback=None):
         logger.info("__sub(foc=%s, gpid=\"%s\", callback=%s) [lid=%s]", foc_to_str(foc), gpid, callback, self.__lid)

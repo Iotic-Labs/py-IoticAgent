@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.7'
+    __core_version = '0.6.8'
 
     def __init__(self, config=None):
         """
@@ -1083,7 +1083,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _add_recent_cb_for(self, req, func):
         with self.__recent_data_callbacks:
             self.__recent_data_callbacks[req.id_] = partial(self.__recent_cb_per_sample, func)
-        req._run_on_completion(self.__remove_recent_cb_for, req.id_)
+        req._run_on_completion(self.__remove_recent_cb_for)
 
     # multi-sample to per-sample callback wrapper
     @staticmethod
@@ -1093,12 +1093,12 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             func(sample)
 
     # used by _add_recent_cb_for only
-    def __remove_recent_cb_for(self, request_id):
+    def __remove_recent_cb_for(self, req):
         with self.__recent_data_callbacks:
             try:
-                self.__recent_data_callbacks.pop(request_id, None)
+                self.__recent_data_callbacks.pop(req.id_, None)
             except KeyError:
-                logger.warning('recent cb does not exist for request %s', request_id)
+                logger.warning('recent cb does not exist for request %s', req.id_)
 
     # Wrap Core.Client functions so IOT contains everything.
     # These are protected functions used by Client, Thing, Point etc.

@@ -1,3 +1,8 @@
+v0.6.8
+- Reduce unknow (old) request warning logging level
+- Fix pending subscription exception message formatting
+- Fix failed subscription reference handling
+
 v0.6.7
 - Option to allow retires on startup until timeout rather than first exception
 

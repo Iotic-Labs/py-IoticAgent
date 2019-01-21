@@ -81,14 +81,28 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
         """Called internally by Client to indicate this request has finished"""
         self.__event.set()
         if self._complete_func:
-            try:
-                self._complete_func()
-            except:
-                logger.warning('Post-completion function failed to run', exc_info=DEBUG_ENABLED)
+            self.__run_completion_func(self._complete_func, self.id_)
+
+    @staticmethod
+    def __run_completion_func(func, req_id):
+        logger.debug('Completion func for %s: %s', req_id, func)
+        try:
+            func()
+        except:
+            logger.warning('Post-completion function failed to run', exc_info=DEBUG_ENABLED)
 
     def _run_on_completion(self, func, *args, **kwargs):
-        """Function to call when request has finished, after having been set. Paramters are NOT validated."""
-        self._complete_func = partial(func, *args, **kwargs)
+        """Function to call when request has finished, after having been _set(). The first argument passed to func will
+        be the request itself. Additional parameters are NOT validated. If the request is already finished, the given
+        function will be run immediately (in same thread).
+        """
+        if self._complete_func is not None:
+            raise ValueError('Completion function already set for %s: %s' % (self.id_, self._complete_func))
+
+        if not self.__event.is_set():
+            self._complete_func = partial(func, self, *args, **kwargs)
+        else:
+            self.__run_completion_func(partial(func, self, *args, **kwargs), self.id_)
 
     def wait(self, timeout=None):
         """Wait for the request to finish, optionally timing out. Returns True if the request has finished or False if
