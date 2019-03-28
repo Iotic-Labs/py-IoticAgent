@@ -22,6 +22,7 @@ from IoticAgent.Core.utils import validate_nonnegative_int
 from IoticAgent.Core.compat import Queue, Empty, monotonic
 
 from .Point import PointDataObject
+from .Exceptions import IOTSyncTimeout
 
 
 class RemotePoint(object):
@@ -211,7 +212,11 @@ class RemoteControl(RemotePoint):
         [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
         """
         evt = self.tell_async(data, timeout=timeout, mime=mime)
-        self._client._wait_and_except_if_failed(evt)
+        # No point in waiting longer than supplied timeout (as opposed to waiting for sync timeout)
+        try:
+            self._client._wait_and_except_if_failed(evt, timeout=timeout)
+        except IOTSyncTimeout:
+            return 'timeout'
         return True if evt.payload['success'] else evt.payload['reason']
 
     def tell_async(self, data, timeout=10, mime=None):

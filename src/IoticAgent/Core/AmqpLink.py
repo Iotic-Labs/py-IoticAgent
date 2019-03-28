@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+# Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
-from sys import version_info
+from sys import version_info, exc_info
 
 try:
     BlockingIOError
@@ -38,7 +38,7 @@ from .Exceptions import LinkException
 DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
 
 # Currently this is not configurable
-CONN_RETRY_DELAY_SECONDS = 4
+CONN_RETRY_DELAY_SECONDS = 5
 
 
 class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
@@ -126,9 +126,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
             self.__recv_ready.clear()
             timeout = self.__socket_timeout + 1
             ignore_exc = self.__startup_ignore_exc
-            self.__send_exc_time = None
-            self.__send_exc = None
-            self.__recv_exc = None
+            self.__send_exc_clear()
+            self.__recv_exc_clear()
 
             # start & await send thread success (unless timeout reached or an exception has occured)
             self.__send_thread = Thread(target=self.__send_run, name='amqplink_send')
@@ -191,8 +190,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.stop()
 
     def send(self, body, content_type='application/ubjson', timeout=5):
-        """timeout indicates amount of time to wait for receiving thread to be ready. set to larger
-        than zero to wait (in seconds, fractional) or None to block.
+        """timeout indicates amount of time to wait for sending thread to be ready. set to larger than zero to wait
+        (in seconds, fractional) or None to block.
         """
         if self.__send_ready.wait(timeout):
             try:
@@ -292,8 +291,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         while not self.__end.is_set():
             self.__unacked = 0
             self.__last_id = None
-            #
-            # Connect
+
             try:
                 self.__recv_ready.clear()  # Ensure event is cleared for EG network failure/retry loop
                 with Connection(userid=self.__prefix + self.__epid,
@@ -306,14 +304,15 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                 host=self.__host) as conn,\
                         conn.channel(auto_encode_decode=False) as channel_data,\
                         conn.channel() as channel_ka:
+                    logger.debug('Connected, using cipher %s', conn.transport.sock.cipher()[0])
+
                     channel_data.basic_qos(prefetch_size=0, prefetch_count=self.__prefetch, a_global=False)
                     # exclusive=True.  There can be only one (receiver)
                     msgtag = channel_data.basic_consume(queue=self.__epid, exclusive=True, callback=self.__recv_cb)
                     acktag = channel_ka.basic_consume(queue=('%s_ka' % self.__epid), exclusive=True, no_ack=True,
                                                       callback=self.__recv_ka_cb)
-                    self.__recv_exc = None
                     self.__ka_channel = channel_ka
-                    logger.debug('ready, using cipher %s', conn.transport.sock.cipher()[0])
+                    self.__recv_exc_clear(log_if_exc_set='reconnected')
                     self.__recv_ready.set()
                     try:
                         #
@@ -337,36 +336,39 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                             channel_data.basic_cancel(msgtag)
                             channel_ka.basic_cancel(acktag)
                         except:
-                            pass  # note: Can't do anything here? EG network down
-                        # TODO: ACK any remaining messages if possible. Otherwise might have to keep track of seq
-                        #       numbers of processed messages so can ACK when connection comes back up.
+                            pass
 
-            except exceptions.AccessRefused as exc:
-                logger.error("Access Refused (Credentials already in use?)")
-                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-                self.__recv_exc = exc
-            except exceptions.ConnectionForced as exc:
-                logger.error('Disconnected by broker (ConnectionForced)', exc_info=DEBUG_ENABLED)
-                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except SocketTimeout as exc:
-                logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
-                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except SSLError as exc:
-                logger.error("ssl.SSLError Bad Certificate?")
-                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except (exceptions.AMQPError, SocketError) as exc:
-                logger.error('amqp/transport failure, sleeping before retry', exc_info=DEBUG_ENABLED)
-                self.__recv_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.exception('unexpected failure, exiting')
-                self.__recv_set_exc_and_wait(exc, 0)
+            except exceptions.AccessRefused:
+                self.__recv_log_set_exc_and_wait('Access Refused (Credentials already in use?)')
+            except exceptions.ConnectionForced:
+                self.__recv_log_set_exc_and_wait('Disconnected by broker (ConnectionForced)')
+            except SocketTimeout:
+                self.__recv_log_set_exc_and_wait('SocketTimeout exception.  wrong credentials, vhost or prefix?')
+            except SSLError:
+                self.__recv_log_set_exc_and_wait('ssl.SSLError Bad Certificate?')
+            except (exceptions.AMQPError, SocketError):
+                self.__recv_log_set_exc_and_wait('amqp/transport failure, sleeping before retry')
+            except:
+                self.__recv_log_set_exc_and_wait('unexpected failure, exiting', wait_seconds=0)
                 break
 
         logger.debug('finished')
 
-    def __recv_set_exc_and_wait(self, exc, wait_seconds):
-        self.__recv_exc = exc
+    def __recv_log_set_exc_and_wait(self, msg, level=None, wait_seconds=CONN_RETRY_DELAY_SECONDS):
+        """Equivalent to __send_log_set_exc_and_wait but for receiver thread"""
+        logger.log(
+            ((logging.DEBUG if self.__recv_exc else logging.ERROR) if level is None else level),
+            msg,
+            exc_info=DEBUG_ENABLED
+        )
+        self.__recv_exc = exc_info()[1]
         self.__end.wait(wait_seconds)
+
+    def __recv_exc_clear(self, log_if_exc_set=None):
+        """Equivalent to __send_exc_clear"""
+        if not (log_if_exc_set is None or self.__recv_exc is None):
+            logger.info(log_if_exc_set)
+        self.__recv_exc = None
 
     @profiled_thread  # noqa (complexity)
     def __send_run(self):
@@ -383,8 +385,9 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                                 ssl=self.__get_ssl_context(self.__sslca),
                                 host=self.__host) as conn,\
                         conn.channel(auto_encode_decode=False) as channel:
+
                     self.__send_channel = channel
-                    logger.debug('ready')
+                    self.__send_exc_clear(log_if_exc_set='reconnected')
                     self.__send_ready.set()
                     try:
                         self.__send_ready_callback(self.__send_exc_time)
@@ -404,28 +407,43 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                         with self.__send_lock:
                             self.__send_ready.clear()
 
-            except exceptions.AccessRefused as exc:
-                logger.error("Access Refused (Credentials already in use?)")
-                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except exceptions.ConnectionForced as exc:
-                logger.error('Disconnected by broker (ConnectionForced)')
-                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except SocketTimeout as exc:
-                logger.warning("SocketTimeout exception.  wrong credentials, vhost or prefix?")
-                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except SSLError as exc:
-                logger.error("ssl.SSLError Bad Certificate?")
-                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except (exceptions.AMQPError, SocketError) as exc:
-                logger.error('amqp/transport failure, sleeping before retry')
-                self.__send_set_exc_and_wait(exc, CONN_RETRY_DELAY_SECONDS)
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.exception('unexpected failure, exiting')
-                self.__send_set_exc_and_wait(exc, 0)
+            except exceptions.AccessRefused:
+                self.__send_log_set_exc_and_wait('Access Refused (Credentials already in use?)')
+            except exceptions.ConnectionForced:
+                self.__send_log_set_exc_and_wait('Disconnected by broker (ConnectionForced)')
+            except SocketTimeout:
+                self.__send_log_set_exc_and_wait('SocketTimeout exception.  wrong credentials, vhost or prefix?')
+            except SSLError:
+                self.__send_log_set_exc_and_wait('ssl.SSLError Bad Certificate?')
+            except (exceptions.AMQPError, SocketError):
+                self.__send_log_set_exc_and_wait('amqp/transport failure, sleeping before retry')
+            except:
+                self.__send_log_set_exc_and_wait('unexpected failure, exiting', wait_seconds=0)
                 break
         logger.debug('finished')
 
-    def __send_set_exc_and_wait(self, exc, wait_seconds):
+    def __send_log_set_exc_and_wait(self, msg, level=None, wait_seconds=CONN_RETRY_DELAY_SECONDS):
+        """To be called in exception context only.
+
+        msg - message to log
+        level - logging level. If not specified, ERROR unless it is a repeated failure in which case DEBUG. If
+        specified, the given level will always be used.
+        wait_seconds - how long to pause for (so retry is not triggered immediately)
+        """
+        logger.log(
+            ((logging.DEBUG if self.__send_exc else logging.ERROR) if level is None else level),
+            msg,
+            exc_info=DEBUG_ENABLED
+        )
         self.__send_exc_time = monotonic()
-        self.__send_exc = exc
+        self.__send_exc = exc_info()[1]
         self.__end.wait(wait_seconds)
+
+    def __send_exc_clear(self, log_if_exc_set=None):
+        """Clear send exception and time. If exception was previously was set, optionally log log_if_exc_set at INFO
+        level.
+        """
+        if not (log_if_exc_set is None or self.__send_exc is None):
+            logger.info(log_if_exc_set)
+        self.__send_exc_time = None
+        self.__send_exc = None

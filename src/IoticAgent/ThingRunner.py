@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+# Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -103,8 +103,8 @@ class ThingRunner(object):
                 exc_occurred = True
                 if self.__handle_exception(ctx):
                     logger.debug('Sleeping before retry')
-                    self.wait_for_shutdown(self.__retry_timeout)
-                    continue
+                    if not self.wait_for_shutdown(self.__retry_timeout):
+                        continue
 
             # Normal run finished
             break
@@ -150,14 +150,18 @@ class ThingRunner(object):
 
     def stop(self, timeout=None):
         """Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
-        `run()` was not called with background=True set."""
+        `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).
+        """
+        stopped = True
         self.__shutdown.set()
         if self.__bgthread:
             logger.debug('Stopping bgthread')
             self.__bgthread.join(timeout)
             if self.__bgthread.is_alive():
                 logger.warning('bgthread did not finish within timeout')
+                stopped = False
             self.__bgthread = None
+        return stopped
 
     @property
     def client(self):

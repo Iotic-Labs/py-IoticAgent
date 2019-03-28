@@ -1,5 +1,16 @@
+v0.6.9
+- Increase metadata tag length limit from 16 to 64
+- Reduce incoming-data-without-callback warning logging level
+- Calling agent methods when client offline now raises LinkShutdownException
+  instead of RuntimeError
+- Log recurring connection errors only once (until reconnection success)
+- Exit ThingRunner during retry delay rather than attempting step again
+- ThingRunner stop() method returns True on succesful thread termination
+- Let Control.tell (sync version) time out based on request-specific timeout
+  rather than agent-wide sync_request_timeout
+
 v0.6.8
-- Reduce unknow (old) request warning logging level
+- Reduce unknown (old) request warning logging level
 - Fix pending subscription exception message formatting
 - Fix failed subscription reference handling
 

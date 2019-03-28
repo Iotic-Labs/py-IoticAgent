@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.8'
+    __core_version = '0.6.9'
 
     def __init__(self, config=None):
         """
@@ -658,9 +658,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         E_FAILED_CODE_UNKNOWN: IOTUnknown
     }
 
-    def _wait_and_except_if_failed(self, event):
-        """Combines waiting for event and call to `_except_if_failed`."""
-        event.wait(self.__sync_timeout)
+    def _wait_and_except_if_failed(self, event, timeout=None):
+        """Combines waiting for event and call to `_except_if_failed`. If timeout is not specified the configured
+        sync_timeout is used.
+        """
+        event.wait(timeout or self.__sync_timeout)
         self._except_if_failed(event)
 
     @classmethod

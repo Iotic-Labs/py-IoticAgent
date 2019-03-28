@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.
+# Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '1.2.0'
+    __qapi_version = '1.2.1'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -412,7 +412,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             callback = self.__callbacks[_CB_FEED][feedid]
         except KeyError:
             if not have_general:
-                logger.warning("Received Feed Data for Point GUID '%s' but no callback registered.", feedid)
+                logger.info("Received Feed Data for Point GUID '%s' but no callback registered.", feedid)
         else:
             self.__threadpool.submit(callback, arg)
 
@@ -431,8 +431,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             callback = self.__callbacks[_CB_CONTROL][payload[P_ENTITY_LID]][payload[P_LID]]
         except KeyError:
             if not have_general:
-                logger.warning("Received Control Request for %s,%s but no callback registered.",
-                               payload[P_ENTITY_LID], payload[P_LID])
+                logger.info(
+                    "Received Control Request for %s,%s but no callback registered.", payload[P_ENTITY_LID],
+                    payload[P_LID]
+                )
         else:
             self.__threadpool.submit(callback, arg)
 
@@ -580,7 +582,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         end = self.__end
         if end.is_set():
-            raise RuntimeError('Request made whilst client not running')
+            raise LinkShutdownException('Client stopped')
 
         rng = None
         if offset is not None and limit is not None:
@@ -595,7 +597,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             self.__requests[requestId] = ret = RequestEvent(requestId, inner_msg, is_crud=is_crud)
         #
         if not self.__retry_enqueue(PreparedMessage(inner_msg, requestId)):
-            raise LinkShutdownException('Client stopped')
+            raise LinkShutdownException('Client stopping')
         return ret
 
     # don't block shutdown on full send queue. returns True if did enqueue, False if shutting down
