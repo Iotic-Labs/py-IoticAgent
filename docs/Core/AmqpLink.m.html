@@ -1088,7 +1088,7 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.AmqpLink', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.AmqpLink" class="source">
-    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -1107,7 +1107,7 @@ table {
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">version_info</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">version_info</span><span class="p">,</span> <span class="n">exc_info</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">BlockingIOError</span>
@@ -1128,7 +1128,7 @@ table {
 <span class="n">DEBUG_ENABLED</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 <span class="c1"># Currently this is not configurable</span>
-<span class="n">CONN_RETRY_DELAY_SECONDS</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">CONN_RETRY_DELAY_SECONDS</span> <span class="o">=</span> <span class="mi">5</span>
 
 
 <span class="k">class</span> <span class="nc">AmqpLink</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
@@ -1216,9 +1216,8 @@ table {
             <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__socket_timeout</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">ignore_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__startup_ignore_exc</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc_clear</span><span class="p">()</span>
 
             <span class="c1"># start &amp; await send thread success (unless timeout reached or an exception has occured)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__send_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__send_run</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;amqplink_send&#39;</span><span class="p">)</span>
@@ -1281,8 +1280,8 @@ table {
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/ubjson&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for receiving thread to be ready. set to larger</span>
-<span class="sd">        than zero to wait (in seconds, fractional) or None to block.</span>
+        <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for sending thread to be ready. set to larger than zero to wait</span>
+<span class="sd">        (in seconds, fractional) or None to block.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1382,8 +1381,7 @@ table {
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__unacked</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__last_id</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="c1">#</span>
-            <span class="c1"># Connect</span>
+
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># Ensure event is cleared for EG network failure/retry loop</span>
                 <span class="k">with</span> <span class="n">Connection</span><span class="p">(</span><span class="n">userid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">,</span>
@@ -1396,14 +1394,15 @@ table {
                                 <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">(</span><span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">channel_data</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span> <span class="k">as</span> <span class="n">channel_ka</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Connected, using cipher </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">cipher</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
                     <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_qos</span><span class="p">(</span><span class="n">prefetch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prefetch_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__prefetch</span><span class="p">,</span> <span class="n">a_global</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
                     <span class="c1"># exclusive=True.  There can be only one (receiver)</span>
                     <span class="n">msgtag</span> <span class="o">=</span> <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recv_cb</span><span class="p">)</span>
                     <span class="n">acktag</span> <span class="o">=</span> <span class="n">channel_ka</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_ka&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">),</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">no_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                                                       <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recv_ka_cb</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__ka_channel</span> <span class="o">=</span> <span class="n">channel_ka</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ready, using cipher </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">cipher</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc_clear</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="o">=</span><span class="s1">&#39;reconnected&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="c1">#</span>
@@ -1427,36 +1426,39 @@ table {
                             <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_cancel</span><span class="p">(</span><span class="n">msgtag</span><span class="p">)</span>
                             <span class="n">channel_ka</span><span class="o">.</span><span class="n">basic_cancel</span><span class="p">(</span><span class="n">acktag</span><span class="p">)</span>
                         <span class="k">except</span><span class="p">:</span>
-                            <span class="k">pass</span>  <span class="c1"># note: Can&#39;t do anything here? EG network down</span>
-                        <span class="c1"># TODO: ACK any remaining messages if possible. Otherwise might have to keep track of seq</span>
-                        <span class="c1">#       numbers of processed messages so can ACK when connection comes back up.</span>
+                            <span class="k">pass</span>
 
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SSLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Access Refused (Credentials already in use?)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SocketTimeout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;SocketTimeout exception.  wrong credentials, vhost or prefix?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SSLError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;ssl.SSLError Bad Certificate?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">break</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__recv_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
+    <span class="k">def</span> <span class="nf">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Equivalent to __send_log_set_exc_and_wait but for receiver thread&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span> <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">level</span><span class="p">),</span>
+            <span class="n">msg</span><span class="p">,</span>
+            <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_seconds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__recv_exc_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_if_exc_set</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Equivalent to __send_exc_clear&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">log_if_exc_set</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="nd">@profiled_thread</span>  <span class="c1"># noqa (complexity)</span>
     <span class="k">def</span> <span class="nf">__send_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1473,8 +1475,9 @@ table {
                                 <span class="n">ssl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_ssl_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sslca</span><span class="p">),</span>
                                 <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">(</span><span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">channel</span><span class="p">:</span>
+
                     <span class="bp">self</span><span class="o">.</span><span class="n">__send_channel</span> <span class="o">=</span> <span class="n">channel</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ready&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_clear</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="o">=</span><span class="s1">&#39;reconnected&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span><span class="p">)</span>
@@ -1494,31 +1497,46 @@ table {
                         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_lock</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SSLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Access Refused (Credentials already in use?)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SocketTimeout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;SocketTimeout exception.  wrong credentials, vhost or prefix?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SSLError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;ssl.SSLError Bad Certificate?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">break</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__send_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;To be called in exception context only.</span>
+
+<span class="sd">        msg - message to log</span>
+<span class="sd">        level - logging level. If not specified, ERROR unless it is a repeated failure in which case DEBUG. If</span>
+<span class="sd">        specified, the given level will always be used.</span>
+<span class="sd">        wait_seconds - how long to pause for (so retry is not triggered immediately)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span> <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">level</span><span class="p">),</span>
+            <span class="n">msg</span><span class="p">,</span>
+            <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="n">exc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_seconds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__send_exc_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_if_exc_set</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear send exception and time. If exception was previously was set, optionally log log_if_exc_set at INFO</span>
+<span class="sd">        level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">log_if_exc_set</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
   </div>
@@ -1656,9 +1674,8 @@ table {
             <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__socket_timeout</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">ignore_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__startup_ignore_exc</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc_clear</span><span class="p">()</span>
 
             <span class="c1"># start &amp; await send thread success (unless timeout reached or an exception has occured)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__send_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__send_run</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;amqplink_send&#39;</span><span class="p">)</span>
@@ -1721,8 +1738,8 @@ table {
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/ubjson&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for receiving thread to be ready. set to larger</span>
-<span class="sd">        than zero to wait (in seconds, fractional) or None to block.</span>
+        <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for sending thread to be ready. set to larger than zero to wait</span>
+<span class="sd">        (in seconds, fractional) or None to block.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1822,8 +1839,7 @@ table {
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__unacked</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__last_id</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="c1">#</span>
-            <span class="c1"># Connect</span>
+
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># Ensure event is cleared for EG network failure/retry loop</span>
                 <span class="k">with</span> <span class="n">Connection</span><span class="p">(</span><span class="n">userid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">,</span>
@@ -1836,14 +1852,15 @@ table {
                                 <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">(</span><span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">channel_data</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span> <span class="k">as</span> <span class="n">channel_ka</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Connected, using cipher </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">cipher</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
                     <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_qos</span><span class="p">(</span><span class="n">prefetch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prefetch_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__prefetch</span><span class="p">,</span> <span class="n">a_global</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
                     <span class="c1"># exclusive=True.  There can be only one (receiver)</span>
                     <span class="n">msgtag</span> <span class="o">=</span> <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recv_cb</span><span class="p">)</span>
                     <span class="n">acktag</span> <span class="o">=</span> <span class="n">channel_ka</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_ka&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__epid</span><span class="p">),</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">no_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                                                       <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recv_ka_cb</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__ka_channel</span> <span class="o">=</span> <span class="n">channel_ka</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ready, using cipher </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">conn</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">cipher</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc_clear</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="o">=</span><span class="s1">&#39;reconnected&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="c1">#</span>
@@ -1867,36 +1884,39 @@ table {
                             <span class="n">channel_data</span><span class="o">.</span><span class="n">basic_cancel</span><span class="p">(</span><span class="n">msgtag</span><span class="p">)</span>
                             <span class="n">channel_ka</span><span class="o">.</span><span class="n">basic_cancel</span><span class="p">(</span><span class="n">acktag</span><span class="p">)</span>
                         <span class="k">except</span><span class="p">:</span>
-                            <span class="k">pass</span>  <span class="c1"># note: Can&#39;t do anything here? EG network down</span>
-                        <span class="c1"># TODO: ACK any remaining messages if possible. Otherwise might have to keep track of seq</span>
-                        <span class="c1">#       numbers of processed messages so can ACK when connection comes back up.</span>
+                            <span class="k">pass</span>
 
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SSLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Access Refused (Credentials already in use?)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SocketTimeout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;SocketTimeout exception.  wrong credentials, vhost or prefix?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SSLError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;ssl.SSLError Bad Certificate?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">break</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__recv_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc</span>
+    <span class="k">def</span> <span class="nf">__recv_log_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Equivalent to __send_log_set_exc_and_wait but for receiver thread&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span> <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">level</span><span class="p">),</span>
+            <span class="n">msg</span><span class="p">,</span>
+            <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_seconds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__recv_exc_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_if_exc_set</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Equivalent to __send_exc_clear&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">log_if_exc_set</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="nd">@profiled_thread</span>  <span class="c1"># noqa (complexity)</span>
     <span class="k">def</span> <span class="nf">__send_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1913,8 +1933,9 @@ table {
                                 <span class="n">ssl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_ssl_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sslca</span><span class="p">),</span>
                                 <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>\
                         <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">(</span><span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">channel</span><span class="p">:</span>
+
                     <span class="bp">self</span><span class="o">.</span><span class="n">__send_channel</span> <span class="o">=</span> <span class="n">channel</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ready&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_clear</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="o">=</span><span class="s1">&#39;reconnected&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span><span class="p">)</span>
@@ -1934,31 +1955,46 @@ table {
                         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_lock</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Access Refused (Credentials already in use?)&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SocketTimeout</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SocketTimeout exception.  wrong credentials, vhost or prefix?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">SSLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ssl.SSLError Bad Certificate?&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__send_set_exc_and_wait</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AccessRefused</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Access Refused (Credentials already in use?)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionForced</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;Disconnected by broker (ConnectionForced)&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SocketTimeout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;SocketTimeout exception.  wrong credentials, vhost or prefix?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SSLError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;ssl.SSLError Bad Certificate?&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">AMQPError</span><span class="p">,</span> <span class="n">SocketError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;amqp/transport failure, sleeping before retry&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="s1">&#39;unexpected failure, exiting&#39;</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">break</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__send_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__send_log_set_exc_and_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">wait_seconds</span><span class="o">=</span><span class="n">CONN_RETRY_DELAY_SECONDS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;To be called in exception context only.</span>
+
+<span class="sd">        msg - message to log</span>
+<span class="sd">        level - logging level. If not specified, ERROR unless it is a repeated failure in which case DEBUG. If</span>
+<span class="sd">        specified, the given level will always be used.</span>
+<span class="sd">        wait_seconds - how long to pause for (so retry is not triggered immediately)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span> <span class="k">if</span> <span class="n">level</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">level</span><span class="p">),</span>
+            <span class="n">msg</span><span class="p">,</span>
+            <span class="n">exc_info</span><span class="o">=</span><span class="n">DEBUG_ENABLED</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="n">exc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__end</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_seconds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__send_exc_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_if_exc_set</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear send exception and time. If exception was previously was set, optionally log log_if_exc_set at INFO</span>
+<span class="sd">        level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">log_if_exc_set</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_if_exc_set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
   </div>
@@ -2100,14 +2136,14 @@ table {
 
     
   
-    <div class="desc"><p>timeout indicates amount of time to wait for receiving thread to be ready. set to larger
-than zero to wait (in seconds, fractional) or None to block.</p></div>
+    <div class="desc"><p>timeout indicates amount of time to wait for sending thread to be ready. set to larger than zero to wait
+(in seconds, fractional) or None to block.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.AmqpLink.AmqpLink.send', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.AmqpLink.AmqpLink.send" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/ubjson&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for receiving thread to be ready. set to larger</span>
-<span class="sd">    than zero to wait (in seconds, fractional) or None to block.</span>
+    <span class="sd">&quot;&quot;&quot;timeout indicates amount of time to wait for sending thread to be ready. set to larger than zero to wait</span>
+<span class="sd">    (in seconds, fractional) or None to block.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_ready</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2156,9 +2192,8 @@ than zero to wait (in seconds, fractional) or None to block.</p></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">__recv_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__socket_timeout</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">ignore_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__startup_ignore_exc</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_time</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_exc_clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__recv_exc_clear</span><span class="p">()</span>
         <span class="c1"># start &amp; await send thread success (unless timeout reached or an exception has occured)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__send_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__send_run</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;amqplink_send&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__send_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>

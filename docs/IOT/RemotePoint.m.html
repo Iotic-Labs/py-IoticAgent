@@ -1132,6 +1132,7 @@ table {
 <span class="kn">from</span> <span class="nn">IoticAgent.Core.compat</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">monotonic</span>
 
 <span class="kn">from</span> <span class="nn">.Point</span> <span class="kn">import</span> <span class="n">PointDataObject</span>
+<span class="kn">from</span> <span class="nn">.Exceptions</span> <span class="kn">import</span> <span class="n">IOTSyncTimeout</span>
 
 
 <span class="k">class</span> <span class="nc">RemotePoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1321,7 +1322,11 @@ table {
 <span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="c1"># No point in waiting longer than supplied timeout (as opposed to waiting for sync timeout)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">IOTSyncTimeout</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;timeout&#39;</span>
         <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">tell_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1446,7 +1451,11 @@ request</p>
 <span class="sd">        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+        <span class="c1"># No point in waiting longer than supplied timeout (as opposed to waiting for sync timeout)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">IOTSyncTimeout</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;timeout&#39;</span>
         <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">tell_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1652,7 +1661,11 @@ if there is a communications problem between you and the infrastructure</p>
 <span class="sd">    [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell_async</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="n">mime</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+    <span class="c1"># No point in waiting longer than supplied timeout (as opposed to waiting for sync timeout)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_wait_and_except_if_failed</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">IOTSyncTimeout</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;timeout&#39;</span>
     <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">evt</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">]</span>
 </pre></div>
 

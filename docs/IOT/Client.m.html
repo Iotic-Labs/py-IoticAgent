@@ -1182,7 +1182,7 @@ table {
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.8&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.9&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1789,9 +1789,11 @@ table {
         <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">:</span> <span class="n">IOTUnknown</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`.&quot;&quot;&quot;</span>
-        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`. If timeout is not specified the configured</span>
+<span class="sd">        sync_timeout is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
@@ -2555,7 +2557,7 @@ table {
     <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods, too-many-lines</span>
 
     <span class="c1"># Core version targeted by IOT client</span>
-    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.8&#39;</span>
+    <span class="n">__core_version</span> <span class="o">=</span> <span class="s1">&#39;0.6.9&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3162,9 +3164,11 @@ table {
         <span class="n">E_FAILED_CODE_UNKNOWN</span><span class="p">:</span> <span class="n">IOTUnknown</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`.&quot;&quot;&quot;</span>
-        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_wait_and_except_if_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines waiting for event and call to `_except_if_failed`. If timeout is not specified the configured</span>
+<span class="sd">        sync_timeout is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sync_timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_except_if_failed</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>

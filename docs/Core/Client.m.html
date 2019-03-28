@@ -1201,7 +1201,7 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.Core.Client', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.Core.Client" class="source">
-    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -1327,7 +1327,7 @@ table {
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># QAPI version targeted by Core client</span>
-    <span class="n">__qapi_version</span> <span class="o">=</span> <span class="s1">&#39;1.2.0&#39;</span>
+    <span class="n">__qapi_version</span> <span class="o">=</span> <span class="s1">&#39;1.2.1&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">vhost</span><span class="p">,</span> <span class="n">epId</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=too-many-locals</span>
                  <span class="n">sslca</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">network_retry_timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">socket_timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">send_queue_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -1615,7 +1615,7 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_FEED</span><span class="p">][</span><span class="n">feedid</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Feed Data for Point GUID &#39;</span><span class="si">%s</span><span class="s2">&#39; but no callback registered.&quot;</span><span class="p">,</span> <span class="n">feedid</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received Feed Data for Point GUID &#39;</span><span class="si">%s</span><span class="s2">&#39; but no callback registered.&quot;</span><span class="p">,</span> <span class="n">feedid</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
@@ -1634,8 +1634,10 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_CONTROL</span><span class="p">][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">]][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
-                               <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span>
+                    <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
@@ -1783,7 +1785,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
         <span class="k">if</span> <span class="n">end</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Request made whilst client not running&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopped&#39;</span><span class="p">)</span>
 
         <span class="n">rng</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -1798,7 +1800,7 @@ table {
             <span class="bp">self</span><span class="o">.</span><span class="n">__requests</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">RequestEvent</span><span class="p">(</span><span class="n">requestId</span><span class="p">,</span> <span class="n">inner_msg</span><span class="p">,</span> <span class="n">is_crud</span><span class="o">=</span><span class="n">is_crud</span><span class="p">)</span>
         <span class="c1">#</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__retry_enqueue</span><span class="p">(</span><span class="n">PreparedMessage</span><span class="p">(</span><span class="n">inner_msg</span><span class="p">,</span> <span class="n">requestId</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopped&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopping&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="c1"># don&#39;t block shutdown on full send queue. returns True if did enqueue, False if shutting down</span>
@@ -3233,7 +3235,7 @@ table {
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># QAPI version targeted by Core client</span>
-    <span class="n">__qapi_version</span> <span class="o">=</span> <span class="s1">&#39;1.2.0&#39;</span>
+    <span class="n">__qapi_version</span> <span class="o">=</span> <span class="s1">&#39;1.2.1&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">vhost</span><span class="p">,</span> <span class="n">epId</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=too-many-locals</span>
                  <span class="n">sslca</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">network_retry_timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">socket_timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">auto_encode_decode</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">send_queue_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -3521,7 +3523,7 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_FEED</span><span class="p">][</span><span class="n">feedid</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Feed Data for Point GUID &#39;</span><span class="si">%s</span><span class="s2">&#39; but no callback registered.&quot;</span><span class="p">,</span> <span class="n">feedid</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received Feed Data for Point GUID &#39;</span><span class="si">%s</span><span class="s2">&#39; but no callback registered.&quot;</span><span class="p">,</span> <span class="n">feedid</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
@@ -3540,8 +3542,10 @@ table {
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__callbacks</span><span class="p">[</span><span class="n">_CB_CONTROL</span><span class="p">][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">]][</span><span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">have_general</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span>
-                               <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">])</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Received Control Request for </span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2"> but no callback registered.&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">[</span><span class="n">P_ENTITY_LID</span><span class="p">],</span>
+                    <span class="n">payload</span><span class="p">[</span><span class="n">P_LID</span><span class="p">]</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__threadpool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
 
@@ -3689,7 +3693,7 @@ table {
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
         <span class="k">if</span> <span class="n">end</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Request made whilst client not running&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopped&#39;</span><span class="p">)</span>
 
         <span class="n">rng</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -3704,7 +3708,7 @@ table {
             <span class="bp">self</span><span class="o">.</span><span class="n">__requests</span><span class="p">[</span><span class="n">requestId</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">RequestEvent</span><span class="p">(</span><span class="n">requestId</span><span class="p">,</span> <span class="n">inner_msg</span><span class="p">,</span> <span class="n">is_crud</span><span class="o">=</span><span class="n">is_crud</span><span class="p">)</span>
         <span class="c1">#</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__retry_enqueue</span><span class="p">(</span><span class="n">PreparedMessage</span><span class="p">(</span><span class="n">inner_msg</span><span class="p">,</span> <span class="n">requestId</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopped&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LinkShutdownException</span><span class="p">(</span><span class="s1">&#39;Client stopping&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="c1"># don&#39;t block shutdown on full send queue. returns True if did enqueue, False if shutting down</span>

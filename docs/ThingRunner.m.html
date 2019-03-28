@@ -1109,7 +1109,7 @@ table {
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.ThingRunner" class="source">
-    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2016 Iotic Labs Ltd. All rights reserved.</span>
+    <div class="codehilite"><pre><span></span><span class="c1"># Copyright (c) 2019 Iotic Labs Ltd. All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -1214,8 +1214,8 @@ table {
                 <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">True</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sleeping before retry&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__retry_timeout</span><span class="p">)</span>
-                    <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__retry_timeout</span><span class="p">):</span>
+                        <span class="k">continue</span>
 
             <span class="c1"># Normal run finished</span>
             <span class="k">break</span>
@@ -1261,14 +1261,18 @@ table {
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
-<span class="sd">        `run()` was not called with background=True set.&quot;&quot;&quot;</span>
+<span class="sd">        `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stopped</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping bgthread&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;bgthread did not finish within timeout&#39;</span><span class="p">)</span>
+                <span class="n">stopped</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">stopped</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1571,20 +1575,24 @@ not be passed to this method (but will result in this method being called).</p><
     
   
     <div class="desc"><p>Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
-<code>run()</code> was not called with background=True set.</p></div>
+<code>run()</code> was not called with background=True set. Returns True if successfully stopped (or already not running).</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.RetryingThingRunner.stop', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.ThingRunner.RetryingThingRunner.stop" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
-<span class="sd">    `run()` was not called with background=True set.&quot;&quot;&quot;</span>
+<span class="sd">    `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stopped</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping bgthread&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;bgthread did not finish within timeout&#39;</span><span class="p">)</span>
+            <span class="n">stopped</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">stopped</span>
 </pre></div>
 
   </div>
@@ -1817,8 +1825,8 @@ run cycle.</p></div>
                 <span class="n">exc_occurred</span> <span class="o">=</span> <span class="bp">True</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_exception</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sleeping before retry&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__retry_timeout</span><span class="p">)</span>
-                    <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__retry_timeout</span><span class="p">):</span>
+                        <span class="k">continue</span>
 
             <span class="c1"># Normal run finished</span>
             <span class="k">break</span>
@@ -1864,14 +1872,18 @@ run cycle.</p></div>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
-<span class="sd">        `run()` was not called with background=True set.&quot;&quot;&quot;</span>
+<span class="sd">        `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stopped</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping bgthread&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;bgthread did not finish within timeout&#39;</span><span class="p">)</span>
+                <span class="n">stopped</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">stopped</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2118,20 +2130,24 @@ not be passed to this method (but will result in this method being called).</p><
     
   
     <div class="desc"><p>Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
-<code>run()</code> was not called with background=True set.</p></div>
+<code>run()</code> was not called with background=True set. Returns True if successfully stopped (or already not running).</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-IoticAgent.ThingRunner.ThingRunner.stop', this);">Show source &equiv;</a></p>
   <div id="source-IoticAgent.ThingRunner.ThingRunner.stop" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if</span>
-<span class="sd">    `run()` was not called with background=True set.&quot;&quot;&quot;</span>
+<span class="sd">    `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stopped</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">__shutdown</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping bgthread&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;bgthread did not finish within timeout&#39;</span><span class="p">)</span>
+            <span class="n">stopped</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bgthread</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">stopped</span>
 </pre></div>
 
   </div>
