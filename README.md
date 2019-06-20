@@ -28,7 +28,7 @@ This agent requires Python 3.2+ or 2.7.5+ (with ssl module capable of TLS v1.2).
 
 ## Security
 
-Our PyPI releases are signed with the [Iotic Labs software release signing key](https://iotic-labs.com/iotic-labs.com.asc)
+Our PyPI releases are signed with the [Iotic Labs software release signing key](https://developer.iotic-labs.com/iotic-labs.com.asc)
 
 # Installing
 
