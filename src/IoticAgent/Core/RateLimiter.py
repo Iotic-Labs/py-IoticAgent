@@ -53,8 +53,11 @@ class RateLimiter(object):
 
     def throttle(self):
         """Uses time.monotonic() (or time.sleep() if not available) to limit to the desired rate. Should be called once
-        per iteration of action which is to be throttled. Returns None unless a custom wait_cmd was specified in the
-        constructor in which case its return value is used if a wait was required.
+        per iteration of action which is to be throttled.
+
+        Returns:
+            None unless a custom wait_cmd was specified in the constructor in which case its return value is used if a
+            wait was required.
         """
         iterations = self.__iterations
         timestamp = monotonic()

@@ -11,12 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Wrapper object for Iotic Points.
+"""
+Wrapper object for Iotic Points.
+
 Points are come in two types:
 
-`Feed`s where they output data from a Thing
-
-`Control`s where they are a way of sending data to a Thing
+* Feed's where they output data from a Thing
+* Control's where they are a way of sending data to a Thing
 """
 from __future__ import unicode_literals
 
@@ -39,7 +40,8 @@ class Point(Resource):
     # overridden by subclasses (e.g. R_FEED)
     _type = None
 
-    """Point class. A base class for feed or control.
+    """
+    Point class. A base class for feed or control.
     """
     def __init__(self, client, lid, pid, guid):
         if self._type not in _POINT_TYPES:
@@ -66,33 +68,36 @@ class Point(Resource):
 
     @property
     def lid(self):
-        """The local id of the Thing that advertises this Point.  This is unique to you on this container.
+        """
+        The local id of the Thing that advertises this Point.  This is unique to you on this container.
         """
         return self.__lid
 
     @property
     def pid(self):
-        """Point id - the local id of this Point.  This is unique to you on this container.
+        """
+        Point id - the local id of this Point.  This is unique to you on this container.
         Think of it as a nickname for the Point
         """
         return self.__pid
 
     @property
     def foc(self):
-        """Whether this Point is a feed or control.  String of either `"feed"` or `"control"`
+        """
+        Whether this Point is a feed or control.  String of either `"feed"` or `"control"`
         """
         return foc_to_str(self._type)
 
     def rename(self, new_pid):
-        """Rename the Point.
+        """
+        Rename the Point.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `new_pid` (required) (string) the new local identifier of your Point
+        Args:
+            new_pid (string): The new local identifier of your Point
         """
         logger.info("rename(new_pid=\"%s\") [lid=%s, pid=%s]", new_pid, self.__lid, self.__pid)
         evt = self._client._request_point_rename(self._type, self.__lid, self.__pid, new_pid)
@@ -100,19 +105,19 @@ class Point(Resource):
         self.__pid = new_pid
 
     def list(self, limit=50, offset=0):
-        """List `all` the values on this Point.
+        """
+        List `all` the values on this Point.
 
-        Returns QAPI list function payload
+        Returns:
+            QAPI list function payload
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `limit` (optional) (integer) Return this many value details
-
-        `offset` (optional) (integer) Return value details starting at this offset
+        Args:
+            limit (integer, optional): Return this many value details
+            offset (integer, optional): Return value details starting at this offset
         """
         logger.info("list(limit=%s, offset=%s) [lid=%s,pid=%s]", limit, offset, self.__lid, self.__pid)
         evt = self._client._request_point_value_list(self.__lid, self.__pid, self._type, limit=limit, offset=offset)
@@ -121,25 +126,26 @@ class Point(Resource):
         return evt.payload['values']
 
     def list_followers(self):
-        """list followers for this point, i.e. remote follows for feeds and remote attaches for controls.
+        """
+        List followers for this point, i.e. remote follows for feeds and remote attaches for controls.
 
-        Returns QAPI subscription list function payload
+        Returns:
+            QAPI subscription list function payload
 
-            #!python
+        ::
+
             {
                 "<Subscription GUID 1>": "<GUID of follower1>",
                 "<Subscription GUID 2>": "<GUID of follower2>"
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-         `limit` (optional) (integer) Return this many value details
-
-        `offset` (optional) (integer) Return value details starting at this offset
+        Args:
+            limit (integer, optional): Return this many value details
+            offset (integer, optional): Return value details starting at this offset
         """
         evt = self._client._request_point_list_detailed(self._type, self.__lid, self.__pid)
 
@@ -147,35 +153,39 @@ class Point(Resource):
         return evt.payload['subs']
 
     def get_meta(self):
-        """Get the metadata object for this Point
+        """
+        Get the metadata object for this Point
 
-        Returns a [PointMeta](PointMeta.m.html#IoticAgent.IOT.PointMeta.PointMeta) object - OR -
+        Returns:
+            A :doc:`IoticAgent.IOT.PointMeta` PointMeta object
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        **OR**
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
         """
         rdf = self.get_meta_rdf(fmt='n3')
         return PointMeta(self, rdf, self._client.default_lang, fmt='n3')
 
     def get_meta_rdf(self, fmt='n3'):
-        """Get the metadata for this Point in rdf fmt
+        """
+        Get the metadata for this Point in rdf fmt
 
         Advanced users who want to manipulate the RDF for this Point directly without the
-        [PointMeta](PointMeta.m.html#IoticAgent.IOT.PointMeta.PointMeta) helper object
+        :doc:`IoticAgent.IOT.PointMeta` PointMeta)helper object
 
-        Returns the RDF in the format you specify. - OR -
+        Returns:
+            The RDF in the format you specify.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        **OR**
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `fmt` (optional) (string) The format of RDF you want returned.
-        Valid formats are: "xml", "n3", "turtle"
+        Args:
+            fmt (string, optional): The format of RDF you want returned. Valid formats are: "xml", "n3", "turtle"
         """
         evt = self._client._request_point_meta_get(self._type, self.__lid, self.__pid, fmt=fmt)
 
@@ -183,23 +193,23 @@ class Point(Resource):
         return evt.payload['meta']
 
     def set_meta_rdf(self, rdf, fmt='n3'):
-        """Set the metadata for this Point in rdf fmt
+        """
+        Set the metadata for this Point in rdf fmt
         """
         evt = self._client._request_point_meta_set(self._type, self.__lid, self.__pid, rdf, fmt=fmt)
         self._client._wait_and_except_if_failed(evt)
 
     def create_tag(self, tags):
-        """Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
+        """
+        Create tags for a Point in the language you specify. Tags can only contain alphanumeric (unicode) characters
         and the underscore. Tags will be stored lower-cased.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        tags (mandatory) (list) - the list of tags you want to add to your Point, e.g.
-        ["garden", "soil"]
+        Args:
+            tags (list): The list of tags you want to add to your Point, e.g. ["garden", "soil"]
         """
         if isinstance(tags, str):
             tags = [tags]
@@ -208,17 +218,16 @@ class Point(Resource):
         self._client._wait_and_except_if_failed(evt)
 
     def delete_tag(self, tags):
-        """Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
+        """
+        Delete tags for a Point in the language you specify. Case will be ignored and any tags matching lower-cased
         will be deleted.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `tags` (mandatory) (list) - the list of tags you want to delete from your Point, e.g.
-        ["garden", "soil"]
+        Args:
+            tags (list): The list of tags you want to delete from your Point, e.g. ["garden", "soil"]
         """
         if isinstance(tags, str):
             tags = [tags]
@@ -227,11 +236,14 @@ class Point(Resource):
         self._client._wait_and_except_if_failed(evt)
 
     def list_tag(self, limit=50, offset=0):
-        """List `all` the tags for this Point
+        """
+        List `all` the tags for this Point
 
-        Returns list of tags, as below
+        Returns:
+            List of tags, as below
 
-            #!python
+        ::
+
             [
                 "mytag1",
                 "mytag2"
@@ -239,17 +251,15 @@ class Point(Resource):
                 "nochein_name"
             ]
 
-        - OR...
+        **OR**
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `limit` (optional) (integer) Return at most this many tags
-
-        `offset` (optional) (integer) Return tags starting at this offset
+        Args:
+            limit (integer, optional): Return at most this many tags
+            offset (integer, optional): Return tags starting at this offset
         """
         evt = self._client._request_point_tag_list(self._type, self.__lid, self.__pid, limit=limit, offset=offset)
 
@@ -257,41 +267,36 @@ class Point(Resource):
         return evt.payload['tags']
 
     def create_value(self, label, vtype, lang=None, description=None, unit=None):
-        """Create a value on this Point.  Values are descriptions in semantic metadata of the individual data items
+        """
+        Create a value on this Point.  Values are descriptions in semantic metadata of the individual data items
         you are sharing (or expecting to receive, if this Point is a control).  This will help others to search for
         your feed or control. If a value with the given label (and language) already exists, its fields are updated
         with the provided ones (or unset, if None).
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Args:
+            label (string): The label for this value e.g. "Temperature".  The label must be unique for this
+                Point.  E.g. You can't have two data values called "Volts" but you can have "volts1" and "volts2".
+            lang (string, optional): The two-character ISO 639-1 language code to use for the description. None means
+                use the default language for your agent. See :doc:`IoticAgent.IOT.Config`
+            vtype (xsd:datatype): The datatype of the data you are describing, e.g. dateTime. We recommend
+                you use a Iotic Labs-defined constant from :doc:`IoticAgent.Datatypes`
+            description (string, optional): The longer descriptive text for this value.
+            unit (ontology url, optional): The url of the ontological description of the unit of your value. We
+                recommend you use a constant from :doc:`IoticAgent.Units`
 
-        `label` (mandatory) (string) the label for this value e.g. "Temperature".  The label must be unique for this
-        Point.  E.g. You can't have two data values called "Volts" but you can have "volts1" and "volts2".
+        ::
 
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for the description. None means use
-        the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
-
-        `vtype` (mandatory) (xsd:datatype) the datatype of the data you are describing, e.g. dateTime
-        We recommend you use a Iotic Labs-defined constant from
-        [Datatypes](../Datatypes.m.html#IoticAgent.Datatypes.Datatypes) such as:
-        [DECIMAL](../Datatypes.m.html#IoticAgent.Datatypes.DECIMAL)
-
-        `description` (optional) (string) The longer descriptive text for this value.
-
-        `unit` (optional) (ontology url) The url of the ontological description of the unit of your value
-        We recommend you use a constant from  [Units](../Units.m.html#IoticAgent.Units.Units), such as:
-        [CELSIUS](../Units.m.html#IoticAgent.Units.Units.CELSIUS)
-
-            #!python
             # example with no units as time is unit-less
             my_feed.create_value("timestamp",
                                  Datatypes.DATETIME,
                                  "en",
                                  "time of reading")
+
+        ::
 
             # example with a unit from the Units class
             my_feed.create_value("temperature",
@@ -305,50 +310,55 @@ class Point(Resource):
         self._client._wait_and_except_if_failed(evt)
 
     def delete_value(self, label=None):
-        """Delete the labelled value (or all values) on this Point
+        """
+        Delete the labelled value (or all values) on this Point
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `label` (optional) (string) the label for the value you want to delete. If not specified, all values for this
-        point will be removed.
+        Args:
+            label (string, optional): The label for the value you want to delete. If not specified, all values for this
+                point will be removed.
         """
         evt = self._client._request_point_value_delete(self.__lid, self.__pid, self._type, label=label)
         self._client._wait_and_except_if_failed(evt)
 
 
 class Feed(Point):
-    """`Feeds` are advertised when a Thing has data to share.  They are for out-going data which will get shared with
+    """
+    `Feeds` are advertised when a Thing has data to share.  They are for out-going data which will get shared with
     any remote Things that have followed them.  Feeds are one-to-many.
     """
     _type = R_FEED
 
     def get_template(self):
-        """Get new [PointDataObject](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObject) instance
-        to use for sharing data."""
+        """
+        Get new :doc:`IoticAgent.IOT.PointValueHelper` PointDataObject instance to use for sharing data.
+        """
         return self._client._get_point_data_handler_for(self).get_template()
 
     def share(self, data, mime=None, time=None):
-        """Share some data from this Feed
+        """
+        Share some data from this Feed
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Args:
+            data: The data you want to share
+            time (datetime): UTC time for this share. If not specified, the container's time will be used.
+                Thus it makes almost no sense to specify `datetime.utcnow()` here. This parameter can be used to
+                indicate that the share time does not correspond to the time to which the data applies, e.g. to populate
+                recent storage with historical data.
+            mime (string): The mime type of the data you're sharing.  There are some Iotic Labs-defined default values.
 
-        `data` (mandatory) (as applicable) The data you want to share
+        `"idx/1"` corresponds to "application/ubjson" - the recommended way to send mixed data. Share a python
+        dictionary as the data and the agent will to the encoding and decoding for you.
 
-        `mime` (optional) (string) The mime type of the data you're sharing.  There are some
-        Iotic Labs-defined default values:
+        ::
 
-        `"idx/1"` - Corresponds to "application/ubjson" - the recommended way to send mixed data.
-        Share a python dictionary as the data and the agent will to the encoding and decoding for you.
-
-            #!python
             data = {}
             data["temperature"] = self._convert_to_celsius(ADC.read(1))
             # ...etc...
@@ -357,19 +367,16 @@ class Feed(Point):
         `"idx/2"` Corresponds to "text/plain" - the recommended way to send textual data.
         Share a utf8 string as data and the agent will pass it on, unchanged.
 
-            #!python
+        ::
+
             my_feed.share(u"string data")
 
         `"text/xml"` or any other valid mime type.  To show the recipients that
          you're sending something more than just bytes
 
-            #!python
-            my_feed.share("<xml>...</xml>".encode('utf8'), mime="text/xml")
+        ::
 
-        `time` (optional) (datetime) UTC time for this share. If not specified, the container's time will be used. Thus
-        it makes almost no sense to specify `datetime.utcnow()` here. This parameter can be used to indicate that the
-        share time does not correspond to the time to which the data applies, e.g. to populate recent storgage with
-        historical data.
+            my_feed.share("<xml>...</xml>".encode('utf8'), mime="text/xml")
         """
         evt = self.share_async(data, mime=mime, time=time)
         self._client._wait_and_except_if_failed(evt)
@@ -381,21 +388,22 @@ class Feed(Point):
         return self._client._request_point_share(self.lid, self.pid, data, mime, time)
 
     def get_recent_info(self):
-        """Retrieves statistics and configuration about recent storage for this Feed.
+        """
+        Retrieves statistics and configuration about recent storage for this Feed.
 
-        Returns QAPI recent info function payload
+        Returns:
+            QAPI recent info function payload
 
-            #!python
+        ::
+
             {
                 "maxSamples": 0,
                 "count": 0
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
-
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
         """
         evt = self._client._request_point_recent_info(self._type, self.lid, self.pid)
 
@@ -403,25 +411,27 @@ class Feed(Point):
         return evt.payload['recent']
 
     def set_recent_config(self, max_samples=0):
-        """Update/configure recent data settings for this Feed. If the container does not support recent storage or it
+        """
+        Update/configure recent data settings for this Feed. If the container does not support recent storage or it
         is not enabled for this owner, this function will have no effect.
 
-        `max_samples` (optional) (int) how many shares to store for later retrieval. If not supported by container, this
-        argument will be ignored. A value of zero disables this feature whilst a negative value requests the maximum
-        sample store amount.
+        Args:
+            max_samples (int, optional): How many shares to store for later retrieval. If not supported by container,
+                this argument will be ignored. A value of zero disables this feature whilst a negative value requests
+                the maximum sample store amount.
 
-        Returns QAPI recent config function payload
+        Returns:
+            QAPI recent config function payload
 
-            #!python
+        ::
+
             {
                 "maxSamples": 0
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
-
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
         """
         evt = self._client._request_point_recent_config(self._type, self.lid, self.pid, max_samples)
 
@@ -430,7 +440,8 @@ class Feed(Point):
 
 
 class Control(Point):
-    """`Controls` are where a Thing invites others to send it data.  Controls can be used to activate some hardware,
+    """
+    `Controls` are where a Thing invites others to send it data.  Controls can be used to activate some hardware,
     reset counters, change reporting intervals - pretty much anything you want to change the state of a Thing.
     Controls are many-to-one.
     """
@@ -439,13 +450,14 @@ class Control(Point):
 
 
 class PointDataObject(object):
-    """Represents a point data reading or template for filling in values, ready to be e.g. shared. NOT threadsafe."""
+    """
+    Represents a point data reading or template for filling in values, ready to be e.g. shared. NOT threadsafe.
+    """
 
     __slots__ = tuple(private_names_for('PointDataObject', ('__values', '__filter')))
 
     def __init__(self, values, value_filter):
-        """Instantiated by
-        [PointDataObjectHandler](./PointValueHelper.m.html#IoticAgent.IOT.PointValueHelper.PointDataObjectHandler)"""
+        """Instantiated by :doc:IoticAgent.IOT.`PointValueHelper` PointDataObjectHandler"""
         self.__values = _PointValueWrapper(values)
         self.__filter = value_filter
 
@@ -465,7 +477,9 @@ class PointDataObject(object):
 
     @property
     def empty(self):
-        """Returns True if no values have been set yet."""
+        """
+        Returns:
+            True if no values have been set yet."""
         return all(value.unset for value in self.__values)
 
     @property
@@ -474,9 +488,11 @@ class PointDataObject(object):
         return [value for value in self.__values if value.unset]
 
     def filter_by(self, text=(), types=(), units=(), include_unset=False):
-        """Return subset of values which match the given text, types and/or units. For a value to be matched, at least
+        """
+        Return subset of values which match the given text, types and/or units. For a value to be matched, at least
         one item from each specified filter category has to apply to a value. Each of the categories must be specified
-        as a sequence of strings. If `include_unset` is set, unset values will also be considered."""
+        as a sequence of strings. If `include_unset` is set, unset values will also be considered.
+        """
         if not (isinstance(text, Sequence) and all(isinstance(phrase, string_types) for phrase in text)):
             raise TypeError('text should be sequence of strings')
         values = ([self.__values[name] for name in self.__filter.filter_by(types=types, units=units)

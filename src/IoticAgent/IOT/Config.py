@@ -102,7 +102,9 @@ class Config(object):
                 'socket_timeout': 10,
                 'auto_encode_decode': 1,
                 'queue_size': 128,
-                'throttle': '480/30,1680/300'
+                'throttle': '480/30,1680/300',
+                'conn_retry_delay': 5,
+                'conn_error_log_threshold': 180
             },
             'logging': {
                 'amqp': 'warning',
@@ -175,9 +177,9 @@ class Config(object):
 
         `Returns` The current value of the setting `val` or the default, or `None` if not found
 
-        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+        `section` (string) the section name in the config E.g. `"agent"`
 
-        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+        `val` (string) the section name in the config E.g. `"host"`
         """
         val = val.lower()
         if section in self.__config:
@@ -193,11 +195,11 @@ class Config(object):
     def set(self, section, val, data):
         """Add a setting to the config
 
-        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+        `section` (string) the section name in the config E.g. `"agent"`
 
-        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+        `val` (string) the section name in the config E.g. `"host"`
 
-        `data` (mandatory) (as appropriate) the new value for the `val`
+        `data` the new value for the `val`
         """
         val = val.lower()
         if section in self.__config:
@@ -208,11 +210,11 @@ class Config(object):
         """Add a setting to the config, but if same as default or None then no action.
         This saves the .save writing the defaults
 
-        `section` (mandatory) (string) the section name in the config E.g. `"agent"`
+        `section` (string) the section name in the config E.g. `"agent"`
 
-        `val` (mandatory) (string) the section name in the config E.g. `"host"`
+        `val` (string) the section name in the config E.g. `"host"`
 
-        `data` (mandatory) (as appropriate) the new value for the `val`
+        `data` the new value for the `val`
         """
         k = self.get(section, val)
         # logger.debug('update %s %s from: %s to: %s', section, val, k, data)

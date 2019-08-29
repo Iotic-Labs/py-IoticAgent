@@ -30,15 +30,22 @@ from .compat import Lock
 
 class ThreadSafeDict(dict):
 
-    """ThreadSafeDict: Simple locking dict.
+    """
+    ThreadSafeDict: Simple locking dict.
 
     Create a dict in a familiar way.
-    d = ThreadSafeDict({'a': 1, 'b': 2})
+
+    ::
+
+        d = ThreadSafeDict({'a': 1, 'b': 2})
 
     Lock the dict using with.
-    with d:
-        d['c'] = 3
-        del d['b']
+
+    ::
+
+        with d:
+            d['c'] = 3
+            del d['b']
     """
 
     def __init__(self, * p_arg, ** n_arg):

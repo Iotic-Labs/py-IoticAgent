@@ -70,8 +70,11 @@ class Value(object):
 
     @property
     def value(self):
-        """Data for this value. Returns None if it hasn't been set. To distinguish between None and
-        and unset, check the `unset` property."""
+        """Data for this value.
+
+        Returns:
+            None if it hasn't been set. To distinguish between None and and unset, check the `unset` property.
+        """
         return self.__value
 
     @value.setter
@@ -155,9 +158,8 @@ class PointDataObjectHandler(object):
         self.__filter = None
 
     def get_template(self, data=None):  # noqa (complexity)
-        """Get new template which represents the values of this point in a
-        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject). If data is set (to a dictionary), use
-        this to populate the created template."""
+        """Get new template which represents the values of this point in a PointDataObject from the
+        :doc:`IoticAgent.IOT.Point`. If data is set (to a dictionary), use this to populate the created template."""
         with self.__lock:
             if self.__value_templates is None and self.__last_parse_ok:
                 try:

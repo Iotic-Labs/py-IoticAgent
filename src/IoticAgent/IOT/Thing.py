@@ -42,7 +42,7 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
     def __init__(self, client, lid, guid, epId):
         super(Thing, self).__init__(client, guid)
         self.__lid = Validation.lid_check_convert(lid)
-        self.__epId = Validation.guid_check_convert(epId)
+        self.__epId = Validation.guid_check_convert(epId, allow_none=True)
         # Keep track of newly created points & subs (the requests for which originated from current agent)
         self.__new_feeds = ThreadSafeDict()
         self.__new_controls = ThreadSafeDict()
@@ -64,23 +64,24 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
 
     @property
     def lid(self):
-        """The local id of this Thing.  This is unique to you on this container.
-        Think of it as a nickname for the Thing
+        """
+        The local id of this Thing. This is unique to you on this container. Think of it as a nickname for the Thing
         """
         return self.__lid
 
     @property
     def agent_id(self):
-        """Agent id (aka epId) with which this Thing is associated. None indicates this Thing is not assigned to any
+        """
+        Agent id (aka epId) with which this Thing is associated. None indicates this Thing is not assigned to any
         agent. The following actions can only be performed with a Thing if operating in its associated agent:
 
-        - Receive feed data from feeds the Thing is following
-        - Share feed data for feeds this Thing owns
-        - Receive control requests for controls the Thing owns
-        - Perform ask/tell on a control this Thing is attached to
+        * Receive feed data from feeds the Thing is following
+        * Share feed data for feeds this Thing owns
+        * Receive control requests for controls the Thing owns
+        * Perform ask/tell on a control this Thing is attached to
 
         Attempting to perform the above actions from another agent will result in either a local (e.g. ValueError) or
-        remote ([IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)) exception to be raised.
+        remote exception to be raised(:doc:`IoticAgent.IOT.Exceptions`).
         """
         return self.__epId
 
@@ -91,71 +92,73 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return evt.payload
 
     def list_feeds(self, limit=500, offset=0):
-        """List `all` the feeds on this Thing.
+        """
+        List `all` the feeds on this Thing.
 
-        Returns QAPI list function payload
+        Returns:
+            QAPI list function payload
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `limit` (optional) (integer) Return this many Point details
-
-        `offset` (optional) (integer) Return Point details starting at this offset
+        Args:
+            limit (integer, optional): Return this many Point details
+            offset (integer, optional): Return Point details starting at this offset
         """
         return self.__list(R_FEED, limit=limit, offset=offset)['feeds']
 
     def list_controls(self, limit=500, offset=0):
-        """List `all` the controls on this Thing.
+        """
+        List `all` the controls on this Thing.
 
-        Returns QAPI list function payload
+        Returns:
+            QAPI list function payload
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `limit` (optional) (integer) Return this many Point details
-
-        `offset` (optional) (integer) Return Point details starting at this offset
+        Args:
+            limit (integer, optional): Return this many Point details
+            offset (integer, optional): Return Point details starting at this offset
         """
         return self.__list(R_CONTROL, limit=limit, offset=offset)['controls']
 
     def set_public(self, public=True):
-        """Sets your Thing to be public to all.  If `public=True`.
+        """
+        Sets your Thing to be public to all if `public=True`.
         This means the tags, label and description of your Thing are now searchable by anybody, along with its
         location and the units of any values on any Points.
+
         If `public=False` the metadata of your Thing is no longer searchable.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `public` (optional) (boolean) Whether (or not) to allow your Thing's metadata
-        to be searched by anybody
+        Args:
+            public (boolean, optional): Whether (or not) to allow your Thing's metadata to be searched by anybody
         """
         logger.info("set_public(public=%s) [lid=%s]", public, self.__lid)
         evt = self._client._request_entity_meta_setpublic(self.__lid, public)
         self._client._wait_and_except_if_failed(evt)
 
     def rename(self, new_lid):
-        """Rename the Thing.
+        """
+        Rename the Thing.
 
-        `ADVANCED USERS ONLY`  This can be confusing.  You are changing the local id of a Thing to `new_lid`.  If you
-        create another Thing using the "old_lid", the system will oblige, but it will be a completely _new_ Thing.
+        **Advanced users only**
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        This can be confusing. You are changing the local id of a Thing to `new_lid`. If you create another Thing using
+        the "old_lid", the system will oblige, but it will be a completely **new** Thing.
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `new_lid` (required) (string) the new local identifier of your Thing
+        Args:
+            new_lid (string): The new local identifier of your Thing
         """
         logger.info("rename(new_lid=\"%s\") [lid=%s]", new_lid, self.__lid)
         evt = self._client._request_entity_rename(self.__lid, new_lid)
@@ -164,36 +167,37 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         self._client._notify_thing_lid_change(self.__lid, new_lid)
 
     def reassign(self, new_epid):
-        """Reassign the Thing from one agent to another.
+        """
+        Reassign the Thing from one agent to another.
 
-        `ADVANCED USERS ONLY`  This will lead to any local instances of a Thing being rendered useless.
-        They won't be able to receive control requests, feed data or to share any feeds as they won't be in this agent.
+        **Advanced users only**
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        This will lead to any local instances of a Thing being rendered useless. They won't be able to receive control
+        requests, feed data or to share any feeds as they won't be in this agent.
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `new_epid` (required) (string) the new agent id to which your Thing should be assigned. If None,
-        current agent will be chosen. If False, existing agent will be unassigned.
+        Args:
+            new_epid (string): The new agent id to which your Thing should be assigned. If None, current
+                agent will be chosen. If False, existing agent will be unassigned.
         """
         logger.info("reassign(new_epid=\"%s\") [lid=%s]", new_epid, self.__lid)
         evt = self._client._request_entity_reassign(self.__lid, new_epid)
         self._client._wait_and_except_if_failed(evt)
 
     def create_tag(self, tags):
-        """Create tags for a Thing in the language you specify. Tags can only contain alphanumeric (unicode) characters
+        """
+        Create tags for a Thing in the language you specify. Tags can only contain alphanumeric (unicode) characters
         and the underscore. Tags will be stored lower-cased.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `tags` (mandatory) (list) - the list of tags you want to add to your Thing, e.g.
-        `["garden", "soil"]`
+        Args:
+            tags (list): The list of tags you want to add to your Thing, e.g. `["garden", "soil"]`
         """
         if isinstance(tags, str):
             tags = [tags]
@@ -202,17 +206,16 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         self._client._wait_and_except_if_failed(evt)
 
     def delete_tag(self, tags):
-        """Delete tags for a Thing in the language you specify. Case will be ignored and any tags matching lower-cased
+        """
+        Delete tags for a Thing in the language you specify. Case will be ignored and any tags matching lower-cased
         will be deleted.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `tags` (mandatory) (list) - the list of tags you want to delete from your Thing, e.g.
-        `["garden", "soil"]`
+        Args:
+            tags (list): The list of tags you want to delete from your Thing, e.g. `["garden", "soil"]`
         """
         if isinstance(tags, str):
             tags = [tags]
@@ -223,9 +226,11 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
     def list_tag(self, limit=500, offset=0):
         """List `all` the tags for this Thing
 
-        Returns lists of tags, as below
+        Returns:
+            Lists of tags, as below
 
-            #!python
+        ::
+
             [
                 "mytag1",
                 "mytag2"
@@ -233,17 +238,15 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
                 "nochein_name"
             ]
 
-        - OR...
+        Or:
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `limit` (optional) (integer) Return at most this many tags
-
-        `offset` (optional) (integer) Return tags starting at this offset
+        Args:
+            limit (integer, optional): Return at most this many tags
+            offset (integer, optional): Return tags starting at this offset
         """
         evt = self._client._request_entity_tag_list(self.__lid, limit=limit, offset=offset)
 
@@ -251,29 +254,33 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return evt.payload['tags']
 
     def get_meta(self):
-        """Get the metadata object for this Thing
+        """
+        Get the metadata object for this Thing
 
-        Returns a [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) object
+        Returns:
+            A :doc:`IoticAgent.IOT.ThingMeta` object
         """
         rdf = self.get_meta_rdf(fmt='n3')
         return ThingMeta(self, rdf, self._client.default_lang, fmt='n3')
 
     def get_meta_rdf(self, fmt='n3'):
-        """Get the metadata for this Thing in rdf fmt
+        """
+        Get the metadata for this Thing in rdf fmt.
 
         Advanced users who want to manipulate the RDF for this Thing directly without the
-        [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) helper object
+        :doc:`IoticAgent.IOT.ThingMeta` helper object.
 
-        Returns the RDF in the format you specify. - OR -
+        Returns:
+            The RDF in the format you specify
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        OR
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `fmt` (optional) (string) The format of RDF you want returned.
-        Valid formats are: "xml", "n3", "turtle"
+        Args:
+            fmt (string, optional): The format of RDF you want returned. Valid formats are: "xml", "n3", "turtle"
         """
         evt = self._client._request_entity_meta_get(self.__lid, fmt=fmt)
 
@@ -281,35 +288,38 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return evt.payload['meta']
 
     def set_meta_rdf(self, rdf, fmt='n3'):
-        """Set the metadata for this Thing in RDF fmt
+        """
+        Set the metadata for this Thing in RDF fmt.
 
         Advanced users who want to manipulate the RDF for this Thing directly without the
-        [ThingMeta](ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) helper object
+        :doc:`IoticAgent.IOT.ThingMeta` helper object.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `fmt` (optional) (string) The format of RDF you have sent.
-        Valid formats are: "xml", "n3", "turtle"
+        Args:
+            fmt (string, optional): The format of RDF you have sent. Valid formats are: "xml", "n3", "turtle"
         """
         evt = self._client._request_entity_meta_set(self.__lid, rdf, fmt=fmt)
         self._client._wait_and_except_if_failed(evt)
 
     def get_feed(self, pid):
-        """Get the details of a newly created feed. This only applies to asynchronous creation of feeds and the new feed
+        """
+        Get the details of a newly created feed. This only applies to asynchronous creation of feeds and the new feed
         instance can only be retrieved once.
 
-        `NOTE` - Destructive Read. Once you've called get_feed once, any further calls will raise a `KeyError`
+        Note:
+            Destructive Read. Once you've called get_feed once, any further calls will raise a `KeyError`
 
-        Returns a [Feed](Point.m.html#IoticAgent.IOT.Point.Feed) object,
-        which corresponds to the cached entry for this local feed id
+        Returns:
+            A :doc:`IoticAgent.IOT.Point` feed object, which corresponds to the cached entry for this local feed id.
 
-        `pid` (required) (string) Point id - local identifier of your feed.
+        Args:
+            pid (string): Point id - local identifier of your feed.
 
-        Raises `KeyError` if the feed has not been newly created (or has already been retrieved by a previous call)
+        Raises:
+            KeyError: Feed has not been newly created (or has already been retrieved by a previous call)
         """
         with self.__new_feeds:
             try:
@@ -318,17 +328,22 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
                 raise_from(KeyError('Feed %s not know as new' % pid), ex)
 
     def get_control(self, pid):
-        """Get the details of a newly created control. This only applies to asynchronous creation of feeds and the new
+        """
+        Get the details of a newly created control. This only applies to asynchronous creation of feeds and the new
         control instance can only be retrieved once.
 
-        `NOTE` - Destructive Read. Once you've called get_control once, any further calls will raise a `KeyError`
+        Note:
+            Destructive Read. Once you've called get_control once, any further calls will raise a `KeyError`
 
-        Returns a [Control](Point.m.html#IoticAgent.IOT.Point.Control) object,
-        which corresponds to the cached entry for this local control id
+        Returns:
+            A :doc:`IoticAgent.IOT.Point` control object, which corresponds to the cached entry for this local
+            control id
 
-        `pid` (required) (string) local identifier of your control.
+        Args:
+            pid (string): Local identifier of your control.
 
-        Raises `KeyError` if the control has not been newly created (or has already been retrieved by a previous call)
+        Raises:
+            KeyError: The control has not been newly created (or has already been retrieved by a previous call)
         """
         with self.__new_controls:
             try:
@@ -352,23 +367,21 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self._client._request_point_create(foc, self.__lid, pid, control_cb=control_cb, save_recent=save_recent)
 
     def create_feed(self, pid, save_recent=0):
-        """Create a new Feed for this Thing with a local point id (pid).
+        """
+        Create a new Feed for this Thing with a local point id (pid).
 
-        Returns a new [Feed](Point.m.html#IoticAgent.IOT.Point.Feed) object,
-        or the existing one, if the Feed already exists
+        Returns:
+            A new :doc:`IoticAgent.IOT.Point` feed object, or the existing one, if the Feed already exists
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `pid` (required) (string) local id of your Feed
-
-        `save_recent` (optional) (int) how many shares to store for later retrieval. If not supported by container, this
-        argument will be ignored. A value of zero disables this feature whilst a negative value requests the maximum
-        sample store amount. See also
-        [Feed.set_recent_config](./Point.m.html#IoticAgent.IOT.Point.Feed.set_recent_config).
+        Args:
+            pid (string): Local id of your Feed
+            save_recent (int, optional): How many shares to store for later retrieval. If not supported by container,
+                this argument will be ignored. A value of zero disables this feature whilst a negative value requests
+                the maximum sample store amount.
         """
         logger.info("create_feed(pid=\"%s\") [lid=%s]", pid, self.__lid)
         return self.__create_point(R_FEED, pid, save_recent=save_recent)
@@ -378,23 +391,29 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self.__create_point_async(R_FEED, pid, save_recent=save_recent)
 
     def create_control(self, pid, callback, callback_parsed=None):
-        """Create a control for this Thing with a local point id (pid) and a control request feedback
+        """
+        Create a control for this Thing with a local point id (pid) and a control request feedback
 
-        Returns a new [Control](Point.m.html#IoticAgent.IOT.Point.Control) object
-        or the existing one if the Control already exists
+        Returns:
+            A new :doc:`IoticAgent.IOT.Point` control object or the existing one if the Control already exists
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Args:
+            pid (string): Local id of your Control
+            callback (function reference): Callback function to invoke on receipt of a control request.
+            callback_parsed (function reference, optional): Callback function to invoke on receipt of control
+                data. This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of
+                values in a :doc:`IoticAgent.IOT.Point` PointDataObject instance. If both `callback_parsed` and
+                callback` have been specified, the former takes precedence and `callback` is only called if the point
+                data could not be parsed according to its current value description.
 
-        `pid` (required) (string) local id of your Control
+        The `callback` receives a single dict argument, with keys of:
 
-        `callback` (required) (function reference) callback function to invoke on receipt of a control request.
-        The callback receives a single dict argument, with keys of:
+        ::
 
-            #!python
             'data'      # (decoded or raw bytes)
             'mime'      # (None, unless payload was not decoded and has a mime type)
             'subId'     # (the global id of the associated subscripion)
@@ -403,13 +422,8 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
             'confirm'   # (whether a confirmation is expected)
             'requestId' # (required for sending confirmation)
 
-        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of control data. This
-        is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
-        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
-        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
-        if the point data could not be parsed according to its current value description.
-
-        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
+        Note:
+            `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
         """
         logger.info("create_control(pid=\"%s\", control_cb=%s) [lid=%s]", pid, callback, self.__lid)
         if callback_parsed:
@@ -430,15 +444,15 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self._client._request_point_delete(foc, self.__lid, pid)
 
     def delete_feed(self, pid):
-        """Delete a feed, identified by its local id.
+        """
+        Delete a feed, identified by its local id.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `pid` (required) (string) local identifier of your feed you want to delete
+        Args:
+            pid (string): Local identifier of your feed you want to delete
 
         """
         logger.info("delete_feed(pid=\"%s\") [lid=%s]", pid, self.__lid)
@@ -449,15 +463,15 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self.__delete_point_async(R_FEED, pid)
 
     def delete_control(self, pid):
-        """Delete a control, identified by its local id.
+        """
+        Delete a control, identified by its local id.
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `pid` (required) (string) local identifier of your control you want to delete
+        Args:
+            pid (string): Local identifier of your control you want to delete
         """
         logger.info("delete_control(pid=\"%s\") [lid=%s]", pid, self.__lid)
         return self.__delete_point(R_CONTROL, pid)
@@ -484,35 +498,42 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return sub
 
     def get_remote_feed(self, gpid):
-        """Retrieve `RemoteFeed` instance for a follow. This only applies to asynchronous follow requests and the
+        """
+        Retrieve `RemoteFeed` instance for a follow. This only applies to asynchronous follow requests and the
         new `RemoteFeed` instance can only be retrieved once.
 
-        `NOTE` - Destructive Read. Once you've called get_remote_feed once, any further calls will raise a `KeyError`
+        Note:
+            Destructive Read. Once you've called get_remote_feed once, any further calls will raise a `KeyError`
 
-        Raises `KeyError` if the follow-subscription has not been newly created (or has already been retrieved by a
-        previous call)
-
-        Raises `ValueError` if the followed Point is actually a control instead of a feed, or if the subscription has
-        not completed yet.
+        Raises:
+            KeyError: The follow-subscription has not been newly created (or has already been retrieved by a previous
+                call
+            ValueError: The followed Point is actually a control instead of a feed, or if the subscription has not
+                completed yet.
         """
         return self.__get_sub(R_FEED, gpid)
 
     def get_remote_control(self, gpid):
-        """Retrieve `RemoteControl` instance for an attach. This only applies to asynchronous attach requests and the
+        """
+        Retrieve `RemoteControl` instance for an attach. This only applies to asynchronous attach requests and the
         new `RemoteControl` instance can only be retrieved once.
 
-        `NOTE` - Destructive Read. Once you've called get_remote_control once, any further calls will raise a `KeyError`
+        Note:
+            Destructive Read. Once you've called get_remote_control once, any further calls will raise a `KeyError`
 
-        Raises `KeyError` if the attach-subscription has not been newly created (or has already been retrieved by a
-        previous call)
-
-        Raises `ValueError` if the followed Point is actually a feed instead of a control, or if the subscription has
-        not completed yet."""
+        Raises:
+            KeyError: If the attach-subscription has not been newly created (or has already been retrieved by a previous
+                call)
+            ValueError: If the followed Point is actually a feed instead of a control, or if the subscription has not
+                completed yet.
+        """
         return self.__get_sub(R_CONTROL, gpid)
 
     @contextmanager
     def __sub_add_reference(self, key):
-        """Used by __sub_make_request to save reference for pending sub request"""
+        """
+        Used by __sub_make_request to save reference for pending sub request
+        """
         new_subs = self.__new_subs
         with new_subs:
             # don't allow multiple subscription requests to overwrite internal reference
@@ -528,7 +549,9 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
             raise
 
     def __sub_del_reference(self, req, key):
-        """Blindly clear reference to pending subscription on failure."""
+        """
+        Blindly clear reference to pending subscription on failure.
+        """
         if not req.success:
             try:
                 self.__new_subs.pop(key)
@@ -536,7 +559,9 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
                 logger.warning('No sub ref %s', key)
 
     def __sub_make_request(self, foc, gpid, callback):
-        """Make right subscription request depending on whether local or global - used by __sub*"""
+        """
+        Make right subscription request depending on whether local or global - used by __sub*
+        """
         # global
         if isinstance(gpid, string_types):
             gpid = uuid_to_hex(gpid)
@@ -570,37 +595,41 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self.__sub_make_request(foc, gpid, callback)
 
     def follow(self, gpid, callback=None, callback_parsed=None):
-        """Create a subscription (i.e. follow) a Feed/Point with a global point id (gpid) and a feed data callback
+        """
+        Create a subscription (i.e. follow) a Feed/Point with a global point id (gpid) and a feed data callback
 
-        Returns a new [RemoteFeed](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteFeed)
-        object or the existing one if the subscription already exists - OR -
+        Returns:
+            A new :doc:`IoticAgent.IOT.RemotePoint` RemoteFeed object or the existing one if the subscription
+            already exists
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Or:
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `gpid` (required) (uuid) global id of the Point you want to follow `-OR-`
+        Args:
+            gpid (uuid): Global id of the Point you want to follow **OR**
+            gpid (lid, pid): Tuple of `(thing_localid, point_localid)` for local subscription
+            callback (function reference, optional): Callback function to invoke on receipt of feed data.
+            callback_parsed (function reference, optional): Callback function to invoke on receipt of feed data. This
+                is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+                :doc:`IoticAgent.IOT.Point` PointDataObject instance. If both `callback_parsed` and `callback` have been
+                specified, the former takes precedence and `callback` is only called if the point data could not be
+                parsed according to its current value description.
 
-        `gpid` (required) (lid,pid) tuple of `(thing_localid, point_localid)` for local subscription
+        Note:
+            The callback receives a single dict argument, with keys of:
 
-        `callback` (optional) (function reference) callback function to invoke on receipt of feed data.
-        The callback receives a single dict argument, with keys of:
+            ::
 
-            #!python
-            'data' # (decoded or raw bytes)
-            'mime' # (None, unless payload was not decoded and has a mime type)
-            'pid'  # (the global id of the feed from which the data originates)
-            'time' # (datetime representing UTC timestamp of share)
+                'data' # (decoded or raw bytes)
+                'mime' # (None, unless payload was not decoded and has a mime type)
+                'pid'  # (the global id of the feed from which the data originates)
+                'time' # (datetime representing UTC timestamp of share)
 
-        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of feed data. This is
-        equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
-        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
-        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
-        if the point data could not be parsed according to its current value description.
-
-        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
+        Note:
+            `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
         """
         if callback_parsed:
             callback = self._client._get_parsed_feed_callback(callback_parsed, callback)
@@ -612,20 +641,20 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return self.__sub_async(R_FEED, gpid, callback=callback)
 
     def attach(self, gpid):
-        """Create a subscription (i.e. attach) to a Control-Point with a global point id (gpid) and a feed data callback
+        """
+        Create a subscription (i.e. attach) to a Control-Point with a global point id (gpid) and a feed data callback
 
-        Returns a new [RemoteControl](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl)
-        object or the existing one if the subscription already exists
+        Returns:
+            A new RemoteControl object from the :doc:`IoticAgent.IOT.RemotePoint` or the existing one if the
+            subscription already exists
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `gpid` (required) (uuid) global id of the Point to which you want to attach `-OR-`
-
-        `gpid` (required) (lid,pid) tuple of `(thing_localid, point_localid)` for local subscription
+        Args:
+            gpid (uuid): Global id of the Point to which you want to attach **OR**
+            gpid (lid, pid): Tuple of `(thing_localid, point_localid)` for local subscription
         """
         return self.__sub(R_CONTROL, gpid)
 
@@ -639,42 +668,44 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         self._client._wait_and_except_if_failed(evt)
 
     def unfollow(self, subid):
-        """Remove a subscription of a Feed with a global subscription id (gpid)
+        """
+        Remove a subscription of a Feed with a global subscription id (gpid)
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `subid` (required) `Either` (uuid) global id of the subscription you want to delete `or`
-        (object) The instance of a RemoteFeed object corresponding to the feed you want to cease
-        following.
+        Args:
+            subid (uuid): Global id of the subscription you want to delete **OR**
+            subid (object): The instance of a RemoteFeed object corresponding to the feed you want to cease following.
         """
         return self.__sub_delete(subid)
 
     def unattach(self, subid):
-        """Remove a subscription of a control with a global subscription id (gpid)
+        """
+        Remove a subscription of a control with a global subscription id (gpid)
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `subid` (required) ( `Either` (uuid) global id of the subscription you want to delete `or`
-        (object) The instance of a RemoteControl object corresponding to the control you want
-        to cease being able to actuate.
+        Args:
+            subid (uuid): Global id of the subscription you want to delete **OR**
+            subid (object): The instance of a RemoteControl object corresponding to the control you want to cease being
+                able to actuate.
         """
         return self.__sub_delete(subid)
 
     def list_connections(self, limit=500, offset=0):
-        """List Points to which this Things is subscribed.
+        """
+        List Points to which this Things is subscribed.
         I.e. list all the Points this Thing is following and controls it's attached to
 
-        Returns subscription list e.g.
+        Returns:
+            Subscription list e.g.
 
-            #!python
+        ::
+
             {
                 "<Subscription GUID 1>": {
                     "id": "<Control GUID>",
@@ -687,14 +718,12 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
                     "type": 2  # R_FEED from IoticAgent.Core.Const
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        Note: For Things following a Point see
-        [list_followers](./Point.m.html#IoticAgent.IOT.Point.Point.list_followers)
+        Note:
+            For Things following a Point see :doc:`IoticAgent.IOT.Point` list_followers.
         """
         evt = self._client._request_sub_list(self.__lid, limit=limit, offset=offset)
 
@@ -702,7 +731,9 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return evt.payload['subs']
 
     def _cb_created(self, payload, duplicated):
-        """Indirect callback (via Client) for point & subscription creation responses"""
+        """
+        Indirect callback (via Client) for point & subscription creation responses
+        """
         if payload[P_RESOURCE] in _POINT_TYPE_TO_CLASS:
             store = self.__new_feeds if payload[P_RESOURCE] == R_FEED else self.__new_controls
             cls = _POINT_TYPE_TO_CLASS[payload[P_RESOURCE]]

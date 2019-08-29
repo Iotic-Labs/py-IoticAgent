@@ -33,12 +33,10 @@ from ..third.amqp import Connection, Message, exceptions
 
 from .Profiler import profiled_thread
 from .compat import raise_from, Event, RLock, monotonic, SocketError
+from .utils import EventWithChangeTimes, validate_nonnegative_int
 from .Exceptions import LinkException
 
 DEBUG_ENABLED = logger.isEnabledFor(logging.DEBUG)
-
-# Currently this is not configurable
-CONN_RETRY_DELAY_SECONDS = 5
 
 
 class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
@@ -47,8 +45,8 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(self, host, vhost, prefix, epid, passwd, msg_callback, ka_callback,  # pylint: disable=too-many-locals
-                 send_ready_callback, sslca=None, prefetch=128, ackpc=0.5, acksecs=1, heartbeat=30, socket_timeout=10,
-                 startup_ignore_exc=False):
+                 send_ready_callback, sslca=None, prefetch=128, ackpc=0.5, heartbeat=30, socket_timeout=10,
+                 startup_ignore_exc=False, conn_retry_delay=5, conn_error_log_threshold=180):
         """
         `host`: Broker 'host:port'
 
@@ -70,17 +68,21 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
         `prefetch` max number of messages to get on amqp connection drain
 
-        `ackpc` 1..0 percentage of prefetch size of ack'
+        `ackpc` 1..0 (percentage) maximum fraction (of prefetch) of unacknowledged messages
 
-        `acksecs` max number of seconds between ack messages
-
-        `heartbeat` Every n messages or acksecs send a amqp heartbeat tick
+        `heartbeat` How often (in seconds) to send AMQP heartbeat
 
         `socket_timeout` Timeout of underlying sockets both for connection and subsequent operations
 
         `startup_ignore_exc` On startup only, whether to ignore exceptions until socket_timeout has elapsed. This means
                              that e.g. an access-refused will result in a retry on startup (assuming `socket_timeout`
                              seconds haven't elapsed yet) rather than immediately failing.
+
+        `conn_retry_delay` How long (in seconds) to wait inbetween re-connection attempts when connection to broker is
+                           lost
+
+        `conn_error_log_threshold` How long (in seconds) to delay logging connection failures at ERROR level. Until said
+                                   threshold is reached, the error messages will be logged at WARNING level.
         """
         self.__host = host
         self.__vhost = vhost
@@ -96,17 +98,16 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__prefetch = prefetch
         self.__ackpc = ackpc
         self.__ack_threshold = self.__prefetch * self.__ackpc
-        self.__acksecs = acksecs
         self.__heartbeat = heartbeat
-        self.__socket_timeout = socket_timeout
+        self.__socket_timeout = validate_nonnegative_int(socket_timeout, 'socket_timeout', allow_zero=False)
         #
         self.__unacked = 0
         self.__last_id = None
         #
         self.__end = Event()
-        self.__recv_ready = Event()
+        self.__recv_ready = EventWithChangeTimes()
         self.__recv_thread = None
-        self.__send_ready = Event()
+        self.__send_ready = EventWithChangeTimes()
         self.__send_lock = RLock()
         self.__send_channel = None
         self.__ka_channel = None
@@ -116,6 +117,9 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         self.__recv_exc = None
         # Whether to only rely on timeout on startup
         self.__startup_ignore_exc = bool(startup_ignore_exc)
+        self.__conn_retry_delay = validate_nonnegative_int(conn_retry_delay, 'conn_retry_delay', allow_zero=False)
+        self.__conn_error_log_threshold = validate_nonnegative_int(conn_error_log_threshold, 'conn_error_log_threshold',
+                                                                   allow_zero=False)
 
     def start(self):
         """start connection threads, blocks until started
@@ -354,15 +358,18 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
 
         logger.debug('finished')
 
-    def __recv_log_set_exc_and_wait(self, msg, level=None, wait_seconds=CONN_RETRY_DELAY_SECONDS):
+    def __recv_log_set_exc_and_wait(self, msg, wait_seconds=None):
         """Equivalent to __send_log_set_exc_and_wait but for receiver thread"""
         logger.log(
-            ((logging.DEBUG if self.__recv_exc else logging.ERROR) if level is None else level),
+            (
+                logging.ERROR if self.__recv_ready.time_since_last_clear >= self.__conn_error_log_threshold else
+                logging.WARNING
+            ),
             msg,
             exc_info=DEBUG_ENABLED
         )
         self.__recv_exc = exc_info()[1]
-        self.__end.wait(wait_seconds)
+        self.__end.wait(self.__conn_retry_delay if wait_seconds is None else wait_seconds)
 
     def __recv_exc_clear(self, log_if_exc_set=None):
         """Equivalent to __send_exc_clear"""
@@ -422,22 +429,23 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 break
         logger.debug('finished')
 
-    def __send_log_set_exc_and_wait(self, msg, level=None, wait_seconds=CONN_RETRY_DELAY_SECONDS):
+    def __send_log_set_exc_and_wait(self, msg, wait_seconds=None):
         """To be called in exception context only.
 
         msg - message to log
-        level - logging level. If not specified, ERROR unless it is a repeated failure in which case DEBUG. If
-        specified, the given level will always be used.
         wait_seconds - how long to pause for (so retry is not triggered immediately)
         """
         logger.log(
-            ((logging.DEBUG if self.__send_exc else logging.ERROR) if level is None else level),
+            (
+                logging.ERROR if self.__send_ready.time_since_last_clear >= self.__conn_error_log_threshold else
+                logging.WARNING
+            ),
             msg,
             exc_info=DEBUG_ENABLED
         )
         self.__send_exc_time = monotonic()
         self.__send_exc = exc_info()[1]
-        self.__end.wait(wait_seconds)
+        self.__end.wait(self.__conn_retry_delay if wait_seconds is None else wait_seconds)
 
     def __send_exc_clear(self, log_if_exc_set=None):
         """Clear send exception and time. If exception was previously was set, optionally log log_if_exc_set at INFO

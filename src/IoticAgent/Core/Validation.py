@@ -103,7 +103,9 @@ class Validation(object):  # pylint: disable=too-many-public-methods
     @staticmethod
     def guid_check_convert(guid, allow_none=False):
         """Take a GUID in the form of hex string "32" or "8-4-4-4-12".
-        Returns hex string "32" or raises ValueError: badly formed hexadecimal UUID string
+
+        Returns:
+            Hex string "32" or raises ValueError: badly formed hexadecimal UUID string
         """
         if isinstance(guid, string_types):
             return ensure_unicode(UUID(guid).hex)
@@ -128,7 +130,9 @@ class Validation(object):  # pylint: disable=too-many-public-methods
     @classmethod
     def tags_check_convert(cls, tags):
         """Accept one tag as string or multiple tags in list of strings.
-        Returns list (with tags in unicode form) or raises ValueError
+
+        Returns:
+            List (with tags in unicode form) or raises ValueError
         """
         # single string check comes first since string is also a Sequence
         if isinstance(tags, string_types):
@@ -307,8 +311,10 @@ class Validation(object):  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def callable_check(func, arg_count=1, arg_value=None, allow_none=False):
-        """Check whether func is callable, with the given number of positional arguments. Returns True if check
-           succeeded, False otherwise."""
+        """Check whether func is callable, with the given number of positional arguments.
+
+        Returns:
+            True if check succeeded, False otherwise."""
         if func is None:
             if not allow_none:
                 raise ValueError('callable cannot be None')

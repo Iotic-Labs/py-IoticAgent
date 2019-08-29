@@ -64,15 +64,20 @@ def version_string_to_tuple(version):
 
 
 def bool_from(obj, default=False):
-    """Returns True if obj is not None and its string representation is not 0 or False (case-insensitive). If obj is
-    None, 'default' is used.
+    """
+    Returns:
+        True if obj is not None and its string representation is not 0 or False (case-insensitive). If obj is None,
+        'default' is used.
     """
     return str(obj).lower() not in ('0', 'false') if obj is not None else bool(default)
 
 
 def private_name_for(var_name, cls):
-    """Returns mangled variable name (if applicable) for the given variable and class instance.
-       See https://docs.python.org/3/tutorial/classes.html#private-variables"""
+    """
+    Returns:
+        Mangled variable name (if applicable) for the given variable and class instance. See
+        https://docs.python.org/3/tutorial/classes.html#private-variables
+    """
     if not (isinstance(var_name, string_types) and var_name):
         raise TypeError('var_name must be non-empty string')
     if not (isinstance(cls, type) or isinstance(cls, string_types)):  # pylint: disable=consider-merging-isinstance
@@ -85,7 +90,9 @@ def private_name_for(var_name, cls):
 
 
 def private_names_for(cls, names):
-    """Returns iterable of private names using privateNameFor()"""
+    """
+    Returns:
+        Iterable of private names using privateNameFor()"""
     if not isinstance(names, Iterable):
         raise TypeError('names must be an interable')
     return (private_name_for(item, cls) for item in names)

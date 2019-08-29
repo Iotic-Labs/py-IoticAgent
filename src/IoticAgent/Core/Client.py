@@ -128,7 +128,8 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
-                 throttle_conf='', max_encoded_length=None, startup_ignore_exc=False):
+                 throttle_conf='', max_encoded_length=None, startup_ignore_exc=False, conn_retry_delay=5,
+                 conn_error_log_threshold=180):
         """
         `host` amqp broker "host:port"
 
@@ -168,7 +169,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         `max_encoded_length` Override the maximum permissible encoded request size (in bytes). Warning: Increasing this
                              without first consulting the container provider could result in a ban.
 
-        `startup_ignore_exc` See AmqpLink class parameter with the same name.
+        `startup_ignore_exc`/`conn_retry_delay`/`conn_error_log_threshold` - See AmqpLink class parameters
         """
         logger.info('ubjson version: %s (extension %s)', ubj_version, 'enabled' if ubj_ext else 'disabled')
         logger.debug("__init__ config host='%s', vhost='%s', epId='%s', passwd='%s', token='%s', prefix='%s'"
@@ -198,10 +199,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         self.__auto_encode_decode = bool(auto_encode_decode)
         #
         self.__amqplink = AmqpLink(host, vhost, prefix, self.__epId, passwd, self.__dispatch_msg, self.__dispatch_ka,
-                                   self.__send_ready_cb, sslca=sslca,
-                                   socket_timeout=validate_nonnegative_int(socket_timeout, 'socket_timeout',
-                                                                           allow_zero=False),
-                                   startup_ignore_exc=startup_ignore_exc)
+                                   self.__send_ready_cb, sslca=sslca, socket_timeout=socket_timeout,
+                                   startup_ignore_exc=startup_ignore_exc, conn_retry_delay=conn_retry_delay,
+                                   conn_error_log_threshold=conn_error_log_threshold)
         # seq (from container - initial value used to surpress warning on first message from container)
         self.__cnt_seqnum = -1
         # (Core.Client has not been .start or is .stop)
@@ -277,7 +277,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     @property
     def container_params(self):
-        """Returns container configuration parameters as a mapping. Will be empty before start() has been called"""
+        """
+        Returns:
+            Container configuration parameters as a mapping. Will be empty before start() has been called"""
         if self.__container_params is None:
             return {}
         else:
@@ -444,8 +446,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     def start(self):  # noqa (complexity)
         """Start the send & recv Threads.
         Start can be delayed to EG restore requestIds before attaching to the QAPI
-        Note: This function waits for/blocks until amqplink connect(s) and the current
-              sequence number has been obtained from the container (within 5 seconds)
+
+        Note:
+            This function waits for/blocks until amqplink connect(s) and the current sequence number has been obtained
+            from the container (within 5 seconds)
         """
         if not self.__end.is_set():
             return
@@ -929,8 +933,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         return evt
 
     def __point_data_to_bytes(self, data, mime=None):  # pylint: disable=too-many-branches
-        """Returns tuple of mime type & data. Auto encodes unicode strings (to utf8) and
-           dictionaries (to ubjson) depending on client setting."""
+        """
+        Returns:
+            Tuple of mime type & data. Auto encodes unicode strings (to utf8) and dictionaries (to ubjson) depending on
+            client setting.
+        """
         if mime is None:
             if self.__auto_encode_decode:
                 if isinstance(data, bytes):
@@ -1127,7 +1134,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 req._send_time = monotonic()
 
     def __publish(self, qmsg):
-        """Returns True unless sending failed (at which point an exception will have been set in the request)"""
+        """
+        Returns:
+            True unless sending failed (at which point an exception will have been set in the request)
+        """
         with self.__seqnum_lock:
             seqnum = self.__seqnum
             self.__seqnum = (self.__seqnum + 1) % _SEQ_WRAP_SIZE
@@ -1215,7 +1225,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             qmsg = None
 
     def __send_throttle(self):
-        """Returns True if end event was set during throttling-wait"""
+        """
+        Returns:
+            True if end event was set during throttling-wait
+        """
         for throttler in self.__network_retry_throttlers:
             if throttler.throttle():
                 # end event was set
@@ -1223,7 +1236,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         return False
 
     def __fire_callback(self, type_, *args, **kwargs):
-        """Returns True if at least one callback was called"""
+        """
+        Returns:
+            True if at least one callback was called
+        """
         called = False
         plain_submit = self.__threadpool.submit
         with self.__callbacks:
@@ -1265,7 +1281,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                 isinstance(body[M_PAYLOAD], cls.__msg_body_payload_types))
 
     def __validate_decode_msg(self, message):  # noqa (complexity) pylint: disable=too-many-return-statements,too-many-branches
-        """Decodes wrapper, check hash & seq, decodes body. Returns body or None, if validation / unpack failed"""
+        """Decodes wrapper, check hash & seq, decodes body.
+
+        Returns:
+            Body or None, if validation / unpack failed
+        """
         try:
             if not _CONTENT_TYPE_PATTERN.match(message.content_type):
                 logger.debug('Message with unexpected content type %s from container, ignoring', message.content_type)
@@ -1356,7 +1376,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
             logger.error('Unhandled unsolicited message of type %s', msg[M_TYPE])
 
     def __handle_known_solicited(self, msg):
-        """returns True if message has been handled as a solicited response"""
+        """
+        Returns:
+            True if message has been handled as a solicited response
+        """
         with self.__requests:
             try:
                 req = self.__requests[msg[M_CLIENTREF]]
@@ -1444,8 +1467,11 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                                                    'samples': samples})
 
     def __handle_low_seq_resend(self, msg, req):
-        """special error case - low sequence number (update sequence number & resend if applicable). Returns True if
-           a resend was scheduled, False otherwise. MUST be called within self.__requests lock."""
+        """special error case - low sequence number (update sequence number & resend if applicable).
+
+        Returns:
+            True if a resend was scheduled, False otherwise. MUST be called within self.__requests lock.
+        """
         if msg[M_TYPE] == E_FAILED and msg[M_PAYLOAD][P_CODE] == E_FAILED_CODE_LOWSEQNUM:
             with self.__seqnum_lock:
                 self.__seqnum = int(msg[M_PAYLOAD][P_MESSAGE])
@@ -1458,7 +1484,10 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __decode_data_time(self, payload):
         """Extract time and decode payload (based on mime type) from payload. Applies to E_FEEDDATA and E_RECENTDATA.
-        Returns tuple of data, mime, time."""
+
+        Returns:
+            Tuple of data, mime, time.
+        """
         data, mime = self.__bytes_to_share_data(payload)
         try:
             time = datetime.strptime(payload.get(P_TIME), self.__share_time_fmt)

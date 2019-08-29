@@ -25,7 +25,8 @@ from .compat import Event
 class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
 
     """Request event object. Uses threading.Event (factory function).
-    https://docs.python.org/3/library/threading.html#event-objects
+
+    See here for more information: https://docs.python.org/3/library/threading.html#event-objects
     """
 
     def __init__(self, id_, inner_msg_out=None, is_crud=False):
@@ -65,10 +66,12 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
         return not self._messages and self._send_time and self._send_time < send_time_before
 
     def is_set(self):
-        """Returns True if the request has finished or False if it is still pending.
+        """
+        Returns:
+            True if the request has finished or False if it is still pending.
 
-        Raises [LinkException](AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException) if the request failed due to a
-        network related problem.
+        Raises:
+            LinkException: Request failed due to a network related problem.
         """
         if self.__event.is_set():
             if self.exception is not None:
@@ -105,11 +108,13 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
             self.__run_completion_func(partial(func, self, *args, **kwargs), self.id_)
 
     def wait(self, timeout=None):
-        """Wait for the request to finish, optionally timing out. Returns True if the request has finished or False if
-        it is still pending.
+        """Wait for the request to finish, optionally timing out.
 
-        Raises [LinkException](AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException) if the request failed due to a
-        network related problem.
+        Returns:
+            True if the request has finished or False if it is still pending.
+
+        Raises:
+            LinkException: Request failed due to a network related problem.
         """
         if self.__event.wait(timeout):
             if self.exception is not None:

@@ -1,3 +1,7 @@
+v0.6.10
+- Fix thing re-creation handling when no agent assigned
+- Remove unused acksecs parameter from AmqpLink
+
 v0.6.9
 - Increase metadata tag length limit from 16 to 64
 - Reduce incoming-data-without-callback warning logging level

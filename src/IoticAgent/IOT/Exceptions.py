@@ -26,7 +26,10 @@ class IOTException(Exception):
 
     @property
     def event(self):
-        """Returns RequestEvent instance associated with exception, or None if not available/applicable"""
+        """
+        Returns:
+            RequestEvent instance associated with exception, or None if not available/applicable
+        """
         return self.__event
 
 

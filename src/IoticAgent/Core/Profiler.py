@@ -18,7 +18,8 @@ Profiling agent scripts
 
 To profile your script, first enable profiling for the main thread, e.g.:
 
-    #!python
+::
+
     from IoticAgent.Core.Profiler import profiled_thread
 
     @profiled_thread
@@ -30,16 +31,18 @@ To profile your script, first enable profiling for the main thread, e.g.:
 
 Now, to actually enabling profiling at runtime, use the `IOTICAGENT_PROFILE` environment variable:
 
-    #!shell
+::
+
     IOTICAGENT_PROFILE=1 python3 my_script.py
 
 This will produce a set files in the current directory, each of the format
 `profile_<process_id>.<thread_id_>.<thread_name>.log`.
 
-To combine the results you can then use Python's [profile module](https://docs.python.org/3/library/profile.html). E.g.
+To combine the results you can then use Python's profile module (https://docs.python.org/3/library/profile.html). E.g.
 if you define `print_stats.py` as:
 
-    #!python
+::
+
     from pstats import Stats
     from sys import argv
     # all command line arguments to script are interpreted as profile dumps
@@ -49,7 +52,8 @@ if you define `print_stats.py` as:
 
 ... you can then apply it to the collected stats:
 
-    #!shell
+::
+
     python3 print_stats.py profile_*.log
 """
 

@@ -1,11 +1,10 @@
 #!/bin/bash
-# sudo pip3 install pdoc
-# Ensure generated document order is consistent
-export PYTHONHASHSEED=0
+set -eu
+
+# Follow setup instructions as per sphinx-doc readme.
 echo "Building docs... html -> doc/IoticAgent"
-rm -r docs/*
-pdoc --html --html-dir docs --overwrite src/IoticAgent/ --template-dir pdoctemplates/
-pushd docs
-mv IoticAgent/* .
-rm -r IoticAgent
+rm -rf docs/*
+pushd sphinx-doc
+make html
+mv _build/html/* ../docs
 popd

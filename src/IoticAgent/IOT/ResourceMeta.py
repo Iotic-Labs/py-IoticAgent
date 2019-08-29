@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Base class for Helper objects for getting and setting metadata programmatically
+"""
+Base class for Helper objects for getting and setting metadata programmatically
 """
 from __future__ import unicode_literals
 
@@ -29,12 +30,13 @@ IOTIC_NS = Namespace('http://purl.org/net/iotic-labs#')
 
 
 class ResourceMeta(object):
-    """`Base class` for metadata helpers.  Inherited by
-        [PointMeta](./PointMeta.m.html#IoticAgent.IOT.PointMeta.PointMeta) and
-        [ThingMeta](./ThingMeta.m.html#IoticAgent.IOT.ThingMeta.ThingMeta) classes
+    """
+    `Base class` for metadata helpers. Inherited by:
 
-        `Do not instantiate directly`
+    * :doc:`IoticAgent.IOT.PointMeta`
+    * :doc:`IoticAgent.IOT.ThingMeta`
 
+    **Do not instantiate directly**
     """
 
     # overridden by subclasses
@@ -86,29 +88,35 @@ class ResourceMeta(object):
                 self._graph.remove((s, p, o))
 
     def __str__(self):
-        """Returns the RDF metadata description for this Thing/Point
-
-        Returns the Thing/Point RDF
+        """
+        Returns:
+            The RDF metadata description for this Thing/Point
         """
         return self._graph.serialize(format=self.__fmt).decode('utf8')
 
     def set(self):
-        """Pushes the RDF metadata description back to the infrastructure.  This will be searchable if you have called
-        [set_public()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.set_public)
-        at any time
+        """
+        Pushes the RDF metadata description back to the infrastructure.  This will be searchable if you have called
+        :doc:`IoticAgent.IOT.Thing` Thing.set_public at any time.
 
-        `Example 1` Use of python `with` syntax and XXXXmeta class. `Recommended`
+        **Example 1 - Recommended**
 
-            #!python
+        Use of python `with` syntax and XXXXmeta class.
+
+        ::
+
             # using with calls set() for you so you don't forget
             with thing_solar_panels.get_meta() as meta_thing_solar_panels:
                 meta_thing_solar_panels.set_label("Mark's Solar Panels")
                 meta_thing_solar_panels.set_description("Solar Array 3.3kW")
                 meta_thing_solar_panels.set_location(52.1965071,0.6067687)
 
-        `Example 2` Explicit use of set
+        **Example 2**
 
-            #!python
+        Explicit use of set
+
+        ::
+
             meta_thing_solar_panels = thing_solar_panels.get_meta()
 
             meta_thing_solar_panels.set_label("Mark's Solar Panels")
@@ -118,44 +126,43 @@ class ResourceMeta(object):
             meta_thing_solar_panels.set()
 
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
-
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        Raises rdflib.plugins.parsers.notation3.`BadSyntax` Exception if the RDF is badly formed `n3`
-
-        Raises xml.sax._exceptions.`SAXParseException` if the RDF is badly formed `xml`
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
+            rdflib.plugins.parsers.notation3.`BadSyntax`: if the RDF is badly formed `n3`
+            xml.sax._exceptions.`SAXParseException`: if the RDF is badly formed `xml`
         """
         self.__parent.set_meta_rdf(self._graph.serialize(format=self.__fmt).decode('utf8'), fmt=self.__fmt)
 
     def update(self):
-        """Gets the latest version of your metadata from the infrastructure and updates your local copy
+        """
+        Gets the latest version of your metadata from the infrastructure and updates your local copy
 
-        Returns `True` if successful, `False` otherwise - OR -
+        Returns:
+            `True` if successful, `False` otherwise
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        **OR**
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
         """
         graph = Graph()
         graph.parse(data=self.__parent.get_meta_rdf(fmt=self.__fmt), format=self.__fmt)
         self._graph = graph
 
     def set_label(self, label, lang=None):
-        """Sets the `label` metadata property on your Thing/Point.  Only one label is allowed per language, so any
+        """
+        Sets the `label` metadata property on your Thing/Point.  Only one label is allowed per language, so any
         other labels in this language are removed before adding this one
 
-        Raises `ValueError` containing an error message if the parameters fail validation
+        Raises:
+            ValueError: Contains an error message if the parameters fail validation
 
-        `label` (mandatory) (string) the new text of the label
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
+        Args:
+            label (string): the new text of the label
+            lang (string, optional): The two-character ISO 639-1 language code to use for your label. None means use
+                the default language for your agent. See :doc:`IoticAgent.IOT.Config`.
         """
         label = Validation.label_check_convert(label)
         lang = Validation.lang_check_convert(lang, default=self._default_lang)
@@ -165,45 +172,52 @@ class ResourceMeta(object):
         self._graph.add((subj, self._labelPredicate, Literal(label, lang)))
 
     def get_labels(self):
-        """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
+        """
+        Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
         you'll get a list of labels in the `N3` syntax, e.g. `["fish"@en, "poisson"@fr]`
 
-        Returns list of labels in N3 format
+        Returns:
+            List of labels in N3 format
         """
         return self._get_properties(self._labelPredicate)
 
     def get_labels_rdf(self):
-        """Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
+        """
+        Gets all the `label` metadata properties on your Thing/Point.  Only one label is allowed per language, so
         you'll get a list of labels as rdflib.term.Literal objects
 
-        Returns list of labels as rdflib.term.Literals
+        Returns:
+            List of labels as rdflib.term.Literals
         """
 
         return self._get_properties_rdf(self._labelPredicate)
 
     def delete_label(self, lang=None):
-        """Deletes all the `label` metadata properties on your Thing/Point for this language
+        """
+        Deletes all the `label` metadata properties on your Thing/Point for this language
 
-        Raises `ValueError` containing an error message if the parameters fail validation
+        Raises:
+            ValueError: Contains an error message if the parameters fail validation
 
-        `lang` (optional) (string) The two-character ISO 639-1 language code to identify your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
+        Args:
+            lang (string, optional): The two-character ISO 639-1 language code to identify your label. None means use
+                the default language for your agent. See :doc:`IoticAgent.IOT.Config`
         """
         self._remove_properties_by_language(self._labelPredicate,
                                             Validation.lang_check_convert(lang, default=self._default_lang))
 
     def set_description(self, description, lang=None):
-        """Sets the `description` metadata property on your Thing/Point.  Only one description is allowed per language,
+        """
+        Sets the `description` metadata property on your Thing/Point.  Only one description is allowed per language,
         so any other descriptions in this language are removed before adding this one
 
-        Raises `ValueError` containing an error message if the parameters fail validation
+        Raises:
+            ValueError: Contains an error message if the parameters fail validation
 
-        `description` (mandatory) (string) the new text of the description
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
+        Args:
+            description (string): the new text of the description
+            lang (string, optional): The two-character ISO 639-1 language code to identify your label. None means use
+                the default language for your agent. See :doc:`IoticAgent.IOT.Config`
         """
         description = Validation.description_check_convert(description)
         lang = Validation.lang_check_convert(lang, default=self._default_lang)
@@ -213,29 +227,35 @@ class ResourceMeta(object):
         self._graph.add((subj, self._commentPredicate, Literal(description, lang)))
 
     def get_descriptions(self):
-        """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
+        """
+        Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
         language, so you'll get a list of descriptions in the `N3` syntax, e.g. `["fish tank"@en, "aquarium"@fr]`
 
-        Returns list of descriptions in N3 format or empty list if none.
+        Returns:
+            List of descriptions in N3 format or empty list if none.
         """
         return self._get_properties(self._commentPredicate)
 
     def get_descriptions_rdf(self):
-        """Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
+        """
+        Gets all the `description` metadata properties on your Thing/Point.  Only one description is allowed per
         language, so you'll get a list of descriptions as rdflib.term.Literals
 
-        Returns list of descriptions as rdflib.term.Literals or empty list if none.
+        Returns:
+            List of descriptions as rdflib.term.Literals or empty list if none.
         """
         return self._get_properties_rdf(self._commentPredicate)
 
     def delete_description(self, lang=None):
-        """Deletes all the `label` metadata properties on your Thing/Point for this language
+        """
+        Deletes all the `label` metadata properties on your Thing/Point for this language
 
-        Raises `ValueError` containing an error message if the parameters fail validation
+        Raises:
+            ValueError: Contains an error message if the parameters fail validation
 
-        `lang` (optional) (string) The two-character ISO 639-1 language code to use for your label.
-        None means use the default language for your agent.
-        See [Config](./Config.m.html#IoticAgent.IOT.Config.Config.__init__)
+        Args:
+            lang (string, optional): The two-character ISO 639-1 language code to identify your label. None means use
+                the default language for your agent. See :doc:`IoticAgent.IOT.Config`
         """
         self._remove_properties_by_language(self._commentPredicate,
                                             Validation.lang_check_convert(lang, default=self._default_lang))

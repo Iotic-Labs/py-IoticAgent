@@ -51,15 +51,16 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.9'
+    __core_version = '0.6.10'
 
     def __init__(self, config=None):
         """
         Creates an IOT.Client instance which provides access to Iotic Space
 
-        `config` (optional): The name of the config file containing the connection parameters.
-        Defaults to the name of the script +".ini", e.g. `config="my_script.ini"`. Alternatively
-        an existing [Config](Config.m.html#IoticAgent.IOT.Config.Config) object can be specified.
+        Args:
+            config (optional): The name of the config file containing the connection parameters. Defaults to the name
+                of the script +".ini", e.g. `config="my_script.ini"`. Alternatively an existing
+                :doc:`IoticAgent.IOT.Config` config object can be specified.
         """
         self.__core_version_check()
         logger.info('IOT version: %s', __version__)
@@ -96,7 +97,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                                         throttle_conf=self.__config.get('core', 'throttle'),
                                         max_encoded_length=self.__config.get('core', 'max_encoded_length'),
                                         startup_ignore_exc=bool_from(self.__config.get('core', 'startup_ignore_exc'),
-                                                                     default=False))
+                                                                     default=False),
+                                        conn_retry_delay=self.__config.get('core', 'conn_retry_delay'),
+                                        conn_error_log_threshold=self.__config.get('core', 'conn_error_log_threshold'))
         except ValueError as ex:
             raise_from(ValueError('Configuration error'), ex)
 
@@ -120,34 +123,48 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     @property
     def agent_id(self):
-        """Agent id (aka epId) in use for this client instance"""
+        """
+        Agent id (aka epId) in use for this client instance
+        """
         return self.__client.epId
 
     @property
     def default_lang(self):
-        """Language in use when not explicitly specified (in meta related requests). Will be set to container default
-        if was not set in configuration. Before client has started this might be None."""
+        """
+        Language in use when not explicitly specified (in meta related requests). Will be set to container default
+        if was not set in configuration. Before client has started this might be None.
+        """
         return self.__client.default_lang
 
     @property
     def local_meta(self):
-        """Whether container-local metadata functionality (e.g. search) is available in this container. Before calling
-        start() this will always be False."""
+        """
+        Whether container-local metadata functionality (e.g. search) is available in this container. Before calling
+        start() this will always be False.
+        """
         return self.__client.local_meta
 
     def start(self):
-        """Open a connection to Iotic Space.  `start()` is called by `__enter__` which allows the python
-        `with` syntax to be used.
+        """
+        Open a connection to Iotic Space.  `start()` is called by `__enter__` which allows the python `with` syntax to
+         be used.
 
-        `Example 0` - Calling start() implicitly using with.  minimal example with no exception handling
+        **Example 0:**
 
-            #!python
+        Calling start() implicitly using with. Minimal example with no exception handling:
+
+        ::
+
             with IOT.Client(config="my_script.ini") as client:
                 client.create_thing("my_thing")
 
-        `Example 1` - Calling start() implicitly using with.  This handles the finally for you. `Recommended`
+        **Example 1**
 
-            #!python
+        Calling start() implicitly using with.  This handles the finally for you.
+        `Recommended`:
+
+        ::
+
             try:
                 with IOT.Client(config="my_script.ini") as client:
                     try:
@@ -159,10 +176,13 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 import sys
                 sys.exit(1)
 
-        `Example 2` - Calling start() explicitly (no with)  Be careful, you have to put a finally in your try blocks
-        otherwise your client might remain connected.
+        **Example 2**
 
-            #!python
+        Calling start() explicitly (no with). Be careful, you have to put a finally in your try blocks otherwise your
+        client might remain connected.
+
+        ::
+
             try:
                 client = IOT.Client(config="my_script.ini")
                 # wire up callbacks here
@@ -179,9 +199,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             finally:
                 client.stop()
 
-        Returns This Client instance
+        Returns:
+            This Client instance
 
-        Raises Exception
+        Raises:
+            Exception
         """
         if not self.__client.is_alive():
             self.__client.start()
@@ -191,8 +213,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         return self.start()
 
     def stop(self):
-        """Close the connection to Iotic Space.  `stop()` is called by `__exit()__` allowing the python `with`
-        syntax to be used.  See [start()](#IoticAgent.IOT.Client.Client.start)
+        """
+        Close the connection to Iotic Space.  `stop()` is called by `__exit()__` allowing the python `with`
+        syntax to be used.  See :doc:`IoticAgent.IOT.Client` client start
         """
         if self.__client.is_alive():
             self.__client.stop()
@@ -209,8 +232,10 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     @property
     def sync_timeout(self):
-        """Value of iot.sync_request_timeout configuration option. Used by all synchronous requests to limit total
-        request wait time."""
+        """
+        Value of iot.sync_request_timeout configuration option. Used by all synchronous requests to limit total
+        request wait time.
+        """
         return self.__sync_timeout
 
     @classmethod
@@ -233,7 +258,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             logger.info('Core version: %s', Core_Version)
 
     def _notify_thing_lid_change(self, from_lid, to_lid):
-        """Used by Thing instances to indicate that a rename operation has happened"""
+        """
+        Used by Thing instances to indicate that a rename operation has happened
+        """
         try:
             with self.__private_things:
                 self.__private_things[to_lid] = self.__private_things.pop(from_lid)
@@ -249,7 +276,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def is_connected(self):
         """
-        Returns client's alive state
+        Returns:
+            Client's alive state
         """
         return self.__client.is_alive()
 
@@ -257,26 +285,27 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         Registers a callback that is called for all feeddata your Thing receives
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def feeddata_callback(data):
                 print(data)
             ...
             client.register_catchall_feeddata(feeddata_callback)
 
-        `callback` (required) the function name that you want to be called on receipt of new feed data
+        Args:
+            callback: the function name that you want to be called on receipt of new feed data
+            callback_parsed (function reference, optional): callback function to invoke on receipt of feed data. This
+                is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
+                :doc:`IoticAgent.IOT.Point` PointDataObject instance. If both `callback_parsed` and `callback` have been
+                specified, the former takes precedence and `callback` is only called if the point data could not be
+                parsed according to its current value description.
 
-        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of feed data. This is
-        equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
-        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both
-        `callback_parsed` and `callback` have been specified, the former takes precedence and `callback` is only called
-        if the point data could not be parsed according to its current value description.
+        Note:
+            `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
 
-        `NOTE`: `callback_parsed` can only be used if `auto_encode_decode` is enabled for the client instance.
-
-        More details on the contents of the `data` dictionary for feeds see:
-        [follow()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.follow)
+        More details on the contents of the `data` dictionary for feeds see :doc:`IoticAgent.IOT.Thing` Thing.follow.
         """
         if callback_parsed:
             callback = self._get_parsed_feed_callback(callback_parsed, callback)
@@ -286,25 +315,25 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         Registers a callback that is called for all control requests received by your Thing
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def controlreq_callback(data):
                 print(data)
             ...
             client.register_catchall_controlreq(controlreq_callback)
 
-        `callback` (required) the function name that you want to be called on receipt of a new control request
+        Args:
+            callback: the function name that you want to be called on receipt of a new control request
+            callback_parsed (function reference, optional): callback function to invoke on receipt of a control
+                ask/tell. This is equivalent to `callback` except the dict includes the `parsed` key which holds the set
+                of values in a :doc:`IoticAgent.IOT.Point` PointDataObject instance. If both `callback_parsed` and
+                `callback` have been specified, the former takes precedence and `callback` is only called if the point
+                data could not be parsed according to its current value description.
 
-
-        `callback_parsed` (optional) (function reference) callback function to invoke on receipt of a control ask/tell.
-        This is equivalent to `callback` except the dict includes the `parsed` key which holds the set of values in a
-        [PointDataObject](./Point.m.html#IoticAgent.IOT.Point.PointDataObject) instance. If both `callback_parsed` and
-        `callback` have been specified, the former takes precedence and `callback` is only called if the point data
-        could not be parsed according to its current value description.
-
-        More details on the contents of the `data` dictionary for controls see:
-        [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)
+        More details on the contents of the `data` dictionary for controls see :doc:`IoticAgent.IOT.Thing`
+        create_control
         """
         if callback_parsed:
             callback = self._get_parsed_control_callback(callback_parsed, callback)
@@ -315,20 +344,23 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         Register a callback for subscription count change notification.  This gets called whenever something *else*
         subscribes to your thing.
 
-        `Note` it is not called when you subscribe to something else.
+        Note:
+            It is not called when you subscribe to something else.
 
         The payload passed to your callback is an OrderedDict with the following keys
 
-            #!python
+        ::
+
             r         : R_FEED or R_CONTROL # the type of the point
             lid       : <name>              # the local name of your *Point*
             entityLid : <name>              # the local name of your *Thing*
             subCount  : <count>             # the total number of remote Things
                                             # that subscribe to your point
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def subscription_callback(args):
                 print(args)
             ...
@@ -336,7 +368,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         This would print out something like the following
 
-            #!python
+        ::
+
             OrderedDict([('r', 2), ('lid', 'My_First_Point'),
                          ('entityLid', 'My_First_Thing'), ('subCount', 13)])
         """
@@ -355,17 +388,20 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         The payload passed to your callback is an OrderedDict with the following keys
 
-            #!python
+        ::
+
             r         : R_ENTITY, R_FEED, etc # the type of resource created
             lid       : <name>                # the local name of the resource
             id        : <GUID>                # the global Id of the resource
             epId      : <GUID>                # the global Id of your agent
 
-        `Note` resource types are defined [here](../Core/Const.m.html)
+        Note:
+            Resource types are defined in :doc:`IoticAgent.Core.Const`
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def created_callback(args):
                 print(args)
             ...
@@ -373,7 +409,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         This would print out something like the following on creation of an R_ENTITY
 
-            #!python
+        ::
+
             OrderedDict([(u'lid', u'new_thing1'), (u'r', 1),
                          (u'epId', u'ffd47b75ea786f55c76e337cdc47665a'),
                          (u'id', u'3f11df0a09588a6a1a9732e3837765f8')]))
@@ -382,13 +419,14 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def register_callback_duplicate(self, func, serialised=True):
         """
-        Register a callback for resource creation but where the resource already exists in Iotic Space.
-        In this case the existing reference is passed to you.
-        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+        Register a callback for resource creation but where the resource already exists in Iotic Space. In this case
+         the existing reference is passed to you. If `serialised` is not set, the callbacks might arrive in a different
+         order to they were requested.
 
-        The payload passed to your callback is an OrderedDict with the following keys
+        The payload passed to your callback is an OrderedDict with the following keys:
 
-            #!python
+        ::
+
             r         : R_ENTITY, R_FEED, etc # the type of existing resource
             lid       : <name>                # the local name of the
                                               # existing resource
@@ -396,11 +434,13 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                                               # existing resource
             epId      : <GUID>                # the global Id of your agent
 
-        `Note` resource types are defined [here](../Core/Const.m.html)
+        Note:
+            Resource types are defined in :doc:`IoticAgent.Core.Const`
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def duplicated_callback(args):
                 print(args)
             ...
@@ -408,7 +448,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         This would print out something like the following on re-creation of an R_ENTITY
 
-            #!python
+        ::
+
             OrderedDict([(u'lid', u'new_thing1'), (u'r', 1),
                          (u'epId', u'ffd47b75ea786f55c76e337cdc47665a'),
                          (u'id', u'3f11df0a09588a6a1a9732e3837765f8')]))
@@ -417,23 +458,26 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def register_callback_renamed(self, func, serialised=True):
         """
-        Register a callback for resource rename.  This will be called when any resource
-        is renamed within your agent.
+        Register a callback for resource rename.  This will be called when any resource is renamed within your agent.
+
         If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
 
         The payload passed to your callback is an OrderedDict with the following keys
 
-            #!python
+        ::
+
             r         : R_ENTITY, R_FEED, etc # the type of resource deleted
             lid       : <name>                # the new local name of the resource
             oldLid    : <name>                # the old local name of the resource
             id        : <GUID>                # the global Id of the resource
 
-        `Note` resource types are defined [here](../Core/Const.m.html)
+        Note:
+            Resource types are defined in :doc:`IoticAgent.Core.Const`
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def renamed_callback(args):
                 print(args)
             ...
@@ -441,7 +485,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         This would print out something like the following on renaming of an R_ENTITY
 
-            #!python
+        ::
+
             OrderedDict([(u'lid', u'new_name'),
                          (u'r', 1),
                          (u'oldLid', u'old_name'),
@@ -452,22 +497,24 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def register_callback_deleted(self, func, serialised=True):
         """
-        Register a callback for resource deletion.  This will be called when any resource
-        is deleted within your agent.
+        Register a callback for resource deletion.  This will be called when any resource is deleted within your agent.
         If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
 
         The payload passed to your callback is an OrderedDict with the following keys
 
-            #!python
+        ::
+
             r         : R_ENTITY, R_FEED, etc # the type of resource deleted
             lid       : <name>                # the local name of the resource
             id        : <GUID>                # the global Id of the resource
 
-        `Note` resource types are defined [here](../Core/Const.m.html)
+        Note:
+            Resource types are defined in :doc:`IoticAgent.Core.Const`
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def deleted_callback(args):
                 print(args)
             ...
@@ -475,7 +522,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
         This would print out something like the following on deletion of an R_ENTITY
 
-            #!python
+        ::
+
             OrderedDict([(u'lid', u'old_thing1'),
                          (u'r', 1),
                          (u'id', u'315637813d801ec6f057c67728bf00c2')])
@@ -484,35 +532,39 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def register_callback_reassigned(self, func, serialised=True):
         """
-        Register a callback for resource reassignment.  This will be called when any resource
-        is reassigned to or from your agent.
-        If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
+        Register a callback for resource reassignment.  This will be called when any resource is reassigned to or from
+        your agent. If `serialised` is not set, the callbacks might arrive in a different order to they were requested.
 
-        The payload passed to your callback is an OrderedDict with the following keys
+        The payload passed to your callback is an OrderedDict with the following keys:
 
-            #!python
+        ::
+
             r         : R_ENTITY, R_FEED, etc # the type of resource reassigned
             lid       : <name>                # the local name of the resource
             epId      : <GUID>                # the global Id of the agent the
                                               # resource has been reassigned *to*
             id        : <GUID>                # the global Id of the resource
 
-        `Note` resource types are defined [here](../Core/Const.m.html)
+        Note:
+            Resource types are defined in :doc:`IoticAgent.Core.Const`
 
-        `Note` You can check whether this is an assign "in" or "out" by comparing the epId with your current
-        agent id, using the `IOT.Client.agent_id` property.  If it's the same it's a reassign to you.
+        Note:
+            You can check whether this is an assign "in" or "out" by comparing the epId with your current agent id,
+            using the `IOT.Client.agent_id` property.  If it's the same it's a reassign to you.
 
-        `Example`
+        **Example**
 
-            #!python
+        ::
+
             def reassigned_callback(args):
                 print(args)
             ...
             client.register_callback_reassigned(reassigned_callback)
 
-        This would print out something like the following on assignment of an R_ENTITY to
+        This would print out something like the following on assignment of an R_ENTITY to:
 
-            #!python
+        ::
+
             OrderedDict([(u'lid', u'moved_thing'),
                          (u'r', 1),
                          (u'epId', u'5a8d603ee757133d66d99875d0584c72'),
@@ -531,29 +583,26 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         Register a callback for new subscription. This gets called whenever one of *your* things subscribes to something
         else.
 
-        `Note` it is not called when whenever something else subscribes to your thing.
+        Note:
+            It is not called when whenever something else subscribes to your thing.
 
-        The payload passed to your callback is either a
-        [RemoteControl](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteControl) or
-        [RemoteFeed](RemotePoint.m.html#IoticAgent.IOT.RemotePoint.RemoteFeed) instance.
+        The payload passed to your callback is either a :doc:`IoticAgent.IOT.RemotePoint` RemoteControl or RemoteFeed
+        instance.
         """
         return self.__client.register_callback_created(partial(self.__callback_subscribed_filter, callback),
                                                        serialised=False)
 
     def simulate_feeddata(self, feedid, data, mime=None, time=None):
-        """Simulate the last feeddata received for given feedid
+        """
+        Simulate the last feeddata received for given feedid.
         Calls the registered callback for the feed with the last recieved feed data. Allows you to test your code
         without having to wait for the remote thing to share again.
 
-        `feedid` (required) (string) local id of your Feed
-
-        `data` (optional) (as applicable) The data you want to use to simulate the arrival of remote feed data
-
-        `mime` (optional) (string) The mime type of your data. See also:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
-
-        `time` (optional) (datetime) UTC timestamp for share. See also:
-        [share()](./Point.m.html#IoticAgent.IOT.Point.Feed.share)
+        Args:
+            feedid (string): local id of your Feed
+            data (optional): The data you want to use to simulate the arrival of remote feed data
+            mime (string, optional): The mime type of your data. See also :doc:`IoticAgent.IOT.Point` Feed.share
+            time (datetime, optional): UTC timestamp for share. See also: :doc:`IoticAgent.IOT.Point` Feed.share
         """
         self.__client.simulate_feeddata(feedid, data, mime, time)
 
@@ -562,13 +611,20 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     #
 
     def confirm_tell(self, data, success):
-        """Confirm that you've done as you were told.  Call this from your control callback to confirm action.
+        """
+        Confirm that you've done as you were told.  Call this from your control callback to confirm action.
         Used when you are advertising a control and you want to tell the remote requestor that you have
         done what they asked you to.
 
-        `Example:` this is a minimal example to show the idea.  Note - no Exception handling and ugly use of globals
+        **Example**
 
-            #!python
+        This is a minimal example to show the idea.
+
+        Note:
+            No Exception handling and ugly use of globals
+
+        ::
+
             client = None
 
             def controlreq_cb(args):
@@ -585,26 +641,24 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             thing = client.create_thing('test321')
             control = thing.create_control('control', controlreq_cb)
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communication problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Args:
+            data (dictionary):  The `"args"` dictionary that your callback was called with
+            success (boolean):  Whether or not the action you have been asked to do has been sucessful
 
-        `data` (mandatory) (dictionary)  The `"args"` dictionary that your callback was called with
-
-        `success` (mandatory) (boolean)  Whether or not the action you have been asked to do has been
-        sucessful.
-
-        More details on the contents of the `data` dictionary for controls see:
-        [create_control()](./Thing.m.html#IoticAgent.IOT.Thing.Thing.create_control)
+        More details on the contents of the `data` dictionary for controls see :doc:`IoticAgent.IOT.Thing`
+        create_control.
         """
         logger.info("confirm_tell(success=%s) [lid=\"%s\",pid=\"%s\"]", success, data[P_ENTITY_LID], data[P_LID])
         evt = self._request_point_confirm_tell(R_CONTROL, data[P_ENTITY_LID], data[P_LID], success, data['requestId'])
         self._wait_and_except_if_failed(evt)
 
     def save_config(self):
-        """Save the config, update the seqnum & default language
+        """
+        Save the config, update the seqnum & default language
         """
         self.__config.set('agent', 'seqnum', self.__client.get_seqnum())
         self.__config.set('agent', 'lang', self.__client.default_lang)
@@ -619,7 +673,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         return partial(self._parsed_callback_wrapper, callback_parsed, callback, R_CONTROL)
 
     def _get_point_data_handler_for(self, point):
-        """Used by point instances and data callbacks"""
+        """
+        Used by point instances and data callbacks
+        """
         with self.__point_data_handlers:
             try:
                 return self.__point_data_handlers[point]
@@ -627,8 +683,10 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 return self.__point_data_handlers.setdefault(point, PointDataObjectHandler(point, self))
 
     def _parsed_callback_wrapper(self, callback_parsed, callback_plain, foc, data):
-        """Used to by register_catchall_*data() and Thing class (follow, create_point) to present point data as an
-        object."""
+        """
+        Used to by register_catchall_*data() and Thing class (follow, create_point) to present point data as an
+        object.
+        """
         # used by PointDataObjectHandler as reference
         if foc == R_FEED:
             point_ref = data['pid']
@@ -659,7 +717,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     }
 
     def _wait_and_except_if_failed(self, event, timeout=None):
-        """Combines waiting for event and call to `_except_if_failed`. If timeout is not specified the configured
+        """
+        Combines waiting for event and call to `_except_if_failed`. If timeout is not specified the configured
         sync_timeout is used.
         """
         event.wait(timeout or self.__sync_timeout)
@@ -667,8 +726,12 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     @classmethod
     def _except_if_failed(cls, event):
-        """Raises an IOTException from the given event if it was not successful. Assumes timeout success flag on event
-        has not been set yet."""
+        """
+        Raises:
+
+            IOTException from the given event if it was not successful. Assumes timeout success flag on event has not
+                been set yet.
+        """
         if event.success is None:
             raise IOTSyncTimeout('Requested timed out', event)
         if not event.success:
@@ -686,19 +749,20 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             raise IOTException(msg, event)
 
     def list(self, all_my_agents=False, limit=500, offset=0):
-        """List `all` the things created by this client on this or all your agents
+        """
+        List `all` the things created by this client on this or all your agents
 
-        Returns QAPI list function payload
+        Returns:
+            QAPI list function payload
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            LinkException: Communications problem between you and the infrastructure
 
-        `all_my_agents` (optional) (boolean) If `False` limit search to just this agent,
-        if `True` return list of things belonging to all agents you own.
-
-        `limit` (optional) (integer) Return this many Point details
-
-        `offset` (optional) (integer) Return Point details starting at this offset
+        Args:
+            all_my_agents (boolean, optional): If `False` limit search to just this agent, if `True` return list of
+                things belonging to all agents you own.
+            limit (integer, optional): Return this many Point details
+            offset (integer, optional): Return Point details starting at this offset
         """
         logger.info("list(all_my_agents=%s, limit=%s, offset=%s)", all_my_agents, limit, offset)
         if all_my_agents:
@@ -710,15 +774,19 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         return evt.payload['entities']  # pylint:disable=unsubscriptable-object
 
     def get_thing(self, lid):
-        """Get the details of a newly created Thing. This only applies to asynchronous creation of Things and the
+        """
+        Get the details of a newly created Thing. This only applies to asynchronous creation of Things and the
         new Thing instance can only be retrieved once.
 
-        Returns a [Thing](Thing.m.html#IoticAgent.IOT.Thing.Thing) object,
-        which corresponds to the Thing with the given local id (nickname)
+        Returns:
+            A :doc:`IoticAgent.IOT.Thing` Thing object, which corresponds to the Thing with the given local id
+            (nickname)
 
-        Raises `KeyError` if the Thing has not been newly created (or has already been retrieved by a previous call)
+        Raises:
+            KeyError: The Thing has not been newly created (or has already been retrieved by a previous call)
 
-        `lid` (required) (string) local identifier of your Thing.
+        Args:
+            lid (string): local identifier of your Thing.
         """
         with self.__new_things:
             try:
@@ -727,19 +795,20 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 raise_from(KeyError('Thing %s not know as new' % lid), ex)
 
     def create_thing(self, lid):
-        """Create a new Thing with a local id (lid).
+        """
+        Create a new Thing with a local id (lid).
 
-        Returns a [Thing](Thing.m.html#IoticAgent.IOT.Thing.Thing)  object if successful
-        or if the Thing already exists
+        Returns:
+            A :doc:`IoticAgent.IOT.Thing` Thing object if successful or if the Thing already exists
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `lid` (required) (string) local identifier of your Thing.  The local id is your name or nickname for the thing.
-        It's "local" in that it's only available to you on this container, not searchable and not visible to others.
+        Args:
+            lid (string): local identifier of your Thing. The local id is your name or nickname for the
+                thing. It's "local" in that it's only available to you on this container, not searchable and not visible
+                to others.
         """
         evt = self.create_thing_async(lid)
         self._wait_and_except_if_failed(evt)
@@ -756,13 +825,11 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def delete_thing(self, lid):
         """Delete a Thing
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `lid` (required) (string) local identifier of the Thing you want to delete
+        `lid` (string) local identifier of the Thing you want to delete
         """
         logger.info("delete_thing(lid=\"%s\")", lid)
         evt = self.delete_thing_async(lid)
@@ -774,13 +841,16 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=None,
                scope=SearchScope.PUBLIC):
-        """Search the Iotic Space for public Things with metadata matching the search parameters:
+        """
+        Search the Iotic Space for public Things with metadata matching the search parameters:
         text, lang(uage), location, unit, limit, offset. Note that only things which have at least one point defined can
         be found.
 
-        Returns dict of results as below (first with reduced=False, second with reduced=True)- OR -
+        Returns:
+            Dict of results as below (first with reduced=False, second with reduced=True)
 
-            #!python
+        ::
+
             # reduced=False returns dict similar to below
             {
                 "2b2d8b068e404861b19f9e060877e002": {
@@ -827,6 +897,8 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 }
             }
 
+        ::
+
             # reduced=True returns dict similar to below
             {
                 "2b2d8b068e404861b19f9e060877e002": {
@@ -839,42 +911,34 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 }
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        **OR**
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        `text` (optional) (string) The text to search for. Label and description will be searched
-        for both Thing and Point and each word will be used as a tag search too. Text search is case-insensitive. Tag
-        search is language neutral.
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code to search in, e.g. "en" "fr"
-        Language is used to limit search to only labels and descriptions in that language. You will only get labels `in
-        that language` back from search and then only if there are any in that language.
-
-        `location` (optional) (dictionary) Latitude, longitude and radius to search within.
-        All values are float, Radius is in kilometers (km). E.g. `{"lat"=1.2345, "long"=54.321, "radius"=6.789}`. Note:
-        If `text` has not been specified, radius can at most be 25km.
-
-        `unit` (optional) (string) Valid URL of a unit in an ontology.  Or use a constant from the
-        [units](../Units.m.html#IoticAgent.Units) class - such as [METRE](../Units.m.html#IoticAgent.Units.METRE).
-
-        `limit` (optional) (integer) Return this many search results.
-
-        `offset` (optional) (integer) Return results starting at this offset - good for paging.
-
-        `reduced` (optional) (boolean) If `true`, return the reduced results just containing points and
-        their type.
-
-        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, perform search at container level.
-        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
-        `scope`.)
-
-        `scope` (optional) ([SearchScope](../Core/Const.m.html#IoticAgent.Core.Const.SearchScope)) Whether to perform
-        PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) search. Check the
-        [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata functionality is
-        available. (Note that PUBLIC and LOCAL_OWN scopes are always available.)
+        Args:
+            text (string, optional): The text to search for. Label and description will be searched for both Thing and
+                Point and each word will be used as a tag search too. Text search is case-insensitive. Tag search is
+                language neutral.
+            lang (string, optional): The two-character ISO 639-1 language code to search in, e.g. "en" "fr".
+                Language is used to limit search to only labels and descriptions in that language. You will only get
+                labels `in that language` back from search and then only if there are any in that language.
+            location (dictionary, optional): Latitude, longitude and radius to search within. All values are float,
+                Radius is in kilometers (km). E.g. {"lat"=1.2345, "long"=54.321, "radius"=6.789}. If `text` has not been
+                specified, radius can at most be 25km.
+            unit (string, optional): Valid URL of a unit in an ontology. Or use a constant from the
+                :doc:`IoticAgent.Units` class
+            limit (integer, optional): Return this many search results
+            offset (integer, optional): Return results starting at this offset - good for paging.
+            reduced (boolean, optional): If `true`, return the reduced results just containing points and their type.
+            local (boolean, optional): **Deprecated**, use `scope` instead. If `true`, perform search at container
+                level. Check the local_meta flag to determine whether local metadata functionality is available. (Takes
+                precedence over `scope`.)
+            scope (optional): Whether to perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level
+                restricted to own things) search. Check the :doc:`IoticAgent.IOT.Client` Client.local_meta) flag to
+                determine whether local metadata functionality is available. (Note that PUBLIC and LOCAL_OWN scopes are
+                always available.)
         """
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
@@ -886,15 +950,19 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
                        scope=SearchScope.PUBLIC):
-        """Shorthand for [search()](#IoticAgent.IOT.Client.Client.search) with `reduced=True`"""
+        """
+        Shorthand for search() from the :doc:`IoticAgent.IOT.Client` with `reduced=True`
+        """
         return self.search(text, lang, location, unit, limit, offset, reduced=True, local=local, scope=scope)
 
     def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
                        scope=SearchScope.PUBLIC):
-        """See [search()](#IoticAgent.IOT.Client.Client.search) for general documentation. Provides a thing-only
-        result set comprised only of things which have a location set, e.g.:
+        """
+        See :doc:`IoticAgent.IOT.Client` Client.search for general documentation. Provides a thing-only result set
+        comprised only of things which have a location set, e.g.:
 
-            #!python
+        ::
+
             {
                 # Keyed by thing id
                 '2b2d8b068e404861b19f9e060877e002':
@@ -921,11 +989,14 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     __guid_resources = (Thing, Point, RemoteFeed, RemoteControl)
 
     def describe(self, guid_or_resource, lang=None, local=None, scope=DescribeScope.AUTO):
-        """Describe returns the public (or local) description of a Thing or Point
+        """
+        Describe returns the public (or local) description of a Thing or Point
 
-        Returns the description dict (see below for Thing example) if available, otherwise `None`
+        Returns:
+            The description dict (see below for Thing example) if available, otherwise `None`
 
-            #!python
+        ::
+
             {
                 "type": "Entity",
                 "meta": {
@@ -955,31 +1026,25 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 }
             }
 
-        Raises [IOTException](./Exceptions.m.html#IoticAgent.IOT.Exceptions.IOTException)
-        containing the error if the infrastructure detects a problem
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
 
-        Raises [LinkException](../Core/AmqpLink.m.html#IoticAgent.Core.AmqpLink.LinkException)
-        if there is a communications problem between you and the infrastructure
-
-        `guid_or_resource` (mandatory) (string or object).
-        If a `string`, it should contain the globally unique id of the resource you want to describe in 8-4-4-4-12
-        (or undashed) format.
-        If an `object`, it should be an instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return
-        you the description of that object.
-
-        `lang` (optional) (string) The two-character ISO 639-1 language code for which labels and comments will be
-        returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags as
-        these are language neutral).
-
-        `local` (optional) (boolean) **Deprecated**, use `scope` instead. If `true`, lookup metadata at container level.
-        Check the local_meta flag to determine whether local metadata functionality is available. (Takes precedence over
-        `scope`.)
-
-        `scope` (optional) ([DescribeScope](../Core/Const.m.html#IoticAgent.Core.Const.DescribeScope)) Whether to
-        perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level restricted to own things) metadata lookup.
-        Check the [local_meta](#IoticAgent.IOT.Client.Client.local_meta) flag to determine whether local metadata
-        functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN scopes are always available.). AUTO mode
-        first attempts to look up private metadata, then public.
+        Args:
+            guid_or_resource (string or object): If a `string`, it should contain the globally unique id
+                of the resource you want to describe in 8-4-4-4-12 (or undashed) format. If an `object`, it should be an
+                instance of Thing, Point, RemoteFeed or RemoteControl.  The system will return you the description of
+                that object.
+            lang (string, optional): The two-character ISO 639-1 language code for which labels and comments will be
+                returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags
+                as these are language neutral).
+            local (boolean, optional): **Deprecated**, use `scope` instead. If `true`, lookup metadata at container
+                level. Check the local_meta flag to determine whether local metadata functionality is available. (Takes
+                precedence over `scope`.)
+            scope (optional): Whether to perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level
+                restricted to own things) metadata lookup. Check the :doc:`IoticAgent.IOT.Client` Client.local_meta flag
+                to determine whether local metadata functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN
+                scopes are always available.). AUTO mode first attempts to look up private metadata, then public.
         """
         if isinstance(guid_or_resource, self.__guid_resources):
             guid = guid_or_resource.guid

@@ -37,7 +37,8 @@ class ThingRunner(object):
     """Automates, starting, stopping and running of an Agent instance, either in the foreground (blocking) or
     background. Create a subclass to use, e.g.:
 
-        #!python
+    ::
+
         class MyRunner(ThingRunner):
             # only required if want to add own fields to class instance
             def __init__(self, other, arguments, config=None):
@@ -150,7 +151,10 @@ class ThingRunner(object):
 
     def stop(self, timeout=None):
         """Requests device to stop running, waiting at most the given timout in seconds (fractional). Has no effect if
-        `run()` was not called with background=True set. Returns True if successfully stopped (or already not running).
+        `run()` was not called with background=True set.
+
+        Returns:
+            True if successfully stopped (or already not running).
         """
         stopped = True
         self.__shutdown.set()
@@ -165,7 +169,7 @@ class ThingRunner(object):
 
     @property
     def client(self):
-        """[Client](./IOT/Client.m.html#IoticAgent.IOT.Client.Client) instance in use by this runner"""
+        """:doc:`IoticAgent.IOT.Client` instance in use by this runner"""
         return self.__client
 
     @property

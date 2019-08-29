@@ -44,11 +44,13 @@ __IDX_MAPPING = {
 
 
 def valid_mimetype(type_, allow_none=True):
-    """Checks for validity of given type, optionally allowing for a None value. Note: Unknown idx/NUMBER notation, where
-       NUMBER is not a known shorthand mapping, will be rejected, i.e. type_ is valid if it
-       1)  is an ASCII-only string between 1 & 64 characters long
-       2a) does not begin with "idx/" OR
-       2b) begins with "idx/" and is followed by a known shorthand index (integer)
+    """
+    Checks for validity of given type, optionally allowing for a None value. Note: Unknown idx/NUMBER notation, where
+    NUMBER is not a known shorthand mapping, will be rejected, i.e. `type_` is valid if it:
+
+    * is an ASCII-only string between 1 & 64 characters long
+    * does not begin with "idx/" OR
+    * begins with "idx/" and is followed by a known shorthand index (integer)
     """
     if isinstance(type_, unicode_type):
         match = __IDX_PATTERN.match(type_)
@@ -71,7 +73,10 @@ def __is_ascii(obj, min_len=None, max_len=None):
 
 
 def expand_idx_mimetype(type_):
-    """Returns long equivalent of type_, if available, otherwise type_ itself. Does not raise exceptions"""
+    """
+    Returns:
+        Long equivalent of `type_`, if available, otherwise `type_` itself. Does not raise exceptions
+    """
     if isinstance(type_, unicode_type):
         match = __IDX_PATTERN.match(type_)
         return __IDX_MAPPING.get(match.group(1), type_) if match else type_

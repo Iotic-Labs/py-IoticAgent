@@ -48,7 +48,8 @@ class ThingMeta(ResourceMeta):
     def get_location(self):
         """Gets the current geo location of your Thing
 
-        Returns tuple of `(lat, lon)` in `float` or `(None, None)` if location is not set for this Thing
+        Returns:
+            Tuple of `(lat, lon)` in `float` or `(None, None)` if location is not set for this Thing
         """
         lat = None
         lon = None

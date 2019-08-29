@@ -14,7 +14,7 @@
 """Utility functions
 """
 
-from .compat import raise_from
+from .compat import raise_from, Lock, Event, monotonic
 
 
 def version_string_to_tuple(version):
@@ -39,3 +39,46 @@ def validate_nonnegative_int(obj, name, allow_zero=False):
     except (ValueError, TypeError) as ex:
         raise_from(ValueError('%s invalid' % name), ex)
     return obj
+
+
+class EventWithChangeTimes(Event):
+    """Keeps track of last clear and set calls (which actually change the state of the event) using time.monotonic."""
+
+    # Equivalent to maxint in Python 2
+    UNSET_VALUE = 2**63 - 1
+
+    def __init__(self):
+        super(EventWithChangeTimes, self).__init__()
+        self.__lock = Lock()
+        self.__last_clear = None
+        self.__last_set = None
+
+    @property
+    def time_since_last_set(self):
+        """Time (in fractional seconds) since event was set. If the event has never been set, UNSET_VALUE will be
+        returned.
+        """
+        if self.__last_set is None:
+            return self.UNSET_VALUE
+        return monotonic() - self.__last_set
+
+    @property
+    def time_since_last_clear(self):
+        """Time (in fractional seconds) since event was cleared. If the event has never been (explicitly) cleared,
+        UNSET_VALUE will be returned.
+        """
+        if self.__last_clear is None:
+            return self.UNSET_VALUE
+        return monotonic() - self.__last_clear
+
+    def set(self):
+        if not self.is_set():
+            with self.__lock:
+                super(EventWithChangeTimes, self).set()
+                self.__last_set = monotonic()
+
+    def clear(self):
+        if self.is_set():
+            with self.__lock:
+                super(EventWithChangeTimes, self).clear()
+                self.__last_clear = monotonic()
