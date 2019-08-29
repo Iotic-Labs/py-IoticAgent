@@ -16,6 +16,8 @@
 
 from __future__ import print_function
 
+from os import path
+
 # Allow for environments without setuptools
 try:
     from setuptools import setup, find_packages
@@ -24,15 +26,10 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages  # pylint: disable=ungrouped-imports
 
-# For converting markdown README.md
-try:
-    from pypandoc import convert
-except ImportError:
-    READ_MD = lambda f: open(f, 'r').read()  # noqa: E731
-    print('Warning: pypandoc module not found, will not convert Markdown to RST')
-else:
-    READ_MD = lambda f: convert(f, 'rst')  # noqa: E731
 
+PKGDIR = path.abspath(path.dirname(__file__))
+with open(path.join(PKGDIR, 'README.md'), encoding='utf-8') as f:
+    LONG_DESCRIPTION = f.read()
 
 VERSION = '0.6.10'
 
@@ -40,7 +37,8 @@ setup(
     name='py-IoticAgent',
     version=VERSION,
     description='Agent for accessing Iotic Space',
-    long_description=READ_MD('README.md'),
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     author='Iotic Labs Ltd',
     author_email='info@iotic-labs.com',
     maintainer='Iotic Labs Ltd',

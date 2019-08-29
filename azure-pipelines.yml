@@ -39,7 +39,7 @@ stages:
     - script: pylint --rcfile=pylint.rc setup.py src
       displayName: 'lint package using pylint'
 
-    - script: python setup.py bdist_wheel --universal
+    - script: python setup.py bdist_wheel --universal && python setup.py sdist
       displayName: 'Build package'
 
     - script: twine check dist/*
@@ -49,6 +49,7 @@ stages:
       condition: ne(variables['Build.Reason'], 'PullRequest')
       inputs:
         contents: 'dist/*'
+        flattenFolders: true
         targetFolder: $(Build.ArtifactStagingDirectory)
       displayName: 'Stage packages in dist'
 
