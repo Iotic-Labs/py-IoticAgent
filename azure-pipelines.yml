@@ -1,0 +1,60 @@
+trigger:
+- dev
+- master
+
+pr:
+- dev
+- master
+
+variables:
+  python_build_version: 3.6.9
+  vmImage: ubuntu-16.04
+
+stages:
+- stage: PythonPackages
+  displayName: 'Python packages'
+
+  jobs:
+  - job: Build
+    displayName: 'Build'
+
+    pool:
+      vmImage: $(vmImage)
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: $(python_build_version)
+        addToPath: true
+
+    - script: pip install -U pip setuptools wheel twine pylint flake8
+      displayName: 'Install build dependencies'
+
+    - script: pip install -e .
+      displayName: 'Install package'
+
+    - script: flake8 --config flake8.cfg setup.py src
+      displayName: 'lint package using flake8'
+
+    - script: pylint --rcfile=pylint.rc setup.py src
+      displayName: 'lint package using pylint'
+
+    - script: python setup.py bdist_wheel --universal
+      displayName: 'Build package'
+
+    - script: twine check dist/*
+      displayName: 'Check package'
+
+    - task: CopyFiles@2
+      condition: ne(variables['Build.Reason'], 'PullRequest')
+      inputs:
+        contents: 'dist/*'
+        targetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: 'Stage packages in dist'
+
+    - task: PublishBuildArtifacts@1
+      condition: ne(variables['Build.Reason'], 'PullRequest')
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: python
+      displayName: 'Archive all packages as an artifact'
