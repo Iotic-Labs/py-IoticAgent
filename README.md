@@ -11,13 +11,13 @@ It provides two styles of interface:
 
 # Getting started
 
-Once the agent's installed, the [Agent documentation](https://iotic-labs.github.io/py-IoticAgent) should get you started.
+Once the agent's installed, the [Agent documentation](https://py-ioticagent.readthedocs.io) should get you started.
 
 You will need a free [Iotic Space developer account](https://developer.iotic-labs.com/join/) to get credentials for the agent's .ini file.
 
 ## Building the docs
 
-The online [Agent documentation](https://iotic-labs.github.io/py-IoticAgent) can also be built locally if you prefer.
+The online [Agent documentation](https://py-ioticagent.readthedocs.io) can also be built locally if you prefer.
 
 1. This requires [pdoc](https://pypi.python.org/pypi/pdoc) so run `pip install pdoc` if needed.
 2. Run the `make_docs.sh` script to generate the docs.
@@ -56,7 +56,7 @@ pip3 install py-IoticAgent
 
 ## Trying the agent
 
-Now you can head to our [getting started doc](https://iotic-labs.github.io/py-IoticAgent),
+Now you can head to our [getting started doc](https://py-ioticagent.readthedocs.io),
 which provides a simple 3-line 'minimal script' to check everything's working.
 
 ## Possible issues
