@@ -183,7 +183,7 @@ def py_version_check():
 
 
 def ssl_version_check():
-    from ssl import OPENSSL_VERSION_INFO as sslv, OPENSSL_VERSION
+    from ssl import OPENSSL_VERSION_INFO as sslv, OPENSSL_VERSION  # pylint: disable=import-outside-toplevel
     if not (sslv[0] > 1 or
             (sslv[0] == 1 and sslv[1] > 0) or
             (sslv[0] == 1 and sslv[1] == 0 and sslv[2] > 0)):

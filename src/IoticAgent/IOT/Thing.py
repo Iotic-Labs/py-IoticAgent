@@ -580,7 +580,6 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
         return req
 
     def __sub(self, foc, gpid, callback=None):
-        logger.info("__sub(foc=%s, gpid=\"%s\", callback=%s) [lid=%s]", foc_to_str(foc), gpid, callback, self.__lid)
         evt = self.__sub_async(foc, gpid, callback=callback)
         self._client._wait_and_except_if_failed(evt)
         try:

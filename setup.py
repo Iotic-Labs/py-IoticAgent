@@ -31,7 +31,7 @@ PKGDIR = path.abspath(path.dirname(__file__))
 with open(path.join(PKGDIR, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
-VERSION = '0.6.10'
+VERSION = '0.6.11'
 
 setup(
     name='py-IoticAgent',
@@ -48,7 +48,7 @@ setup(
     packages=find_packages('src', exclude=['tests']),
     package_dir={'': 'src'},
     install_requires=[
-        'py-ubjson >= 0.8.5',
+        'py-ubjson >= 0.14.0',
         'rdflib >= 4.2.1',
         'enum34 >= 1.1.6; python_version < "3.4"',
     ],

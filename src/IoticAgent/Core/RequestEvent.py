@@ -121,4 +121,9 @@ class RequestEvent(object):  # pylint: disable=too-many-instance-attributes
                 # todo better way to raise errors on behalf of other Threads?
                 raise self.exception  # pylint: disable=raising-bad-type
             return True
+
+        # Won't have been called in case a) _set() hasn't be called and b) request didn't complete before wait (see
+        # _run_on_completion).
+        if self._complete_func:
+            self.__run_completion_func(self._complete_func, self.id_)
         return False

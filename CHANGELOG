@@ -1,3 +1,6 @@
+v0.6.11
+- Fix pending subscription timeout behaviour
+
 v0.6.10
 - Fix thing re-creation handling when no agent assigned
 - Remove unused acksecs parameter from AmqpLink

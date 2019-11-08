@@ -22,7 +22,7 @@ RequestEvent._messages will contain the raw messages from the queue.
 
 from __future__ import unicode_literals
 
-__version__ = '0.6.10'
+__version__ = '0.6.11'
 
 from . import Const  # noqa
 
