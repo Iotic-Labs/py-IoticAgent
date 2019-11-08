@@ -52,6 +52,9 @@ setup(
         'rdflib >= 4.2.1',
         'enum34 >= 1.1.6; python_version < "3.4"',
     ],
+    extras_require={
+        'lz4': 'py-lz4framed>=0.13.0,<1.0'
+    },
     zip_safe=True,
     keywords=['iotic', 'agent', 'labs', 'space', 'iot'],
     classifiers=[

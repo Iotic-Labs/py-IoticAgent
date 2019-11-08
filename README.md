@@ -87,4 +87,4 @@ The agent has both mandatory and optional dependencies - this only matters for t
 - **Mandatory** [RDFlib](https://pypi.python.org/pypi/rdflib) to provide an RDF metadata handling API
 - **Mandatory** [enum34](https://pypi.python.org/pypi/enum34) (only for Python versions < 3.4)
 - **Optional** [regex](https://pypi.python.org/pypi/regex) re module replacement (for more accurate unicode validation)
-- **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression
+- **Optional** [py-lz4framed](https://pypi.python.org/pypi/py-lz4framed) for faster compression (use `lz4` extra target)
