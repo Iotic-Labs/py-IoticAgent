@@ -31,7 +31,7 @@ PKGDIR = path.abspath(path.dirname(__file__))
 with open(path.join(PKGDIR, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
-VERSION = '0.6.11'
+VERSION = '0.6.12'
 
 setup(
     name='py-IoticAgent',
