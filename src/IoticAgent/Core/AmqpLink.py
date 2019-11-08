@@ -223,7 +223,7 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
         if ((version_info[0] == 2 and (version_info[1] >= 7 and version_info[2] >= 5)) or
                 (version_info[0] == 3 and version_info[1] >= 4)):
             logger.debug('SSL method for 2.7.5+ / 3.4+')
-            # pylint: disable=no-name-in-module
+            # pylint: disable=no-name-in-module,import-outside-toplevel
             from ssl import SSLContext, PROTOCOL_TLSv1_2, CERT_REQUIRED, OP_NO_COMPRESSION
             ctx = SSLContext(PROTOCOL_TLSv1_2)
             ctx.set_ciphers('HIGH:!SSLv3:!TLSv1:!aNULL:@STRENGTH')
@@ -236,14 +236,14 @@ class AmqpLink(object):  # pylint: disable=too-many-instance-attributes
                 ctx.check_hostname = False
             else:
                 # Verify public certifcates if sslca is None (default)
-                from ssl import Purpose  # pylint: disable=no-name-in-module
+                from ssl import Purpose  # pylint: disable=no-name-in-module,import-outside-toplevel
                 ctx.load_default_certs(purpose=Purpose.SERVER_AUTH)
                 ctx.verify_mode = CERT_REQUIRED
                 ctx.check_hostname = True
 
         elif version_info[0] == 3 and version_info[1] < 4:
             logger.debug('Using SSL method for 3.2+, < 3.4')
-            # pylint: disable=no-name-in-module
+            # pylint: disable=no-name-in-module,import-outside-toplevel
             from ssl import SSLContext, CERT_REQUIRED, PROTOCOL_SSLv23, OP_NO_SSLv2, OP_NO_SSLv3, OP_NO_TLSv1
             ctx = SSLContext(PROTOCOL_SSLv23)
             ctx.options |= (OP_NO_SSLv2 | OP_NO_SSLv3 | OP_NO_TLSv1)

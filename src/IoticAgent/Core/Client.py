@@ -1213,8 +1213,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
                         self.__request_except(requestId, exc, set_and_forget=False)
                         # request will be retried (assuming timeout is not reached after delay)
                         continue
-                    else:
-                        self.__request_except(requestId, exc)
+                    self.__request_except(requestId, exc)
                 else:
                     # if not published, an exception will have been set on the request already
                     if published:
