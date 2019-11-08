@@ -17,9 +17,9 @@ You will need a free [Iotic Space developer account](https://developer.iotic-lab
 
 ## Building the docs
 
-The online [Agent documentation](https://py-ioticagent.readthedocs.io) can also be built locally if you prefer.
+The online [Agent documentation](https://py-ioticagent.readthedocs.io) can also be built locally if you prefer. (See also `sphinx-doc/README.md`)
 
-1. This requires [pdoc](https://pypi.python.org/pypi/pdoc) so run `pip install pdoc` if needed.
+1. `pip install -r sphinx-doc/requirements.txt`
 2. Run the `make_docs.sh` script to generate the docs.
 
 ## System requirements
@@ -71,17 +71,13 @@ sudo pip install -U setuptools
 - With certain versions of pip, the installation of the py-ubjson dependency can fail when using `-t` flag. (Symptom: py-IoticAgent is installed but py-ubjson is not.)  See [this pip issue](https://github.com/pypa/pip/issues/3056). In this case, force non-extension installation: `PYUBJSON_NO_EXTENSION=1 pip3 install py-IoticAgent`
 - On macOS, non-Homebrew Python setups may encounter this error from the agent: _Exception: At least SSL v1.0.1 required for TLS v1.2_
 
-## Advanced: install from Git
-This is an alternative to the pip install, if there's a specific change you need that's not in the pip version:
+## Advanced: install from Git (development mode)
+This is an alternative, if there's a specific change you need that's not in the pip version:
 
 ```shell
 git clone https://github.com/Iotic-Labs/py-IoticAgent.git
 cd py-IoticAgent
-mkdir 3rd
-# Direct dependencies of agent
-pip3 install -t 3rd -r requirements.txt
-
-export PYTHONPATH=`pwd`/3rd:`pwd`/src
+pip install -e .
 ```
 
 ### Dependencies

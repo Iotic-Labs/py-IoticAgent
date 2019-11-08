@@ -1,4 +1,0 @@
-# This should mirror install_requires
-py-ubjson >= 0.8.5
-rdflib >= 4.2.1
-enum34 >= 1.1.6; python_version < "3.4"
