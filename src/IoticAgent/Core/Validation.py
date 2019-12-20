@@ -51,9 +51,10 @@ _PATTERN_ASCII = re_compile(r'(?%s)^\S+$' % 'a' if PY3 else '')
 _PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'(?u)^\s.*|.*\s$')
 _PATTERN_WHITESPACE = re_compile(r'(?u)^.*\s.*$')
 _PATTERN_LANGUAGE = re_compile(r'(?%si)^[a-z]{2}$' % 'a' if PY3 else '')
-_PATTERN_WORD = re_compile(r'(?u)^\w+$')
-# For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters
-_PATTERN_WORDS = re_compile(r'(?u)(?<!\S)\w+(?!\S)')
+_PATTERN_TAG = re_compile(r'(?u)^[\w-]{%d,%d}$' % (VALIDATION_META_TAG_MIN, VALIDATION_META_TAG_MAX))
+# For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters. Allow
+# both words and tags. Remote end will validate terms in more detail.
+_PATTERN_SEARCH_TERMS = re_compile(r'(?u)(?<!\S)[\w-]+(?!\S)')
 # for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)
 _PATTERN_URL_PART = re_compile(r'(?u)^\S{3}\S*$')
 
@@ -67,7 +68,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
                              no_leading_trailing_whitespace=True,
                              no_whitespace=False,
                              no_newline=True,
-                             whole_word=False,
+                             as_tag=False,
                              min_len=1,
                              max_len=0):
         """Ensures the provided object can be interpreted as a unicode string, optionally with
@@ -83,8 +84,8 @@ class Validation(object):  # pylint: disable=too-many-public-methods
             raise ValueError('%s contains leading/trailing whitespace' % name)
         if (min_len and len(obj) < min_len) or (max_len and len(obj) > max_len):
             raise ValueError('%s too short/long (%d/%d)' % (name, min_len, max_len))
-        if whole_word:
-            if not _PATTERN_WORD.match(obj):
+        if as_tag:
+            if not _PATTERN_TAG.match(obj):
                 raise ValueError('%s can only contain alphanumeric (unicode) characters, numbers and the underscore'
                                  % name)
         # whole words cannot contain newline so additional check not required
@@ -146,7 +147,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
 
     @classmethod
     def __tag_check_convert(cls, tag):
-        return cls.check_convert_string(tag, 'tags', no_whitespace=True, whole_word=True,
+        return cls.check_convert_string(tag, 'tags', no_whitespace=True, as_tag=True,
                                         min_len=VALIDATION_META_TAG_MIN, max_len=VALIDATION_META_TAG_MAX)
 
     @staticmethod
@@ -304,7 +305,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
         text = cls.check_convert_string(text, name='text', no_leading_trailing_whitespace=False)
         if len(text) > VALIDATION_META_SEARCH_TEXT:
             raise ValueError("Search text can contain at most %d characters" % VALIDATION_META_SEARCH_TEXT)
-        text = ' '.join(_PATTERN_WORDS.findall(text))
+        text = ' '.join(_PATTERN_SEARCH_TERMS.findall(text))
         if not text:
             raise ValueError('Search text must contain at least one non-whitespace term (word)')
         return text

@@ -1,3 +1,7 @@
+v0.6.12
+- Relax tag restrictions (in line with QAPI update)
+- Add extras_require for py-lz4framed
+
 v0.6.11
 - Fix pending subscription timeout behaviour
 
