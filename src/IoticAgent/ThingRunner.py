@@ -185,12 +185,10 @@ class ThingRunner(object):
 
     def on_startup(self):
         """One-off tasks to perform straight **after** agent startup."""
-        pass
 
     def main(self):  # pylint: disable=no-self-use
         """Application logic goes here. Should return (or raise exception) to end program run. Should check whether the
         `shutdown_requested` property is True an return if this is the case."""
-        pass
 
     def on_exception(self, ctx, exc_info):  # pylint: disable=no-self-use,unused-argument
         """Called when an exception occurs within runner methods (or initialisation). If the return value evalutes to
@@ -201,7 +199,6 @@ class ThingRunner(object):
         `ctx` One of `RunContext`. Indicates at what point exception occurred.
         `exc_info` Tuple (as for `sys.exc_info()`) of the exception
         """
-        pass
 
     def on_shutdown(self, exc_info):  # pylint: disable=no-self-use
         """One-off tasks to perform on just before agent shutdown. exc_info is a tuple (as for `sys.exc_info()`) of the
@@ -211,7 +208,6 @@ class ThingRunner(object):
         return value evalutes to False, the exception will be re-raised (the default). Note that KeyboardInterrupt will
         not be passed to this method (but will result in this method being called).
         """
-        pass
 
 
 class RetryingThingRunner(ThingRunner):

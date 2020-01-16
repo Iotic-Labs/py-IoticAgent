@@ -36,34 +36,27 @@ class IOTException(Exception):
 class IOTSyncTimeout(IOTException):
     """Synchronous request timeout (see IOT.sync_request_timeout configuration option). Raised when a request does not
     complete within the timeout."""
-    pass
 
 
 class IOTUnknown(IOTException):
     """Request FAILED because of Unkown resource (EG Thing not found)"""
-    pass
 
 
 class IOTMalformed(IOTException):
     """Request FAILED due to invalid parameters (this might indicate agent incompatibility)"""
-    pass
 
 
 class IOTNotAllowed(IOTException):
     """Request FAILED to unsupporter request (e.g. a feature is not enabled/available)"""
-    pass
 
 
 class IOTInternalError(IOTException):
     """Request FAILED with Internal Error"""
-    pass
 
 
 class IOTAccessDenied(IOTException):
     """Request FAILED with ACL Access Denied"""
-    pass
 
 
 class IOTClientError(IOTException):
     """Unexpected agent-local failure"""
-    pass

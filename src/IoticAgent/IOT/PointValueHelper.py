@@ -125,7 +125,6 @@ class _ValueFilter(namedtuple('nt__ValueFilter', 'by_type by_unit')):
 
 class RefreshException(Exception):
     """Raised by __refresh() to indicate metadata unsuitable for template usage."""
-    pass
 
 
 class PointDataObjectHandler(object):

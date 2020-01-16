@@ -120,8 +120,7 @@ class Zlib(Compressor):
         out.write(decompressor.decompress(data, max_size + 1024))
         if out.tell() > max_size:
             raise OversizeException(max_size)
-        else:
-            out.write(decompressor.flush())
+        out.write(decompressor.flush())
         return out.getvalue()
 
 
