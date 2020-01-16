@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.12'
+    __core_version = '0.6.13'
 
     def __init__(self, config=None):
         """
@@ -246,9 +246,9 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         if core[0] != expected[0]:
             raise RuntimeError('Core client dependency major version difference: %s (%s expected)' %
                                (Core_Version, cls.__core_version))
-        elif core[1] < expected[1]:
+        if core[1] < expected[1]:
             raise RuntimeError('Core client minor version old: %s (%s known)' % (Core_Version, cls.__core_version))
-        elif core[1] > expected[1]:
+        if core[1] > expected[1]:
             warn('Core client minor version difference: %s (%s known)' % (Core_Version, cls.__core_version),
                  RuntimeWarning)
         elif core[2] > expected[2]:

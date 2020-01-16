@@ -15,6 +15,6 @@
 helper objects for Thing, Point, etc.
 """
 
-__version__ = '0.6.12'
+__version__ = '0.6.13'
 
 from .Client import Client, SearchScope, DescribeScope  # NOQA

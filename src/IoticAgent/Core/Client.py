@@ -124,7 +124,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '1.2.2'
+    __qapi_version = '1.2.3'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -508,9 +508,9 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         if qapi_version[0] != expected[0]:
             raise RuntimeError('QAPI major version difference: %s (%s expected)' %
                                (qapi_str, cls.__qapi_version))
-        elif qapi_version[1] < expected[1]:
+        if qapi_version[1] < expected[1]:
             raise RuntimeError('QAPI minor version older: %s (%s known)' % (qapi_str, cls.__qapi_version))
-        elif qapi_version[1] > expected[1]:
+        if qapi_version[1] > expected[1]:
             warn('QAPI minor version difference: %s (%s known)' % (qapi_str, cls.__qapi_version), RuntimeWarning)
         elif qapi_version[2] > expected[2]:
             warn('QAPI patch level change: %s (%s known)' % (qapi_str, cls.__qapi_version), RuntimeWarning)
@@ -548,8 +548,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         if comp not in COMPRESSORS:
             if comp == COMP_LZ4F:
                 raise ValueError('lz4f compression not available, required lz4framed')
-            else:
-                raise ValueError('Invalid compression method')
+            raise ValueError('Invalid compression method')
         if not isinstance(size, int_types) or size < 1:
             raise ValueError('size must be non-negative integer')
         self.__comp_default = comp

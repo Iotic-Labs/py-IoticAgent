@@ -1,3 +1,6 @@
+v0.6.13
+- Relax tag restrictions (in line with QAPI update)
+
 v0.6.12
 - Relax tag restrictions (in line with QAPI update)
 - Add extras_require for py-lz4framed

@@ -51,7 +51,7 @@ _PATTERN_ASCII = re_compile(r'(?%s)^\S+$' % 'a' if PY3 else '')
 _PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'(?u)^\s.*|.*\s$')
 _PATTERN_WHITESPACE = re_compile(r'(?u)^.*\s.*$')
 _PATTERN_LANGUAGE = re_compile(r'(?%si)^[a-z]{2}$' % 'a' if PY3 else '')
-_PATTERN_TAG = re_compile(r'(?u)^[\w-]{%d,%d}$' % (VALIDATION_META_TAG_MIN, VALIDATION_META_TAG_MAX))
+_PATTERN_TAG = re_compile(r'(?u)^[\w.-]{%d,%d}$' % (VALIDATION_META_TAG_MIN, VALIDATION_META_TAG_MAX))
 # For e.g. splitting search text into individual words. Do not pick words surrounded by non-whitespace characters. Allow
 # both words and tags. Remote end will validate terms in more detail.
 _PATTERN_SEARCH_TERMS = re_compile(r'(?u)(?<!\S)[\w-]+(?!\S)')

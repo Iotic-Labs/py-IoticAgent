@@ -14,13 +14,10 @@
 
 
 class LinkException(Exception):
-    """Used by AmqpLink to indicate transport-related errors.
-    """
-    pass
+    """Used by AmqpLink to indicate transport-related errors."""
 
 
 class LinkShutdownException(LinkException):
     """Used by client to indicate shutdown. (Subclass of LinkException to simplify
     exception handling for users.
     """
-    pass
