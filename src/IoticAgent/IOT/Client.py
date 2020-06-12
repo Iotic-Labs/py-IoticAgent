@@ -51,7 +51,7 @@ from .PointValueHelper import PointDataObjectHandler, RefreshException
 class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
 
     # Core version targeted by IOT client
-    __core_version = '0.6.13'
+    __core_version = '0.7.0'
 
     def __init__(self, config=None):
         """
@@ -839,7 +839,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info("delete_thing(lid=\"%s\")", lid)
         return self._request_entity_delete(lid)
 
-    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False, local=None,
+    def search(self, text=None, lang=None, location=None, unit=None, limit=50, offset=0, reduced=False,
                scope=SearchScope.PUBLIC):
         """
         Search the Iotic Space for public Things with metadata matching the search parameters:
@@ -855,19 +855,16 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             {
                 "2b2d8b068e404861b19f9e060877e002": {
                     "long": -1.74803,
-                    "matches": 3.500,
                     "lat": 52.4539,
                     "label": "Weather Station #2",
                     "owner": "3bbf307b43b1460289fe707619dece3d",
                     "points": {
                         "a300cc90147f4e2990195639de0af201": {
-                            "matches": 3.000,
                             "label": "Feed 201",
                             "type": "Feed",
                             "storesRecent": true
                         },
                         "a300cc90147f4e2990195639de0af202": {
-                            "matches": 1.500,
                             "label": "Feed 202",
                             "type": "Feed",
                             "storesRecent": false
@@ -876,19 +873,16 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
                 },
                 "76a3b24b02d34f20b675257624b0e001": {
                     "long": 0.716356,
-                    "matches": 2.000,
                     "lat": 52.244384,
                     "label": "Weather Station #1",
                     "owner": "3bbf307b43b1460289fe707619dece3d",
                     "points": {
                         "fb1a4a4dbb2642ab9f836892da93f101": {
-                            "matches": 1.000,
                             "label": "My weather feed",
                             "type": "Feed",
                             "storesRecent": false
                         },
                         "fb1a4a4dbb2642ab9f836892da93c102": {
-                            "matches": 1.000,
                             "label": None,
                             "type": "Control",
                             "storesRecent": false
@@ -932,9 +926,6 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             limit (integer, optional): Return this many search results
             offset (integer, optional): Return results starting at this offset - good for paging.
             reduced (boolean, optional): If `true`, return the reduced results just containing points and their type.
-            local (boolean, optional): **Deprecated**, use `scope` instead. If `true`, perform search at container
-                level. Check the local_meta flag to determine whether local metadata functionality is available. (Takes
-                precedence over `scope`.)
             scope (optional): Whether to perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level
                 restricted to own things) search. Check the :doc:`IoticAgent.IOT.Client` Client.local_meta) flag to
                 determine whether local metadata functionality is available. (Note that PUBLIC and LOCAL_OWN scopes are
@@ -943,19 +934,19 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         logger.info("search(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s, reduced=%s)",
                     text, lang, location, unit, limit, offset, reduced)
         evt = self._request_search(text, lang, location, unit, limit, offset,
-                                   SearchType.REDUCED if reduced else SearchType.FULL, local, scope)
+                                   SearchType.REDUCED if reduced else SearchType.FULL, scope)
 
         self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
-    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
+    def search_reduced(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0,
                        scope=SearchScope.PUBLIC):
         """
         Shorthand for search() from the :doc:`IoticAgent.IOT.Client` with `reduced=True`
         """
-        return self.search(text, lang, location, unit, limit, offset, reduced=True, local=local, scope=scope)
+        return self.search(text, lang, location, unit, limit, offset, reduced=True, scope=scope)
 
-    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, local=None,
+    def search_located(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0,
                        scope=SearchScope.PUBLIC):
         """
         See :doc:`IoticAgent.IOT.Client` Client.search for general documentation. Provides a thing-only result set
@@ -980,15 +971,186 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
         """
         logger.info("search_located(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
                     text, lang, location, unit, limit, offset)
-        evt = self._request_search(text, lang, location, unit, limit, offset, SearchType.LOCATED, local, scope)
+        evt = self._request_search(text, lang, location, unit, limit, offset, SearchType.LOCATED, scope)
 
         self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
 
+    def search_minimal(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0,
+                       scope=SearchScope.PUBLIC):
+        """
+        See :doc:`IoticAgent.IOT.Client` Client.search for general documentation. Returns just a list of the id's of
+        matching things.
+
+        ::
+
+            [
+                '2b2d8b068e404861b19f9e060877e002',
+                '76a3b24b02d34f20b675257624b0e001',
+                '76a3b24b02d34f20b675257624b0e004',
+                '76a3b24b02d34f20b675257624b0e005',
+            ]
+        """
+        logger.info("search_minimal(text=\"%s\", lang=\"%s\", location=\"%s\", unit=\"%s\", limit=%s, offset=%s)",
+                    text, lang, location, unit, limit, offset)
+        evt = self._request_search(text, lang, location, unit, limit, offset, SearchType.MINIMAL, scope)
+
+        self._wait_and_except_if_failed(evt)
+        return evt.payload['result']  # pylint: disable=unsubscriptable-object
+
+    def search_property(
+            self,
+            props,
+            limit=50,
+            offset=0,
+            type_=SearchType.FULL,
+            scope=SearchScope.PUBLIC,
+            lang=None,
+            with_pointless=False
+    ):
+        """
+        Search the Iotic Space for public Things with metadata matching the properties list, given as predicate-object
+        tuples, with a third member denoting an XSD type if the object type is not among [str, int, float, bool].
+        Language-specific strings are specified with a suffix of two @'s and a two-letter language code, e.g. '@@en'.
+
+        Returns:
+            Dict of results as below (with type_=SearchType.FULL; see shorthand methods for examples of other search
+            type results)
+
+        ::
+
+            {
+                "2b2d8b068e404861b19f9e060877e002": {
+                    "long": -1.74803,
+                    "lat": 52.4539,
+                    "label": "Weather Station #2",
+                    "owner": "3bbf307b43b1460289fe707619dece3d",
+                    "points": {
+                        "a300cc90147f4e2990195639de0af201": {
+                            "label": "Feed 201",
+                            "type": "Feed",
+                            "storesRecent": true
+                        },
+                        "a300cc90147f4e2990195639de0af202": {
+                            "label": "Feed 202",
+                            "type": "Feed",
+                            "storesRecent": false
+                        }
+                    }
+                },
+                "76a3b24b02d34f20b675257624b0e001": {
+                    "long": 0.716356,
+                    "lat": 52.244384,
+                    "label": "Weather Station #1",
+                    "owner": "3bbf307b43b1460289fe707619dece3d",
+                    "points": {
+                        "fb1a4a4dbb2642ab9f836892da93f101": {
+                            "label": "My weather feed",
+                            "type": "Feed",
+                            "storesRecent": false
+                        },
+                        "fb1a4a4dbb2642ab9f836892da93c102": {
+                            "label": None,
+                            "type": "Control",
+                            "storesRecent": false
+                        }
+                    }
+                }
+            }
+
+        **OR**
+
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
+
+        Args:
+            props (list(tuple)): The properties (or single property) to search for
+            limit (integer, optional): Return this many search results
+            offset (integer, optional): Return results starting at this offset - good for paging.
+            type_ (optional): What kind of search to perform, FULL, REDUCED, LOCATED, or MINIMAL. See above for sample
+                FULL results. See shorthand methods for sample REDUCED, LOCATED, and MINIMAL results.
+            scope (optional): Whether to perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level
+                restricted to own things) search. Check the :doc:`IoticAgent.IOT.Client` Client.local_meta) flag to
+                determine whether local metadata functionality is available. (Note that PUBLIC and LOCAL_OWN scopes are
+                always available.)
+            lang (string, optional): The language in which to return entity and point labels. Defaults to the metadata
+                library's default language.
+            with_pointless (bool, optional): Whether to return entities that do not advertise any points (default False)
+        """
+        logger.info("property search(props=%s, limit=%s, offset=%s, type_=%s, scope=%s, lang=%s, with_pointless=%s)",
+                    props, limit, offset, type_, scope, lang, with_pointless)
+        evt = self._request_search_property(props, limit, offset, type_, scope, lang, with_pointless)
+
+        self._wait_and_except_if_failed(evt)
+        return evt.payload['result']  # pylint: disable=unsubscriptable-object
+
+    def search_property_reduced(self, props, limit=100, offset=0, scope=SearchScope.PUBLIC, with_pointless=False):
+        """
+        Shorthand for search_property() from the :doc:`IoticAgent.IOT.Client` with `type_=SearchType.REDUCED`.
+        Sample results:
+
+        ::
+
+            {
+                "2b2d8b068e404861b19f9e060877e002": {
+                    "a300cc90147f4e2990195639de0af201": "Feed",
+                    "a300cc90147f4e2990195639de0af202": "Feed"
+                },
+                "76a3b24b02d34f20b675257624b0e001": {
+                    "fb1a4a4dbb2642ab9f836892da93f101": "Feed",
+                    "fb1a4a4dbb2642ab9f836892da93f102": "Control"
+                }
+            }
+        """
+        return self.search_property(props, limit, offset, type_=SearchType.REDUCED, scope=scope,
+                                    with_pointless=with_pointless)
+
+    def search_property_located(self, props, limit=100, offset=0, scope=SearchScope.PUBLIC, lang=None,
+                                with_pointless=False):
+        """
+        Shorthand for search_property() from the :doc:`IoticAgent.IOT.Client` with `type_=SearchType.LOCATED`.
+        Provides a thing-only result set comprised only of things which have a location set, e.g.:
+
+        ::
+
+            {
+                # Keyed by thing id
+                '2b2d8b068e404861b19f9e060877e002':
+                    # location (g, lat & long), label (l, optional)
+                    {'g': (52.4539, -1.74803), 'l': 'Weather Station #2'},
+                '76a3b24b02d34f20b675257624b0e001':
+                    {'g': (52.244384, 0.716356), 'l': None},
+                '76a3b24b02d34f20b675257624b0e004':
+                    {'g': (52.245384, 0.717356), 'l': 'Gasometer'},
+                '76a3b24b02d34f20b675257624b0e005':
+                    {'g': (52.245384, 0.717356), 'l': 'Zepellin'}
+            }
+        """
+        return self.search_property(props, limit, offset, type_=SearchType.LOCATED, scope=scope, lang=lang,
+                                    with_pointless=with_pointless)
+
+    def search_property_minimal(self, props, limit=100, offset=0, scope=SearchScope.PUBLIC, with_pointless=False):
+        """
+        Shorthand for search_property() from the :doc:`IoticAgent.IOT.Client` with `type_=SearchType.MINIMAL`.
+        Returns just a list of the id's of matching things.
+
+        ::
+
+            [
+                '2b2d8b068e404861b19f9e060877e002',
+                '76a3b24b02d34f20b675257624b0e001',
+                '76a3b24b02d34f20b675257624b0e004',
+                '76a3b24b02d34f20b675257624b0e005',
+            ]
+        """
+        return self.search_property(props, limit, offset, type_=SearchType.MINIMAL, scope=scope,
+                                    with_pointless=with_pointless)
+
     # used by describe()
     __guid_resources = (Thing, Point, RemoteFeed, RemoteControl)
 
-    def describe(self, guid_or_resource, lang=None, local=None, scope=DescribeScope.AUTO):
+    def describe(self, guid_or_resource, lang=None, scope=DescribeScope.AUTO):
         """
         Describe returns the public (or local) description of a Thing or Point
 
@@ -1038,9 +1200,6 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             lang (string, optional): The two-character ISO 639-1 language code for which labels and comments will be
                 returned. This does not affect Values (i.e. when describing a Point, apart from value comments) and tags
                 as these are language neutral).
-            local (boolean, optional): **Deprecated**, use `scope` instead. If `true`, lookup metadata at container
-                level. Check the local_meta flag to determine whether local metadata functionality is available. (Takes
-                precedence over `scope`.)
             scope (optional): Whether to perform PUBLIC, LOCAL (container level) or LOCAL_OWN (container level
                 restricted to own things) metadata lookup. Check the :doc:`IoticAgent.IOT.Client` Client.local_meta flag
                 to determine whether local metadata functionality is available. (Note that AUTO, PUBLIC and LOCAL_OWN
@@ -1054,7 +1213,7 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
             raise ValueError("describe requires guid string or Thing, Point, RemoteFeed or RemoteControl instance")
         logger.info('describe() [guid="%s"]', guid)
 
-        evt = self._request_describe(guid, lang, local, scope)
+        evt = self._request_describe(guid, lang, scope=scope)
 
         self._wait_and_except_if_failed(evt)
         return evt.payload['result']  # pylint: disable=unsubscriptable-object
@@ -1208,6 +1367,15 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_entity_tag_list(self, lid, limit, offset):
         return self.__client.request_entity_tag_list(lid, limit, offset)
 
+    def _request_entity_property_update(self, lid, props, replace=True, replace_all=False):
+        return self.__client.request_entity_property_update(lid, props, replace=replace, replace_all=replace_all)
+
+    def _request_entity_property_delete(self, lid, props):
+        return self.__client.request_entity_property_delete(lid, props)
+
+    def _request_entity_property_list(self, lid, limit=100, offset=0):
+        return self.__client.request_entity_property_list(lid, limit=limit, offset=offset)
+
     def _request_entity_meta_get(self, lid, fmt):
         return self.__client.request_entity_meta_get(lid, fmt)
 
@@ -1271,9 +1439,28 @@ class Client(object):  # pylint: disable=too-many-public-methods, too-many-lines
     def _request_sub_recent(self, sub_id, count=None):
         return self.__client.request_sub_recent(sub_id, count)
 
-    def _request_search(self, text, lang, location, unit, limit, offset, type_='full', local=None,
-                        scope=SearchScope.PUBLIC):
-        return self.__client.request_search(text, lang, location, unit, limit, offset, type_, local, scope)
+    def _request_search(self, text, lang, location, unit, limit, offset, type_='full', scope=SearchScope.PUBLIC):
+        return self.__client.request_search(text, lang, location, unit, limit, offset, type_, scope)
 
-    def _request_describe(self, guid, lang, local=None, scope=DescribeScope.AUTO):
-        return self.__client.request_describe(guid, lang, local, scope)
+    def _request_search_property(
+            self,
+            props,
+            limit=100,
+            offset=0,
+            type_=SearchType.FULL,
+            scope=SearchScope.PUBLIC,
+            lang=None,
+            with_pointless=False
+    ):
+        return self.__client.request_search_property(
+            props,
+            limit=limit,
+            offset=offset,
+            type_=type_,
+            scope=scope,
+            lang=lang,
+            with_pointless=with_pointless
+        )
+
+    def _request_describe(self, guid, lang, scope=DescribeScope.AUTO):
+        return self.__client.request_describe(guid, lang, scope)

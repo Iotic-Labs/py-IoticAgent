@@ -52,7 +52,8 @@ from .Const import (
     E_COMPLETE, E_FAILED, E_PROGRESS, E_FAILED_CODE_LOWSEQNUM, E_CREATED, E_DUPLICATED, E_DELETED, E_FEEDDATA,
     E_CONTROLREQ, E_SUBSCRIBED, E_RENAMED, E_REASSIGNED, E_RECENTDATA,
     R_PING, R_ENTITY, R_FEED, R_CONTROL, R_SUB, R_ENTITY_META, R_FEED_META, R_CONTROL_META, R_VALUE_META,
-    R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE,
+    R_ENTITY_TAG_META, R_FEED_TAG_META, R_CONTROL_TAG_META, R_SEARCH, R_DESCRIBE, R_PROPERTY_META,
+    R_PROPERTY_SEARCH_META,
     W_SEQ, W_HASH, W_COMPRESSION, W_MESSAGE,
     M_RESOURCE, M_TYPE, M_CLIENTREF, M_ACTION, M_PAYLOAD, M_RANGE,
     P_CODE, P_RESOURCE, P_MESSAGE, P_LID, P_ENTITY_LID, P_FEED_ID, P_POINT_ID, P_DATA, P_MIME, P_POINT_TYPE, P_TIME,
@@ -124,7 +125,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
     """
 
     # QAPI version targeted by Core client
-    __qapi_version = '1.2.3'
+    __qapi_version = '1.3.1'
 
     def __init__(self, host, vhost, epId, passwd, token, prefix='', lang=None,  # pylint: disable=too-many-locals
                  sslca=None, network_retry_timeout=300, socket_timeout=30, auto_encode_decode=True, send_queue_size=128,
@@ -742,6 +743,29 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         logger.debug("request_entity_tag_list lid='%s'", lid)
         return self._request(R_ENTITY_TAG_META, C_LIST, (lid,), None, offset=offset, limit=limit)
 
+    def request_entity_property_update(self, lid, props, replace=True, replace_all=False):
+        lid = Validation.lid_check_convert(lid)
+        props = Validation.proplist_check_convert(props)
+        replace = Validation.bool_check_convert('replace', replace)
+        logger.debug(
+            "request_entity_property_update lid='%s' props=%s replace=%s, replace_all=%s",
+            lid, props, replace, replace_all
+        )
+        return self._request(R_PROPERTY_META, C_UPDATE, (lid,), {
+            'props': props, 'replace': replace, 'replace_all': replace_all
+        })
+
+    def request_entity_property_delete(self, lid, props):
+        lid = Validation.lid_check_convert(lid)
+        props = Validation.proplist_check_convert(props, for_delete=True)
+        logger.debug("request_entity_property_delete lid='%s' props=%s", lid, props)
+        return self._request(R_PROPERTY_META, C_DELETE, (lid,), {'props': props})
+
+    def request_entity_property_list(self, lid, limit=100, offset=0):
+        lid = Validation.lid_check_convert(lid)
+        logger.debug("request_entity_property_list lid='%s'", lid)
+        return self._request(R_PROPERTY_META, C_LIST, (lid,), None, offset=offset, limit=limit)
+
     def request_point_create(self, foc, lid, pid, control_cb=None, save_recent=0):
         """request point create: feed or control, lid and pid point lid
         """
@@ -844,7 +868,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         Validation.foc_check(foc)
         lid = Validation.lid_check_convert(lid)
         pid = Validation.pid_check_convert(pid)
-        vtype = Validation.value_type_check_convert(vtype)
+        vtype = Validation.object_type_check_convert(vtype)
         label = Validation.label_check_convert(label)
         lang = Validation.lang_check_convert(lang, default=self.__default_lang)
         comment = Validation.comment_check_convert(comment, allow_none=True)
@@ -1020,33 +1044,49 @@ class Client(object):  # pylint: disable=too-many-instance-attributes,too-many-p
         return self._request(R_SUB, C_LIST, (sub_id, 'recent'), {'count': count})
 
     def request_search(self, text=None, lang=None, location=None, unit=None, limit=100, offset=0, type_=SearchType.FULL,
-                       local=None, scope=SearchScope.PUBLIC):
+                       scope=SearchScope.PUBLIC):
         logger.debug("request_search text=%s lang=%s location=%s unit=%s limit=%s offset=%s type_=%s scope=%s",
                      text, lang, location, unit, limit, offset, type_, scope)
-        if local is not None:
-            warn('Use scope instead of local parameter', DeprecationWarning)
-            # Preserve old behaviour until local parameter removed
-            if local:
-                scope = SearchScope.LOCAL
-        elif scope not in SearchScope:
-            raise ValueError('scope not one of %s' % ', '.join(str(x) for x in SearchScope))
         type_ = Validation.search_type_check_convert(type_)
+        scope = Validation.search_scope_check_convert(scope)
         return self._request(R_SEARCH, C_UPDATE, (type_.value, scope.value),
                              Validation.search_check_convert(text, lang, location, unit,
                                                              default_lang=self.__default_lang),
                              offset=offset, limit=limit)
 
-    def request_describe(self, guid, lang=None, local=None, scope=DescribeScope.AUTO):
+    def request_search_property(
+            self,
+            props,
+            limit=100,
+            offset=0,
+            type_=SearchType.FULL,
+            scope=SearchScope.PUBLIC,
+            lang=None,
+            with_pointless=False
+    ):
+        logger.debug(
+            "request_search_property props=%s limit=%s offset=%s type_=%s scope=%s lang=%s with_pointless=%s",
+            props, limit, offset, type_, scope, lang, with_pointless
+        )
+        props = Validation.proplist_check_convert(props)
+        type_ = Validation.search_type_check_convert(type_)
+        scope = Validation.search_scope_check_convert(scope)
+        lang = Validation.lang_check_convert(lang, allow_none=True)
+        with_pointless = Validation.bool_check_convert('with_pointless', with_pointless)
+        return self._request(
+            R_PROPERTY_SEARCH_META,
+            C_UPDATE,
+            (type_.value, scope.value),
+            {'props': props, 'lang': lang, 'withPointless': with_pointless},
+            offset=offset,
+            limit=limit
+        )
+
+    def request_describe(self, guid, lang=None, scope=DescribeScope.AUTO):
         logger.debug("request_describe guid=%s lang=%s", guid, lang)
-        if local is not None:
-            warn('Use scope instead of local parameter', DeprecationWarning)
-            # Preserve old behaviour until local parameter removed
-            if local:
-                scope = DescribeScope.LOCAL
-        elif scope not in DescribeScope:
-            raise ValueError('scope not one of %s' % ', '.join(str(x) for x in DescribeScope))
         guid = Validation.guid_check_convert(guid)
         lang = Validation.lang_check_convert(lang, default=self.__default_lang)
+        scope = Validation.describe_scope_check_convert(scope)
         return self._request(R_DESCRIBE, C_LIST, (guid, lang, scope.value))
 
     @classmethod

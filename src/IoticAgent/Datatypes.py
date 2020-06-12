@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Constants to hide XSD Datatypes used by Point Values
+"""Constants to hide XSD Datatypes used by Point Values and Properties
 These help to describe the data in a feed so the receiving Thing can know what kind of data to expect
 
 See also http://www.w3.org/TR/xmlschema-2/#built-in-datatypes
@@ -54,33 +54,7 @@ Examples: "42", "-3.14159", "+0.004".
 '''
 DOUBLE = 'double'
 '''A 64-bit floating-point decimal number as specified in the IEEE 754-1985 standard. The external form is the same as
-the float datatype.'''
-DURATION = 'duration'
-'''
-Represents a duration of time, as a composite of years, months, days, hours, minutes, and seconds. The syntax of a
-duration value has these parts:
-
-If the duration is negative, it starts with "-".
-
-A capital "P" is always included.
-
-If the duration has a years part, the number of years is next, followed by a capital "Y".
-
-If there is a months part, it is next, followed by capital "M".
-
-If there is a days part, it is next, followed by capital "D".
-
-If there are any hours, minutes, or seconds in the duration, a capital "T" comes next; otherwise the duration ends here.
-
-If there is an hours part, it is next, followed by capital "H".
-
-If there is a minutes part, it is next, followed by capital "M".
-
-If there is a seconds part, it is next, followed by capital "S". You can use a decimal point and fraction to specify
-part of a second.
-
-Missing parts are assumed to be zero. Examples: "P1347Y" is a duration of 1347 Gregorian years;
-"P1Y2MT2H5.6S" is a duration of one year, two months, two hours, and 5.6 seconds.
+the float datatype.
 '''
 FLOAT = 'float'
 '''A 32-bit floating-point decimal number as specified in the IEEE 754-1985 standard.
@@ -91,16 +65,10 @@ The exponent starts with either "e" or "E", optionally followed by a sign, and o
 
 Example: "6.0235e-23".
 '''
-ID = 'ID'
-'''A unique identifier as in the ID attribute type from the XML standard.  Derived from the NCName datatype. '''
 INT = 'int'
 '''Represents a 32-bit signed integer in the range [-2,147,483,648, 2,147,483,647]. Derived from the long datatype.'''
 INTEGER = 'integer'
 '''Represents a signed integer. Values may begin with an optional "+" or "-" sign. Derived from the decimal datatype.'''
-LANGUAGE = 'language'
-'''One of the standardized language codes defined in RFC 1766. Example: "fj" for Fijian. Derived from the token type.
-RFC 1766 : http://www.ietf.org/rfc/rfc1766.txt
-'''
 LONG = 'long'
 '''A signed, extended-precision integer; at least 18 digits are guaranteed. Derived from the integer datatype. '''
 STRING = 'string'
@@ -116,3 +84,6 @@ The data must conform to the syntax of a Uniform Resource Identifier (URI), as d
 as amended by RFC 2732. Example: "http://www.nmt.edu/tcc/"
 is the URI for the New Mexico Tech Computer Center's index page.
 '''
+
+IRI = 'IRI'
+'''Only for use with property API calls. Used to handle properties which require an IRI (URIRef) value.'''

@@ -16,9 +16,10 @@
 from __future__ import unicode_literals
 from datetime import datetime, timedelta
 from uuid import UUID
+from warnings import warn
 
 from . import Const
-from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, ensure_unicode, urlparse, number_types,
+from .compat import (PY3, string_types, int_types, arg_checker, ensure_ascii, ensure_unicode, number_types,
                      raise_from, Sequence, Mapping, re_compile)
 
 
@@ -31,21 +32,40 @@ VALIDATION_META_LABEL = 64
 VALIDATION_META_COMMENT = 256
 VALIDATION_META_TAG_MIN = 3
 VALIDATION_META_TAG_MAX = 64
-VALIDATION_META_VALUE_UNIT = 128
-VALIDATION_META_VALUE_UNIT_MIN_URLBITS = 3
+VALIDATION_META_URIREF_MAX = 128
 VALIDATION_META_SEARCH_TEXT = 128
+# In addition to plain strings, the following primitive types (with implied XSD equivalents) are supported
+VALIDATION_META_PROP_AUTOTYPES = (int, float, bool)
 VALIDATION_MAX_ENCODED_LENGTH = int(round(1024 * 64 * 0.98))  # (64k is current hard AMQP message limit)
 VALIDATION_FOC_TYPES = frozenset((Const.R_FEED, Const.R_CONTROL))
-VALIDATION_SEARCH_TYPES = frozenset(('full', 'reduced', 'located'))
 # http://www.w3.org/TR/xmlschema-2/#built-in-datatypes
-VALIDATION_META_VALUE_TYPES = frozenset(("string", "boolean", "decimal", "float", "double", "duration", "dateTime",
-                                         "time", "date", "gYearMonth", "gYear", "gMonthDay", "gDay", "gMonth",
-                                         "hexBinary", "base64Binary", "anyURI", "QName", "NOTATION",
-                                         "normalizedString", "token", "language", "NMTOKEN", "NMTOKENS", "Name",
-                                         "NCName", "ID", "IDREF", "IDREFS", "ENTITY", "ENTITIES", "integer",
-                                         "nonPositiveInteger", "negativeInteger", "long", "int", "short", "byte",
-                                         "nonNegativeInteger", "unsignedLong", "unsignedInt", "unsignedShort",
-                                         "unsignedByte", "positiveInteger"))
+VALIDATION_META_VALUE_TYPES = frozenset((
+    "anyURI",
+    "base64Binary",
+    "boolean",
+    "byte",
+    "date",
+    "dateTime",
+    "decimal",
+    "double",
+    "float",
+    "int",
+    "integer",
+    "long",
+    "negativeInteger",
+    "nonNegativeInteger",
+    "nonPositiveInteger",
+    "positiveInteger",
+    "short",
+    "string",
+    "time",
+    "unsignedByte",
+    "unsignedInt",
+    "unsignedLong",
+    "unsignedShort",
+    # virtual (non-xsd) type for specifying IRI (URIRef) values
+    "IRI"
+))
 
 _PATTERN_ASCII = re_compile(r'(?%s)^\S+$' % 'a' if PY3 else '')
 _PATTERN_LEAD_TRAIL_WHITESPACE = re_compile(r'(?u)^\s.*|.*\s$')
@@ -56,7 +76,28 @@ _PATTERN_TAG = re_compile(r'(?u)^[\w.-]{%d,%d}$' % (VALIDATION_META_TAG_MIN, VAL
 # both words and tags. Remote end will validate terms in more detail.
 _PATTERN_SEARCH_TERMS = re_compile(r'(?u)(?<!\S)[\w-]+(?!\S)')
 # for validating fqdn/ip and path of a url (cannot contain whitespace, minimum length)
-_PATTERN_URL_PART = re_compile(r'(?u)^\S{3}\S*$')
+_PATTERN_NON_WHITESPACE_3PLUS = re_compile(r'(?u)^\S{3}\S*$')
+
+# Inverse of disallowed characters in e.g. RDF N3 notation
+_VALID_URIREF_CHAR = r'[^<>"\'\s{}|\\^`]'
+
+_PATTERN_URIREF_ABSOLUTE = re_compile(r"""(?ux)
+    ^
+
+    # E.g. http (2+ chars)
+    (?P<scheme>{urichar}{urichar}+?)://
+
+    # Domain or IP (3+ chars)
+    (?P<netloc>{urichar}{{2}}{urichar}+?)
+
+    # Path (2+ chars)
+    /(?P<path>{urichar}{urichar}+?)
+
+    # Last path item or fragment (2+ chars, relative predicate)
+    ([#/](?P<relpred>{urichar}{urichar}+?))
+
+    $
+""".format(urichar=_VALID_URIREF_CHAR))
 
 _LOCATION_SEARCH_ARGS = frozenset(('lat', 'long', 'radius'))
 
@@ -213,32 +254,75 @@ class Validation(object):  # pylint: disable=too-many-public-methods
 
     description_check_convert = comment_check_convert
 
+    @classmethod
+    def value_type_check_convert(cls, vtype):
+        warn('Use object_type_check_convert instead', DeprecationWarning)
+        return cls.object_type_check_convert(vtype)
+
     @staticmethod
-    def value_type_check_convert(vtype):
-        vtype = ensure_unicode(vtype, name='vtype')
-        if vtype not in VALIDATION_META_VALUE_TYPES:
-            raise ValueError("value type not a valid xsd primitive (or derived) type name")
-        return vtype
+    def object_type_check_convert(otype):
+        otype = ensure_unicode(otype, name='otype')
+        if otype not in VALIDATION_META_VALUE_TYPES:
+            raise ValueError("object type not a valid xsd primitive (or derived) type name")
+        return otype
+
+    @classmethod
+    def proplist_check_convert(cls, props, for_delete=False):
+        """for_delete allows a completely empty list as well as no value for individual properties. This is for deletion
+        of all properties or removal of all properties with a given predicate respectively.
+        """
+        if not isinstance(props, Sequence):
+            raise ValueError('properties list (or single property) must be a sequence')
+        if not props:
+            if not for_delete:
+                raise ValueError('properties list cannot be empty')
+        # support single property being supplied
+        elif isinstance(props[0], string_types):
+            props = (props,)
+
+        output = []
+
+        for i, prop in enumerate(props):
+            try:
+                if not (isinstance(prop, Sequence) and 2 <= len(prop) <= 3):
+                    raise ValueError('Must be sequence of length 2-3')
+                predicate = cls.uriref_check_convert(prop[0], name='predicate')
+                value = prop[1]
+                # (predicate, object-value)
+                if len(prop) == 2:
+                    if value is None:
+                        if not for_delete:
+                            raise ValueError('Value cannot be None')
+                        prop = (predicate, None)
+                    elif isinstance(value, VALIDATION_META_PROP_AUTOTYPES):
+                        prop = (predicate, value)
+                    else:
+                        prop = (predicate, ensure_unicode(value, 'value'))
+                # (predicate, object-value, object-type)
+                else:
+                    prop = (predicate, ensure_unicode(value, 'value'), cls.object_type_check_convert(prop[2]))
+            except ValueError as ex:
+                raise_from(ValueError('Property #%d invalid: %s' % (i, ex)), ex)
+
+            output.append(prop)
+
+        return output
 
     @classmethod
     def value_unit_check_convert(cls, unit):
-        if unit is None:
-            return None
-        unit = ensure_unicode(unit, name='unit')
-        if len(unit) > VALIDATION_META_VALUE_UNIT:
-            raise ValueError('unit too long (%d)' % VALIDATION_META_VALUE_UNIT)
-        if cls.__valid_url(unit):
-            return unit
-        else:
-            raise ValueError('unit does not resemble valid http(s) url')
+        warn('Use uriref_check_convert instead', DeprecationWarning)
+        return cls.uriref_check_convert(unit)
 
-    @classmethod
-    def __valid_url(cls, url):
-        """Expects input to already be a valid string"""
-        bits = urlparse(url)
-        return ((bits.scheme == "http" or bits.scheme == "https") and
-                _PATTERN_URL_PART.match(bits.netloc) and
-                _PATTERN_URL_PART.match(bits.path))
+    # TODO (question): Could enforce http(s) scheme as before, but is that necessary/wanted?
+    @staticmethod
+    def uriref_check_convert(ref, name='uriref'):
+        """Performs minimal/sanity validation for RDF URI References."""
+        ref = ensure_unicode(ref, name=name)
+        if len(ref) > VALIDATION_META_URIREF_MAX:
+            raise ValueError('%s too long (%d, max=%d)' % (name, len(ref), VALIDATION_META_URIREF_MAX))
+        if not _PATTERN_URIREF_ABSOLUTE.match(ref):
+            raise ValueError('%s malformed' % name)
+        return ref
 
     @staticmethod
     def location_check(lat, lon):
@@ -280,7 +364,7 @@ class Validation(object):  # pylint: disable=too-many-public-methods
                 raise ValueError('radius cannot exceed 25km when no search text supplied')
 
         if unit is not None:
-            payload['unit'] = cls.value_unit_check_convert(unit)
+            payload['unit'] = cls.uriref_check_convert(unit)
             arg_count += 1
 
         if not arg_count:
@@ -288,16 +372,27 @@ class Validation(object):  # pylint: disable=too-many-public-methods
 
         return payload
 
+    @classmethod
+    def search_type_check_convert(cls, type_):
+        return cls.__check_convert_str_enum(Const.SearchType, 'Search type', 'type_', type_)
+
+    @classmethod
+    def search_scope_check_convert(cls, type_):
+        return cls.__check_convert_str_enum(Const.SearchScope, 'Search scope', 'scope', type_)
+
+    @classmethod
+    def describe_scope_check_convert(cls, type_):
+        return cls.__check_convert_str_enum(Const.DescribeScope, 'Describe scope', 'scope', type_)
+
     @staticmethod
-    def search_type_check_convert(type_):
+    def __check_convert_str_enum(enum_cls, enum_name, var_name, value):
+        if isinstance(value, enum_cls):
+            return value
         # Allow for old behaviour, specified as string
-        if type_ in Const.SearchType:
-            return type_
-        type_ = ensure_ascii(type_, name='type_')
         try:
-            return Const.SearchType(type_)
+            return enum_cls(ensure_ascii(value, name=var_name))
         except ValueError as ex:
-            raise_from(ValueError('Search type must be one of: %s' % ', '.join(str(x) for x in Const.SearchType)), ex)
+            raise_from(ValueError('%s must be one of: %s' % (enum_name, ', '.join(str(x) for x in enum_cls))), ex)
 
     @classmethod
     def __search_text_check_convert(cls, text):

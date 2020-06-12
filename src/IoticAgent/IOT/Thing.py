@@ -197,11 +197,8 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
             LinkException: Communications problem between you and the infrastructure
 
         Args:
-            tags (list): The list of tags you want to add to your Thing, e.g. `["garden", "soil"]`
+            tags (list): The list of tags (or single one) you want to add to your Thing, e.g. `["garden", "soil"]`
         """
-        if isinstance(tags, str):
-            tags = [tags]
-
         evt = self._client._request_entity_tag_update(self.__lid, tags, delete=False)
         self._client._wait_and_except_if_failed(evt)
 
@@ -215,11 +212,8 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
             LinkException: Communications problem between you and the infrastructure
 
         Args:
-            tags (list): The list of tags you want to delete from your Thing, e.g. `["garden", "soil"]`
+            tags (list): The list of tags (or single one) you want to delete from your Thing, e.g. `["garden", "soil"]`
         """
-        if isinstance(tags, str):
-            tags = [tags]
-
         evt = self._client._request_entity_tag_update(self.__lid, tags, delete=True)
         self._client._wait_and_except_if_failed(evt)
 
@@ -252,6 +246,99 @@ class Thing(Resource):  # pylint: disable=too-many-public-methods
 
         self._client._wait_and_except_if_failed(evt)
         return evt.payload['tags']
+
+    def create_property(self, props, replace=True, replace_all=False):
+        """
+        Create RDF properties for a Thing, given as a list of predicate-object tuples. Strs, bools, ints, and floats
+        will be automatically cast to the correct XSD type; any other type must be given as a third member of the tuple.
+        Strings can be given a language with two @'s and the two-letter language code at the end, e.g. "Fritz@@de".
+        Iotic internal properties cannot be altered.
+
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
+
+        Args:
+            props (list): The sequence of properties (or single property) you want to add to your Thing
+            replace (bool): Whether to delete all existing properties for the given predicates before adding new ones.
+            replace_all (bool): Whether to delete all existing properties for ALL predicates before adding new ones.
+        """
+        evt = self._client._request_entity_property_update(self.__lid, props, replace=replace, replace_all=replace_all)
+        self._client._wait_and_except_if_failed(evt)
+
+    def delete_property(self, props):
+        """
+        Delete RDF properties for a Thing. Properties should be given as a list of predicate-object tuples as shown in
+        the create_property method; however, unlike that method, None can be given as an object, having the effect of
+        deleting all the properties for that predicate. Also, an empty list can be passed, deleting all non-internal
+        properties. Iotic internal properties cannot be altered.
+
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
+
+        Args:
+            properties (list): The sequence of properties (or single property) you want to delete from your Thing
+        """
+        evt = self._client._request_entity_property_delete(self.__lid, props)
+        self._client._wait_and_except_if_failed(evt)
+
+    def list_property(self, limit=500, offset=0):
+        """List `all` the properties for this Thing
+
+        Returns:
+            dict with predicates as keys and object lists as values, with RDF Literals converted to the format given as
+            input to create_property (ie, XSD type as extra tuple member where required, language via '@@en' suffix).
+            Iotic-internal properties omitted. Eg:
+
+        ::
+
+            {
+                "http://xmlns.com/foaf/0.1/age": [
+                    31
+                ],
+                "http://my.domain.net/some/ontology#customPredicate": [
+                    55.4
+                ],
+                "http://my.domain.net/some/ontology#someFlag": [
+                    True
+                ],
+                "http://my.domain.net/some/ontology#someProperty": [
+                    "A string without language"
+                ],
+                "http://my.domain.net/some/ontology#anotherProperty2": [
+                    "Language-specific string@@en"
+                ],
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+                    "http://some.company.org/my-types/oven",
+                    "http://some.company.org/my-types/hob"
+                ],
+                "http://my.domain.net/some/ontology#anotherProperty": [
+                    "The english text@@en",
+                    "Die deutsche Version@@de"
+                ],
+                "http://my.domain.net/some/ontology#buildMonth": [
+                    ("2019-11", "gYearMonth")
+                ],
+                "http://my.domain.net/some/ontology#purchaseTime": [
+                    ("2018-10-10T12:00:00Z", "dateTime"),
+                    ("2019-11-12T14:21:44Z", "dateTime")
+                ]
+            }
+
+        Or:
+
+        Raises:
+            IOTException: Infrastructure problem detected
+            LinkException: Communications problem between you and the infrastructure
+
+        Args:
+            limit (integer, optional): Return at most this many properties
+            offset (integer, optional): Return properties starting at this offset
+        """
+        evt = self._client._request_entity_property_list(self.__lid, limit=limit, offset=offset)
+        self._client._wait_and_except_if_failed(evt)
+        return evt.payload['props']
 
     def get_meta(self):
         """

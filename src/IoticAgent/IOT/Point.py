@@ -211,9 +211,6 @@ class Point(Resource):
         Args:
             tags (list): The list of tags you want to add to your Point, e.g. ["garden", "soil"]
         """
-        if isinstance(tags, str):
-            tags = [tags]
-
         evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=False)
         self._client._wait_and_except_if_failed(evt)
 
@@ -229,9 +226,6 @@ class Point(Resource):
         Args:
             tags (list): The list of tags you want to delete from your Point, e.g. ["garden", "soil"]
         """
-        if isinstance(tags, str):
-            tags = [tags]
-
         evt = self._client._request_point_tag_update(self._type, self.__lid, self.__pid, tags, delete=True)
         self._client._wait_and_except_if_failed(evt)
 
