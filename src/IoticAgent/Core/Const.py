@@ -64,6 +64,8 @@ R_CONTROL_TAG_META = 11
 # R_VALUE_TAG_META = 12  # Note: removed from QAPI
 R_SEARCH = 13
 R_DESCRIBE = 14
+R_PROPERTY_META = 15
+R_PROPERTY_SEARCH_META = 16
 
 # Wrapper
 W_SEQ = 's'
@@ -147,6 +149,7 @@ class SearchType(Enum):
     FULL = 'full'
     REDUCED = 'reduced'
     LOCATED = 'located'
+    MINIMAL = 'minimal'
 
 
 @unique

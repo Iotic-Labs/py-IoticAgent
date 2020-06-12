@@ -41,7 +41,10 @@ R_TYPES = {
     # Const.R_VALUE_TAG_META: 'VALUE_TAG_META',  # Note: Removed from QAPI
     Const.R_CONTROL_TAG_META: 'CONTROL_TAG_META',
     Const.R_SEARCH: 'SEARCH',
-    Const.R_DESCRIBE: 'DESCRIBE'}
+    Const.R_DESCRIBE: 'DESCRIBE',
+    Const.R_PROPERTY_META: 'PROP_META',
+    Const.R_PROPERTY_SEARCH_META: 'PROP_SEARCH'
+}
 
 # Container responses
 M_TYPES = {

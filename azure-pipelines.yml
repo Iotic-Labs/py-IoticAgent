@@ -7,7 +7,7 @@ pr:
 - master
 
 variables:
-  python_build_version: 3.6.9
+  python_build_version: 3.6
   vmImage: ubuntu-16.04
 
 stages:

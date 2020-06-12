@@ -17,6 +17,7 @@
 from __future__ import print_function
 
 from os import path
+from io import open as io_open
 
 # Allow for environments without setuptools
 try:
@@ -28,10 +29,10 @@ except ImportError:
 
 
 PKGDIR = path.abspath(path.dirname(__file__))
-with open(path.join(PKGDIR, 'README.md'), encoding='utf-8') as f:
+with io_open(path.join(PKGDIR, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
-VERSION = '0.6.13'
+VERSION = '0.7.0'
 
 setup(
     name='py-IoticAgent',
@@ -49,11 +50,12 @@ setup(
     package_dir={'': 'src'},
     install_requires=[
         'py-ubjson >= 0.14.0',
-        'rdflib >= 4.2.1',
+        'rdflib >= 4.2.1, <5.0',
         'enum34 >= 1.1.6; python_version < "3.4"',
     ],
     extras_require={
-        'lz4': 'py-lz4framed>=0.13.0,<1.0'
+        'lz4': 'py-lz4framed>=0.13.0,<1.0',
+        'regex': 'regex>=2020.1.8'
     },
     zip_safe=True,
     keywords=['iotic', 'agent', 'labs', 'space', 'iot'],
@@ -70,6 +72,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules'
